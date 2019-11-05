@@ -1,9 +1,6 @@
 package util.parser;
 
-import util.parser.parsers.DeleteParser;
-import util.parser.parsers.InsertParser;
-import util.parser.parsers.Parser;
-import util.parser.parsers.UpdateParser;
+import util.parser.parsers.*;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -22,18 +19,10 @@ public class ParserFactory {
         if (contains(sql, "(insert into)(.+)(values)(.+)")) return new InsertParser(sql);
         else if (contains(sql, "(update)(.+)(set)(.+)")) return new UpdateParser(sql);
         else if (contains(sql, "(delete from)(.+)")) return new DeleteParser(sql);
-        else if (contains(sql, "(create database)(.+)")) {
-            //TODO: fix create database
-        }
-        else if (contains(sql, "(create table)(.+)")) {
-            //TODO: fix create table
-        }
-        else if (contains(sql, ("(drop table)(.+)"))) {
-            //TODO: fix drop table
-        }
-        else if (contains(sql, "(drop database)(.+)")) {
-            //TODO: fix drop database
-        }
+        else if (contains(sql, "(create database)(.+)")) return new CreateDatabaseParser(sql);
+        else if (contains(sql, "(create table)(.+)")) return new CreateTableParser(sql);
+        else if (contains(sql, ("(drop table)(.+)"))) return new DropTableParser(sql);
+        else if (contains(sql, "(drop database)(.+)")) return new DropDatabaseParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         return null;
     }

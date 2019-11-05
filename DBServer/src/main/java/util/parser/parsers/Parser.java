@@ -3,6 +3,7 @@ package util.parser.parsers;
 import util.parser.SQLSegment;
 import util.parser.annoation.Body;
 import util.parser.annoation.End;
+import util.parser.annoation.Parts;
 import util.parser.annoation.Start;
 
 import java.util.ArrayList;
@@ -32,6 +33,15 @@ public abstract class Parser {
         if (child.isAnnotationPresent(End.class)) {
             End end = (End) child.getAnnotation(End.class);
             segments.add(new SQLSegment(end.value(), end.split()));
+        }
+        if (child.isAnnotationPresent(Parts.class)) {
+            Parts parts = (Parts) child.getAnnotation(Parts.class);
+            String[] strings = parts.value();
+            if (strings.length % 2 == 0) {
+                for (int i = 0; i < strings.length-1; i++) {
+                    segments.add(new SQLSegment(strings[i++], strings[i]));
+                }
+            }
         }
     }
 

@@ -1,2 +1,4 @@
 # Project exclude paths
 /DBClient/target/
+/.idea/misc.xml
+*.iml

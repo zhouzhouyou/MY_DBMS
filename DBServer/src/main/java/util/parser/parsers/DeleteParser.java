@@ -1,7 +1,6 @@
 package util.parser.parsers;
 
 import util.parser.annoation.Body;
-import util.parser.annoation.End;
 import util.parser.annoation.Start;
 
 import static util.SQL.AND_OR_SPLIT;
