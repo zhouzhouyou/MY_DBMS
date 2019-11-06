@@ -14,7 +14,7 @@ class ParserFactoryTest {
     @ValueSource(strings = {
             "insert into student (name, sex) values ('zzy', 'male);",
             "delete from student where name='zzy' or sex='male';",
-            "update student set sex='male' where name='zzy';",
+            "update student set sex='male', birthday=sysdate where name='zzy' or (name='ckf' and age=20);",
             "create table student (" +
                     "id integer primary key," +
                     "name varchar not null," +

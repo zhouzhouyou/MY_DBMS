@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import static util.SQL.*;
 
 public class ParserFactory {
+
     public static Parser generateParser(String sql) {
         sql = sql.trim();
         sql = sql.toLowerCase();
