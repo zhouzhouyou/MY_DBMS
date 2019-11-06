@@ -10,8 +10,8 @@
         <module name="DBServer" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="DBClient" target="1.5" />
+    <bytecodeTargetLevel target="8">
+      <module name="DBClient" target="8" />
       <module name="DBServer" target="8" />
     </bytecodeTargetLevel>
   </component>
