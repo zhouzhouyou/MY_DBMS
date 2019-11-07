@@ -25,6 +25,7 @@ public class ParserFactory {
         else if (contains(sql, ("(drop table)(.+)"))) return new DropTableParser(sql);
         else if (contains(sql, "(drop database)(.+)")) return new DropDatabaseParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
+        //TODO: select
         return null;
     }
 
