@@ -15,10 +15,20 @@ public class BlockCollections {
         return filename.matches("[^\\s\\\\/:\\*\\?\\\"<>\\|](\\x20|[^\\s\\\\/:\\*\\?\\\"<>\\|])*[^\\s\\\\/:\\*\\?\\\"<>\\|\\.]$");
     }
 
+    /**
+     * Check if the collection exists.
+     * @param absolutePath absolute path of the collection
+     * @return true if exists
+     */
     public static boolean exists(String absolutePath) {
         return new File(absolutePath).exists();
     }
 
+    /**
+     * Serial a collection into binary file.
+     * @param blockCollection collection to serial
+     * @throws IOException fail to open collection
+     */
     public static void serialize(BlockCollection blockCollection) throws IOException {
         File file = new File(blockCollection.getAbsolutePath());
         FileOutputStream fos = new FileOutputStream(file);

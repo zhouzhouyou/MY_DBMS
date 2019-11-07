@@ -2,7 +2,6 @@ package core.database;
 
 import core.file.Block;
 
-import java.io.Serializable;
 import java.util.Date;
 
 class DatabaseBlock extends Block {
