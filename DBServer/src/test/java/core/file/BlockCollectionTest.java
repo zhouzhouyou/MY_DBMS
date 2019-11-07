@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-class SimpleFileTest {
+class BlockCollectionTest {
     private static final String path = "./";
 
     static Stream<Arguments> stringProvider() {
@@ -28,9 +28,9 @@ class SimpleFileTest {
     @MethodSource("stringProvider")
     public void testGSON(String path, String prefix, String postfix) {
         try {
-            SimpleFile simpleFile = new SimpleFile(path, prefix, postfix);
+            BlockCollection blockCollection = new BlockCollection(path, prefix, postfix);
             Gson gson = new Gson();
-            System.out.println(gson.toJson(simpleFile));
+            System.out.println(gson.toJson(blockCollection));
         } catch (EmptyNameException | IllegalNameException e) {
             System.out.println(e);
         }

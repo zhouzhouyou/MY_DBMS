@@ -1,117 +1,111 @@
 package core.database;
 
-import core.file.SimpleFileFactory;
-import core.file.exception.EmptyNameException;
+import core.file.BlockCollections;
 import core.file.exception.IllegalNameException;
-import util.result.DefaultResult;
 import util.result.Result;
-import util.result.ResultCode;
+import util.result.ResultFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public enum DatabaseFactory {
     INSTANCE;
 
-    private static final String path = "./";
-    private static final String postfix = ".db";
-    private Map<String, Database>  map = new HashMap<>();
-    private List<Database> occupied = new ArrayList<>();
+    public static final boolean SYSTEM = true;
+    public static final boolean USER = false;
 
-    private SimpleFileFactory<Database> simpleFileFactory = new SimpleFileFactory<>();
+    private DatabaseCollection collection;
+    private Map<String, DatabaseBlock>  map = new HashMap<>();
+
+    DatabaseFactory() {
+        if (BlockCollections.exists(DatabaseCollection.absolutePath)) {
+            try {
+                collection = (DatabaseCollection) BlockCollections.deserialize(DatabaseCollection.absolutePath);
+                collection.list.forEach(databaseBlock -> map.put(databaseBlock.name, databaseBlock));
+            } catch (IOException | ClassNotFoundException | IllegalNameException e) {
+                e.printStackTrace();
+            }
+        } else {
+            collection = new DatabaseCollection();
+        }
+    }
 
     /**
      * Create a Database.
      * @param name database's name
-     * @param type type of database, using {@link Database#SYSTEM} or {@link Database#USER}
-     * @return {@link DefaultResult} for exception, {@link Result} for normal case
+     * @param type type of database, using {@link #SYSTEM} or {@link #USER}
+     * @return result
      */
     public Result createDatabase(String name, boolean type) {
-        if (exists(name)) return new DefaultResult();
-        try {
-            Database database = new Database(name, type, new Date());
-            database.writeFile();
-            return new Result(ResultCode.SUCCESS, database.filename);
-        } catch (EmptyNameException | IllegalNameException | IOException e) {
-            return new DefaultResult(e.toString());
-        }
+        if (!BlockCollections.isValidFileName(name) || exists(name)) return ResultFactory.buildFailResult(name + " is invalid or used");
+        DatabaseBlock databaseBlock = new DatabaseBlock(name, type);
+        collection.add(databaseBlock);
+        map.put(name, databaseBlock);
+        return ResultFactory.buildSuccessResult(name);
     }
 
     /**
-     * Get the absolute path based on the {@link Database#DB_PATH} and {@link Database#DB_POST_FIX}.
-     * @param name database's name
      * @return absolute path of the database file
      */
-    public String getAbsolutePath(String name) {
-        return Database.DB_PATH + name + "." + Database.DB_POST_FIX;
+    public String getAbsolutePath() {
+        return collection.getAbsolutePath();
     }
 
     /**
-     * Check if the database file exists in the root directory
+     * Check if the database exists
      * @param name database's name
      * @return true if exists
      */
     public boolean exists(String name) {
-        return new File(getAbsolutePath(name)).exists();
+        return map.containsKey(name);
     }
 
     /**
-     * Release database from the {@link #occupied} so it can be deleted.
-     * Invoked by {@link Database#release()}
-     * @param database database to release
+     * Release database from the {@link #map} so it can be deleted.
+     * Invoked by {@link DatabaseBlock#release()}
+     * @param databaseBlock database to release
      */
-    public void releaseDatabase(Database database) {
-        Iterator<Database> iterator = occupied.iterator();
-        while (iterator.hasNext()) {
-            Database current = iterator.next();
-            if (current.equals(database)) {
-                iterator.remove();
-                break;
-            }
-        }
+    public void releaseDatabase(DatabaseBlock databaseBlock) {
+        databaseBlock.release();
     }
 
     /**
      * Get the database from the map or file
      * @param name database's name
      * @return database or null
-     * @throws IOException the database file doesn't exists
-     * @throws ClassNotFoundException serialVersionUID changed
-     * @throws IllegalNameException name is illegal
+     * @throws Exception the database doesn't exists
      */
-    public Database getDatabase(String name) throws IOException, ClassNotFoundException, IllegalNameException {
-        if (!exists(name)) throw new IOException(name + " not exists");
-        Database database;
-        if (map.containsKey(name)) database = map.get(name);
-        else {
-            database = simpleFileFactory.build(getAbsolutePath(name));
-            map.put(name, database);
-        }
-        occupied.add(database);
-        return database;
+    public DatabaseBlock getDatabase(String name) throws Exception {
+        if (!exists(name)) throw new Exception(name + " not exists");
+        DatabaseBlock databaseBlock = map.get(name);
+        databaseBlock.request();
+        return databaseBlock;
     }
 
     /**
      * Drop the database
      * @param name database's name
-     * @return {@link DefaultResult} for exception
+     * @return result
      * @throws IOException the database file doesn't exists
-     * @throws ClassNotFoundException serialVersionUID changed
-     * @throws IllegalNameException name is illegal
      */
-    public Result dropDatabase(String name) throws IOException, ClassNotFoundException, IllegalNameException {
+    public Result dropDatabase(String name) throws IOException {
         if (!exists(name)) throw new IOException(name + " not exists");
-        Database database = simpleFileFactory.build(getAbsolutePath(name));
-        if (occupied.contains(database)) return new DefaultResult("occupied");
-        map.values().removeIf(value -> value.equals(database));
-        File file = new File(getAbsolutePath(name));
-        if (file.delete()) {
-            //TODO delete records
-            return new Result(ResultCode.SUCCESS, name);
-        } else {
-            return new DefaultResult("fail to delete");
-        }
+        DatabaseBlock databaseBlock = map.get(name);
+        if (!databaseBlock.free()) return ResultFactory.buildFailResult("occupied");
+        map.values().removeIf(value -> value.equals(databaseBlock));
+        collection.remove(databaseBlock);
+        //TODO remove relative files
+        return ResultFactory.buildSuccessResult(name);
+    }
 
+    /**
+     * Save current system.db
+     */
+    public void saveInstance() {
+        try {
+            BlockCollections.serialize(collection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -2,11 +2,11 @@ package core.table;
 
 import core.file.exception.EmptyNameException;
 import core.file.exception.IllegalNameException;
-import core.file.SimpleFile;
+import core.file.BlockCollection;
 
 import java.util.Date;
 
-public class Table extends SimpleFile {
+public class Table extends BlockCollection {
     public int recordAmount;
     public int fieldAmount;
     public String definePath;
