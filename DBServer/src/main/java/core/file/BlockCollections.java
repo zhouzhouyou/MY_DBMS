@@ -31,6 +31,7 @@ public class BlockCollections {
      */
     public static void serialize(BlockCollection blockCollection) throws IOException {
         File file = new File(blockCollection.getAbsolutePath());
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(file);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(blockCollection);

@@ -66,7 +66,7 @@ public class BlockCollection<T extends Block> implements Serializable {
         list.add(block);
     }
 
-    public void remove(T t) {
-        list.remove(t);
+    public void remove(T block) {
+        list.remove(block);
     }
 }

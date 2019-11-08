@@ -1,7 +1,7 @@
 package core.file.exception;
 
 import com.google.gson.Gson;
-import core.table.Table;
+import core.table.TableCollection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -18,15 +18,9 @@ class TableTest {
 
     @ParameterizedTest
     @MethodSource("provider")
-    public void testGSON(String path, String prefix,
-                         int recordAmount, int fieldAmount,
-                         String definePath, String constraintPath, String recordPath, String indexPath,
-                         Date createTime, Date lastChangeTime) {
+    public void testGSON(String path, String prefix) {
         try {
-            Table table = new Table(path, prefix,
-                    recordAmount, fieldAmount,
-                    definePath, constraintPath, recordPath, indexPath,
-                    createTime, lastChangeTime);
+            TableCollection table = new TableCollection(path, prefix);
             Gson gson = new Gson();
             System.out.println(gson.toJson(table));
         } catch (EmptyNameException | IllegalNameException e) {

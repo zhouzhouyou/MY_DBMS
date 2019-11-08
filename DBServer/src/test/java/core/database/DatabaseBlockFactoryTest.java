@@ -13,7 +13,7 @@ class DatabaseBlockFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"yuri", "yuri", ".//."})
-    void createDatabase(String name)  {
+    void createDatabase(String name) {
         Result result = factory.createDatabase(name, false);
         if (result.code == ResultFactory.BAD_REQUEST) System.out.println(result.data);
         else {
@@ -56,7 +56,5 @@ class DatabaseBlockFactoryTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
     }
 }
