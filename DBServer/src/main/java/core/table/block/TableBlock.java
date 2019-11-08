@@ -1,6 +1,10 @@
-package core.table;
+package core.table.block;
 
 import core.file.Block;
+import core.table.factory.TableConstraintFactory;
+import core.table.factory.TableDefineFactory;
+import core.table.factory.TableIndexFactory;
+
 import java.util.Date;
 
 public class TableBlock extends Block {

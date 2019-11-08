@@ -1,8 +1,11 @@
-package core.table;
+package core.table.factory;
 
 
+import core.table.block.DefineBlock;
+import core.table.block.TableBlock;
+import core.table.collection.TableDefineCollection;
 
-public class TableDefineFactory extends TableComponentFactory<DefineBlock,TableDefineCollection> {
+public class TableDefineFactory extends TableComponentFactory<DefineBlock, TableDefineCollection> {
 
 
     public TableDefineFactory(TableBlock tableBlock) {

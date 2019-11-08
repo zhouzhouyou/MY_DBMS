@@ -1,8 +1,9 @@
-package core.table;
+package core.table.collection;
 
 
 import core.file.exception.EmptyNameException;
 import core.file.exception.IllegalNameException;
+import core.table.block.ConstraintBlock;
 
 public class TableConstraintCollection extends TableComponentCollection<ConstraintBlock> {
     public static final String TABLE_CONSTRAINT_POSTFIX = "tic";

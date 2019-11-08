@@ -1,5 +1,9 @@
-package core.table;
+package core.table.factory;
 
+
+import core.table.block.ConstraintBlock;
+import core.table.block.TableBlock;
+import core.table.collection.TableConstraintCollection;
 
 public class TableConstraintFactory extends TableComponentFactory<ConstraintBlock, TableConstraintCollection> {
 

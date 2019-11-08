@@ -1,7 +1,7 @@
 package core.file.exception;
 
 import com.google.gson.Gson;
-import core.table.TableCollection;
+import core.table.collection.TableCollection;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

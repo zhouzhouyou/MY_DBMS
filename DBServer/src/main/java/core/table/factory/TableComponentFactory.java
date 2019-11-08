@@ -1,8 +1,10 @@
-package core.table;
+package core.table.factory;
 
 import core.file.Block;
 import core.file.BlockCollections;
 import core.file.exception.IllegalNameException;
+import core.table.block.TableBlock;
+import core.table.collection.TableComponentCollection;
 
 import java.io.IOException;
 import java.util.HashMap;

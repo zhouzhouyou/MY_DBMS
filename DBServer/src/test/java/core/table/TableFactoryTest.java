@@ -2,7 +2,8 @@ package core.table;
 
 import core.database.DatabaseBlock;
 import core.database.DatabaseFactory;
-import org.junit.jupiter.api.Test;
+import core.table.block.TableBlock;
+import core.table.factory.TableFactory;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -13,8 +14,6 @@ import util.result.ResultFactory;
 import java.io.IOException;
 import java.util.Date;
 import java.util.stream.Stream;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class TableFactoryTest {
     private DatabaseFactory databaseFactory = DatabaseFactory.INSTANCE;

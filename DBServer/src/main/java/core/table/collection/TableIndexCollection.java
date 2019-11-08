@@ -1,7 +1,8 @@
-package core.table;
+package core.table.collection;
 
 import core.file.exception.EmptyNameException;
 import core.file.exception.IllegalNameException;
+import core.table.block.IndexBlock;
 
 public class TableIndexCollection extends TableComponentCollection<IndexBlock> {
     public static final String TABLE_INDEX_POSTFIX = "tid";

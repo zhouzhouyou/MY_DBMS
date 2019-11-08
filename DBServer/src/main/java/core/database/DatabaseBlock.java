@@ -1,7 +1,7 @@
 package core.database;
 
 import core.file.Block;
-import core.table.TableFactory;
+import core.table.factory.TableFactory;
 
 import java.util.Date;
 

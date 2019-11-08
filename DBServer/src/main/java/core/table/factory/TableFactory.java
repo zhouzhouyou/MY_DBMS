@@ -1,8 +1,10 @@
-package core.table;
+package core.table.factory;
 
 import core.database.DatabaseBlock;
 import core.file.BlockCollections;
 import core.file.exception.IllegalNameException;
+import core.table.block.TableBlock;
+import core.table.collection.TableCollection;
 import util.result.Result;
 import util.result.ResultFactory;
 

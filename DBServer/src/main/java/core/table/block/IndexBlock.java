@@ -1,4 +1,4 @@
-package core.table;
+package core.table.block;
 
 import core.file.Block;
 

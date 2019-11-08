@@ -1,8 +1,9 @@
-package core.table;
+package core.table.collection;
 
 
 import core.file.exception.EmptyNameException;
 import core.file.exception.IllegalNameException;
+import core.table.block.DefineBlock;
 
 
 public class TableDefineCollection extends TableComponentCollection<DefineBlock> {

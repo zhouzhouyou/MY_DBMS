@@ -1,9 +1,10 @@
-package core.table;
+package core.table.collection;
 
 
 import core.file.exception.EmptyNameException;
 import core.file.exception.IllegalNameException;
 import core.file.BlockCollection;
+import core.table.block.TableBlock;
 
 
 public class TableCollection extends BlockCollection<TableBlock> {
