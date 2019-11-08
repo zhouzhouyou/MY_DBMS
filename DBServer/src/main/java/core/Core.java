@@ -10,11 +10,13 @@ public class Core {
      * Create a database.
      * @param name name of the database
      * @param type type of the database, use {@link DatabaseFactory#SYSTEM} or {@link DatabaseFactory#USER}
-     * @return {@link util.result.DefaultResult} if failed
+     * @return result
      */
     public Result createDatabase(String name, boolean type) {
         return databaseFactory.createDatabase(name, type);
     }
 
-
+    public Result dropDatabase(String name) {
+        return databaseFactory.dropDatabase(name);
+    }
 }

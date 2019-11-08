@@ -8,6 +8,16 @@ import util.result.ResultFactory;
 import java.io.IOException;
 import java.util.*;
 
+/**
+ * The {@code DatabaseFactory} class is a singleton class created by enum method.
+ * {@link core.Core} hold the instance of this.
+ * <p>This class can control the serialization and the deserialization of the {@link DatabaseCollection}.</p>
+ * <p>This factory read and write file {@code "./system.db"}, which save how many databases are there in the system.</p>
+ * <p>This factory control the create and drop actions of database as well.</p>
+ * @see DatabaseBlock
+ * @see DatabaseCollection
+ * @see BlockCollections
+ */
 public enum DatabaseFactory {
     INSTANCE;
 
@@ -17,6 +27,14 @@ public enum DatabaseFactory {
     private DatabaseCollection collection;
     private Map<String, DatabaseBlock>  map = new HashMap<>();
 
+    /**
+     * When initializing the {@link #INSTANCE}, try to deserialize object from the "system.db" at first.
+     * If succeeded, populate all database blocks into {@link #map}.
+     * If failed, it means that the system is launched at the first time, then we create a new instance.
+     * Before the application being closed,
+     * should invoke {@link #saveInstance()}} to serialize the {@link #collection} to "system.db".
+     * @see DatabaseCollection#absolutePath
+     */
     DatabaseFactory() {
         if (BlockCollections.exists(DatabaseCollection.absolutePath)) {
             try {
@@ -31,7 +49,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Create a Database.
+     * Create a Database. Return the result whether the factory create a <b>new</b> database
      * @param name database's name
      * @param type type of database, using {@link #SYSTEM} or {@link #USER}
      * @return result
@@ -52,7 +70,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Check if the database exists
+     * Check if the database exists.
      * @param name database's name
      * @return true if exists
      */
@@ -61,8 +79,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Release database from the {@link #map} so it can be deleted.
-     * Invoked by {@link DatabaseBlock#release()}
+     * Release database so it can be deleted.
      * @param databaseBlock database to release
      */
     public void releaseDatabase(DatabaseBlock databaseBlock) {
@@ -70,7 +87,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Get the database from the map or file
+     * Get the database from the map.
      * @param name database's name
      * @return database or null
      * @throws Exception the database doesn't exists
@@ -83,13 +100,13 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Drop the database
+     * Drop the database.
      * @param name database's name
      * @return result
      * @throws IOException the database file doesn't exists
      */
-    public Result dropDatabase(String name) throws IOException {
-        if (!exists(name)) throw new IOException(name + " not exists");
+    public Result dropDatabase(String name)  {
+        if (!exists(name)) return ResultFactory.buildFailResult("not exists");
         DatabaseBlock databaseBlock = map.get(name);
         if (!databaseBlock.free()) return ResultFactory.buildFailResult("occupied");
         map.values().removeIf(value -> value.equals(databaseBlock));
@@ -99,7 +116,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Save current system.db
+     * Save current system.db.
      */
     public void saveInstance() {
         try {
