@@ -68,7 +68,7 @@ public enum UserFactory {
      * @return result
      */
     public Result grant(UserBlock source, String target, String grantType, boolean grant) {
-        if (!source.canOperateGrant) return ResultFactory.buildUnauthorizedResult();
+        if (!source.grant) return ResultFactory.buildUnauthorizedResult();
         try {
             UserBlock userBlock = getUser(target);
             Field field = userBlock.getClass().getDeclaredField(grantType);
