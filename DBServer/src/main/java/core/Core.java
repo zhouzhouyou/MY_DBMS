@@ -1,10 +1,18 @@
 package core;
 
 import core.database.DatabaseFactory;
+import server.user.UserFactory;
 import util.result.Result;
 
-public class Core {
+/**
+ * Core is meant to handle {@link server.ClientHandler}.
+ * It's a layer between client and basic functions.
+ */
+public enum Core {
+    INSTANCE;
+
     private DatabaseFactory databaseFactory = DatabaseFactory.INSTANCE;
+    private UserFactory userFactory = UserFactory.INSTANCE;
 
     /**
      * Create a database.
@@ -16,7 +24,33 @@ public class Core {
         return databaseFactory.createDatabase(name, type);
     }
 
+    /**
+     * Drop a database.
+     * @param name name of the database
+     * @return result whether the database dropped
+     */
     public Result dropDatabase(String name) {
         return databaseFactory.dropDatabase(name);
     }
+
+    /**
+     * Get grant of a certain grant type of a user.
+     * @param user user
+     * @param grantType grant type
+     * @return result whether user has the grant
+     */
+    public Result getGrant(String user, String grantType) {
+        return userFactory.getGrant(user, grantType);
+    }
+
+    /**
+     * Connect user to system.
+     * @param user username
+     * @param password password
+     * @return result whether the connect is valid
+     */
+    public Result connect(String user, String password) {
+        return userFactory.connect(user, password);
+    }
+
 }

@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import util.result.Result;
 import util.result.ResultFactory;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.stream.Stream;
 
@@ -51,8 +50,8 @@ class TableFactoryTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"ckf","yuri"})
-    void releaseTable(String tableName){
+    @ValueSource(strings = {"ckf", "yuri"})
+    void releaseTable(String tableName) {
         try {
             TableBlock tableBlock = factory.getTable(tableName);
             tableBlock.release();
@@ -70,21 +69,12 @@ class TableFactoryTest {
         factory.createTable(tableName, recordAmount, fieldAmount, definePath,
                 constraintPath, recordPath, indexPath, createTime, lastChangeTime);
         try {
-
             TableBlock block = factory.getTable(tableName);
-            try {
-                Result result = factory.dropTable(tableName);
-                System.out.println(result.code + " " + result.data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                block.release();
-                Result result = factory.dropTable(tableName);
-                System.out.println(result.code + " " + result.data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Result result1 = factory.dropTable(tableName);
+            System.out.println(result1.code + " " + result1.data);
+            block.release();
+            Result result2 = factory.dropTable(tableName);
+            System.out.println(result2.code + " " + result2.data);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -1,6 +1,6 @@
-package core.file;
+package util.file;
 
-import core.file.exception.IllegalNameException;
+import util.file.exception.IllegalNameException;
 
 import java.io.*;
 
@@ -30,7 +30,7 @@ public class BlockCollections {
      * @throws IOException fail to open collection
      */
     public static void serialize(BlockCollection blockCollection) throws IOException {
-        File file = new File(blockCollection.getAbsolutePath());
+        File file = new File(blockCollection.absolutePath);
         if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(file);
         ObjectOutputStream oos = new ObjectOutputStream(fos);

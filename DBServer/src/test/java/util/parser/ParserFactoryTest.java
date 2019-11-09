@@ -23,6 +23,7 @@ class ParserFactoryTest {
             "create database yuri;",
             "drop table student;",
             "drop database yuri;",
+            "connect yuri 123456;"
     })
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);

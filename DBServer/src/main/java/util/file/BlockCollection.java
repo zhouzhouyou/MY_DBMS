@@ -1,13 +1,13 @@
-package core.file;
+package util.file;
 
-import core.file.exception.EmptyNameException;
-import core.file.exception.IllegalNameException;
+import util.file.exception.EmptyNameException;
+import util.file.exception.IllegalNameException;
 
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static core.file.BlockCollections.isValidFileName;
+import static util.file.BlockCollections.isValidFileName;
 
 public class BlockCollection<T extends Block> implements Serializable {
     public List<T> list;

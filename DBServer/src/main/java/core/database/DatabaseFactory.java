@@ -1,7 +1,7 @@
 package core.database;
 
-import core.file.BlockCollections;
-import core.file.exception.IllegalNameException;
+import util.file.BlockCollections;
+import util.file.exception.IllegalNameException;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -55,18 +55,12 @@ public enum DatabaseFactory {
      * @return result
      */
     public Result createDatabase(String name, boolean type) {
-        if (!BlockCollections.isValidFileName(name) || exists(name)) return ResultFactory.buildFailResult(name + " is invalid or used");
+        if (!BlockCollections.isValidFileName(name)) return ResultFactory.buildInvalidNameResult(name);
+        if (exists(name)) return ResultFactory.buildObjectAlreadyExistsResult();
         DatabaseBlock databaseBlock = new DatabaseBlock(name, type);
         collection.add(databaseBlock);
         map.put(name, databaseBlock);
         return ResultFactory.buildSuccessResult(name);
-    }
-
-    /**
-     * @return absolute path of the database file
-     */
-    public String getAbsolutePath() {
-        return collection.getAbsolutePath();
     }
 
     /**
@@ -103,12 +97,11 @@ public enum DatabaseFactory {
      * Drop the database.
      * @param name database's name
      * @return result
-     * @throws IOException the database file doesn't exists
      */
     public Result dropDatabase(String name)  {
-        if (!exists(name)) return ResultFactory.buildFailResult("not exists");
+        if (!exists(name)) return ResultFactory.buildObjectNotExistsResult();
         DatabaseBlock databaseBlock = map.get(name);
-        if (!databaseBlock.free()) return ResultFactory.buildFailResult("occupied");
+        if (!databaseBlock.free()) return ResultFactory.buildObjectOccupiedResult();
         map.values().removeIf(value -> value.equals(databaseBlock));
         collection.remove(databaseBlock);
         //TODO remove relative files

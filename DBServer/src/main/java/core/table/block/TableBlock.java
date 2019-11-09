@@ -1,6 +1,6 @@
 package core.table.block;
 
-import core.file.Block;
+import util.file.Block;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;

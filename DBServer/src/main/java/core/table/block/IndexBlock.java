@@ -1,6 +1,6 @@
 package core.table.block;
 
-import core.file.Block;
+import util.file.Block;
 
 public class IndexBlock extends Block {
     public String IndexName;

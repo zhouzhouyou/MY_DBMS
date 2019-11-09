@@ -1,8 +1,6 @@
 package core.database;
 
-import core.file.BlockCollection;
-import core.file.exception.EmptyNameException;
-import core.file.exception.IllegalNameException;
+import util.file.BlockCollection;
 
 
 class DatabaseCollection extends BlockCollection<DatabaseBlock> {

@@ -2,7 +2,6 @@ package util.parser;
 
 import util.parser.parsers.*;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -14,7 +13,7 @@ public class ParserFactory {
         sql = sql.trim();
         sql = sql.toLowerCase();
         sql = sql.replaceAll("\\s+", " ");
-        sql = sql.substring(0, sql.lastIndexOf(";"));
+        if (sql.contains(";")) sql = sql.substring(0, sql.lastIndexOf(";"));
         sql += (" " + END_OF_SQL);
 
         if (contains(sql, "(insert into)(.+)(values)(.+)")) return new InsertParser(sql);
@@ -24,6 +23,8 @@ public class ParserFactory {
         else if (contains(sql, "(create table)(.+)")) return new CreateTableParser(sql);
         else if (contains(sql, ("(drop table)(.+)"))) return new DropTableParser(sql);
         else if (contains(sql, "(drop database)(.+)")) return new DropDatabaseParser(sql);
+        else if (contains(sql, "(connect)(.+)")) return new ConnectParser(sql);
+        else if (contains(sql, "(disconnect)")) return new DisconnectParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;

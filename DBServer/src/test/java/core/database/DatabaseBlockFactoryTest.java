@@ -40,19 +40,11 @@ class DatabaseBlockFactoryTest {
         factory.createDatabase(name, DatabaseFactory.USER);
         try {
             DatabaseBlock block = factory.getDatabase(name);
-            try {
-                Result result = factory.dropDatabase(name);
-                System.out.println(result.code + " " + result.data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                block.release();
-                Result result = factory.dropDatabase(name);
-                System.out.println(result.code + " " + result.data);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Result result1 = factory.dropDatabase(name);
+            System.out.println(result1.code + " " + result1.data);
+            block.release();
+            Result result2 = factory.dropDatabase(name);
+            System.out.println(result2.code + " " + result2.data);
         } catch (Exception e) {
             e.printStackTrace();
         }

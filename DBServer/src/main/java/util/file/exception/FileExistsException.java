@@ -1,4 +1,4 @@
-package core.file.exception;
+package util.file.exception;
 
 public class FileExistsException extends Exception {
     public FileExistsException(String message) {

@@ -1,9 +1,9 @@
 package core.table.collection;
 
-import core.file.Block;
-import core.file.BlockCollection;
-import core.file.exception.EmptyNameException;
-import core.file.exception.IllegalNameException;
+import util.file.Block;
+import util.file.BlockCollection;
+import util.file.exception.EmptyNameException;
+import util.file.exception.IllegalNameException;
 
 public abstract class TableComponentCollection<T extends Block> extends BlockCollection<T> {
     public TableComponentCollection(String relativePath, String prefix, String postfix) throws EmptyNameException, IllegalNameException {

@@ -51,7 +51,9 @@ public class SQL {
     /*Security*/
     public static final String CONNECT = "connect";
     public static final String DISCONNECT = "disconnect";
+    public static final String ORDER = "order";
     public static final String GRANT = "grant";
+    public static final String QUIT = "quit";
 
     /*Other*/
     public static final String END_OF_SQL = "ENDOFSQL";

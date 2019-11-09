@@ -1,7 +1,7 @@
 package core.table.collection;
 
-import core.file.exception.EmptyNameException;
-import core.file.exception.IllegalNameException;
+import util.file.exception.EmptyNameException;
+import util.file.exception.IllegalNameException;
 import core.table.block.IndexBlock;
 
 public class TableIndexCollection extends TableComponentCollection<IndexBlock> {

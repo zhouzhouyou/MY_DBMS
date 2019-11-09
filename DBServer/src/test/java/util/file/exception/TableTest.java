@@ -1,4 +1,4 @@
-package core.file.exception;
+package util.file.exception;
 
 import com.google.gson.Gson;
 import core.table.collection.TableCollection;

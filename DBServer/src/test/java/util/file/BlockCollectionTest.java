@@ -1,8 +1,8 @@
-package core.file;
+package util.file;
 
 import com.google.gson.Gson;
-import core.file.exception.EmptyNameException;
-import core.file.exception.IllegalNameException;
+import util.file.exception.EmptyNameException;
+import util.file.exception.IllegalNameException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

@@ -1,10 +1,10 @@
 package core.table.factory;
 
 import core.database.DatabaseBlock;
-import core.file.BlockCollections;
-import core.file.exception.IllegalNameException;
 import core.table.block.TableBlock;
 import core.table.collection.TableCollection;
+import util.file.BlockCollections;
+import util.file.exception.IllegalNameException;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -47,8 +47,8 @@ public class TableFactory {
      * @return result
      */
     public Result createTable(String tableName, int recordAmount, int fieldAmount, String definePath, String constraintPath, String recordPath, String indexPath, Date createTime, Date lastChangeTime) {
-        if (!BlockCollections.isValidFileName(tableName) || exists(tableName))
-            return ResultFactory.buildFailResult(tableName + " is invalid or used");
+        if (!BlockCollections.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
+        if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
         TableBlock tableBlock = new TableBlock(tableName, recordAmount, fieldAmount, definePath, constraintPath, recordPath, indexPath, createTime, lastChangeTime);
         collection.add(tableBlock);
         map.put(tableName, tableBlock);
@@ -75,13 +75,12 @@ public class TableFactory {
      *
      * @param tableName table's name
      * @return
-     * @throws IOException
      */
 
-    public Result dropTable(String tableName) throws IOException {
-        if (!exists(tableName)) throw new IOException(tableName + " not exists");
+    public Result dropTable(String tableName) {
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult();
         TableBlock tableBlock = map.get(tableName);
-        if (!tableBlock.free()) return ResultFactory.buildFailResult("occupied");
+        if (!tableBlock.free()) return ResultFactory.buildObjectOccupiedResult();
         map.values().removeIf(value -> value.equals(tableBlock));
         collection.remove(tableBlock);
         //TODO remove relative files

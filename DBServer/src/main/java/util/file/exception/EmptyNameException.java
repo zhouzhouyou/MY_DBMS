@@ -1,4 +1,4 @@
-package core.file.exception;
+package util.file.exception;
 
 public class EmptyNameException extends Exception{
     public EmptyNameException(String message) {

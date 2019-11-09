@@ -15,4 +15,24 @@ public class ResultFactory {
     public static Result buildSuccessResult(Object data) {
         return new Result(SUCCESS, data);
     }
+
+    public static Result buildObjectAlreadyExistsResult() {
+        return buildFailResult("object already exists");
+    }
+
+    public static Result buildInvalidNameResult(String name) {
+        return buildFailResult("name: " + name + " is invalid");
+    }
+
+    public static Result buildObjectNotExistsResult() {
+        return new Result(NOT_FOUND,"object not exists");
+    }
+
+    public static Result buildObjectOccupiedResult() {
+        return new Result(CONFLICT,"object occupied");
+    }
+
+    public static Result buildUnauthorizedResult() {
+        return new Result(UNAUTHORIZED, null);
+    }
 }
