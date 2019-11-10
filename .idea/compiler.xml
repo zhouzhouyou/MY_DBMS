@@ -8,10 +8,12 @@
         <outputRelativeToContentRoot value="true" />
         <module name="DBClient" />
         <module name="DBServer" />
+        <module name="DBCmd" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="8">
       <module name="DBClient" target="1.5" />
+      <module name="DBCmd" target="1.5" />
       <module name="DBServer" target="8" />
     </bytecodeTargetLevel>
   </component>
