@@ -8,6 +8,8 @@ import util.result.ResultFactory;
 import java.io.IOException;
 import java.util.*;
 
+import static util.file.Path.DATABASE_PATH;
+
 /**
  * The {@code DatabaseFactory} class is a singleton class created by enum method.
  * {@link core.Core} hold the instance of this.
@@ -36,9 +38,9 @@ public enum DatabaseFactory {
      * @see DatabaseCollection#absolutePath
      */
     DatabaseFactory() {
-        if (BlockCollections.exists(DatabaseCollection.absolutePath)) {
+        if (BlockCollections.exists(DATABASE_PATH)) {
             try {
-                collection = (DatabaseCollection) BlockCollections.deserialize(DatabaseCollection.absolutePath);
+                collection = (DatabaseCollection) BlockCollections.deserialize(DATABASE_PATH);
                 collection.list.forEach(databaseBlock -> map.put(databaseBlock.name, databaseBlock));
             } catch (IOException | ClassNotFoundException | IllegalNameException e) {
                 e.printStackTrace();

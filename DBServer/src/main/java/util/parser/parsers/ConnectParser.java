@@ -8,11 +8,15 @@ public class ConnectParser extends Parser {
         super(originSQL);
     }
 
+    private String[] getInfo() {
+        return splitOriginSQLIntoSegment().get(0).get(0).split("\\s+");
+    }
+
     public String getName() {
-        return splitOriginSQLIntoSegment().get(0).get(0);
+        return getInfo()[0];
     }
 
     public String getPassword() {
-        return splitOriginSQLIntoSegment().get(0).get(1);
+        return getInfo()[1];
     }
 }

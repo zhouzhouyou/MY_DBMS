@@ -13,13 +13,13 @@ import util.result.ResultFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.PrintStream;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private Socket socket;
     private BufferedReader input;
-    private PrintWriter output;
+    private PrintStream output;
     private DatabaseBlock database;
     private boolean authenticated = false;
     private Core core = Core.INSTANCE;
@@ -31,7 +31,7 @@ public class ClientHandler implements Runnable {
         this.socket = socket;
         try {
             input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            output = new PrintWriter(socket.getOutputStream());
+            output = new PrintStream(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -43,8 +43,9 @@ public class ClientHandler implements Runnable {
         while (true) {
             try {
                 String sql = input.readLine();
+                //if (sql == null) break;
                 Result result = handleSQL(sql);
-                output.write(gson.toJson(result));
+                output.println(gson.toJson(result));
             } catch (IOException e) {
                 e.printStackTrace();
                 break;

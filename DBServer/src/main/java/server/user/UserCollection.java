@@ -2,10 +2,10 @@ package server.user;
 
 import util.file.BlockCollection;
 
-public class UserCollection extends BlockCollection<UserBlock> {
-    static final String absolutePath = "./system.user";
+import static util.file.Path.USER_PATH;
 
+public class UserCollection extends BlockCollection<UserBlock> {
     public UserCollection() {
-        super(absolutePath);
+        super(USER_PATH);
     }
 }

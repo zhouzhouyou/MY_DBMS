@@ -10,6 +10,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import static util.file.Path.USER_PATH;
+
 public enum UserFactory {
     INSTANCE;
 
@@ -17,9 +19,9 @@ public enum UserFactory {
     private Map<String, UserBlock> map = new HashMap<>();
 
     UserFactory() {
-        if (BlockCollections.exists(UserCollection.absolutePath)) {
+        if (BlockCollections.exists(USER_PATH)) {
             try {
-                collection = (UserCollection) BlockCollections.deserialize(UserCollection.absolutePath);
+                collection = (UserCollection) BlockCollections.deserialize(USER_PATH);
                 collection.list.forEach(user -> map.put(user.name, user));
             } catch (IllegalNameException | IOException | ClassNotFoundException e) {
                 e.printStackTrace();

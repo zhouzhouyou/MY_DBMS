@@ -23,8 +23,8 @@ public class ParserFactory {
         else if (contains(sql, "(create table)(.+)")) return new CreateTableParser(sql);
         else if (contains(sql, ("(drop table)(.+)"))) return new DropTableParser(sql);
         else if (contains(sql, "(drop database)(.+)")) return new DropDatabaseParser(sql);
-        else if (contains(sql, "(connect)(.+)")) return new ConnectParser(sql);
         else if (contains(sql, "(disconnect)")) return new DisconnectParser(sql);
+        else if (contains(sql, "(connect)(.+)")) return new ConnectParser(sql);
         else if (contains(sql, "(select)(.+)(from)(.+)")) return new SelectParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select

@@ -16,7 +16,7 @@ public class BlockCollection<T extends Block> implements Serializable {
     public transient String postfix;
     public transient String filename;
     public transient String relativePath;
-    public transient String absolutePath;
+    public String absolutePath;
 
     /**
      *

@@ -2,12 +2,11 @@ package core.database;
 
 import util.file.BlockCollection;
 
+import static util.file.Path.DATABASE_PATH;
+
 
 class DatabaseCollection extends BlockCollection<DatabaseBlock> {
-    static final String absolutePath = "./system.db";
-
-
     public DatabaseCollection() {
-        super(absolutePath);
+        super(DATABASE_PATH);
     }
 }
