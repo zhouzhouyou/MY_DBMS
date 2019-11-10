@@ -27,6 +27,9 @@ public enum UserFactory {
         } else {
             collection = new UserCollection();
         }
+        if (!exists("system")) {
+            createUser("system", "123456");
+        }
     }
 
     public boolean exists(String name) {
@@ -104,6 +107,7 @@ public enum UserFactory {
      * @see #getGrant(UserBlock, String)
      */
     public Result getGrant(String user, String grantType) {
+        if (user.equals("system")) return ResultFactory.buildSuccessResult(true);
         try {
             return getGrant(getUser(user), grantType);
         } catch (Exception e) {
@@ -125,5 +129,13 @@ public enum UserFactory {
             //ignore
         }
         return ResultFactory.buildObjectNotExistsResult();
+    }
+
+    public void saveInstance() {
+        try {
+            BlockCollections.serialize(collection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

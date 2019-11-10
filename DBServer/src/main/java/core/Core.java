@@ -21,7 +21,9 @@ public enum Core {
      * @return result
      */
     public Result createDatabase(String name, boolean type) {
-        return databaseFactory.createDatabase(name, type);
+        Result result = databaseFactory.createDatabase(name, type);
+        saveDatabase();
+        return result;
     }
 
     /**
@@ -30,7 +32,9 @@ public enum Core {
      * @return result whether the database dropped
      */
     public Result dropDatabase(String name) {
-        return databaseFactory.dropDatabase(name);
+        Result result = databaseFactory.dropDatabase(name);
+        saveDatabase();
+        return result;
     }
 
     /**
@@ -51,6 +55,20 @@ public enum Core {
      */
     public Result connect(String user, String password) {
         return userFactory.connect(user, password);
+    }
+
+    /**
+     * Serialize the database collection to "system.db".
+     */
+    public void saveDatabase() {
+        databaseFactory.saveInstance();
+    }
+
+    /**
+     * Serialize the user collection to "system.user".
+     */
+    public void saveUser() {
+        userFactory.saveInstance();
     }
 
 }

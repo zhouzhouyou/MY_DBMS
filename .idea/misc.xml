@@ -5,6 +5,7 @@
       <list>
         <option value="$PROJECT_DIR$/DBServer/pom.xml" />
         <option value="$PROJECT_DIR$/DBClient/pom.xml" />
+        <option value="$PROJECT_DIR$/DBCmd/pom.xml" />
       </list>
     </option>
   </component>

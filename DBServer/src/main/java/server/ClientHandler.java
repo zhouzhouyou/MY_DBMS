@@ -44,6 +44,7 @@ public class ClientHandler implements Runnable {
             try {
                 String sql = input.readLine();
                 Result result = handleSQL(sql);
+                output.write(gson.toJson(result));
             } catch (IOException e) {
                 e.printStackTrace();
                 break;
@@ -95,6 +96,7 @@ public class ClientHandler implements Runnable {
     private Result handleDisconnect(DisconnectParser parser) {
         if (!authenticated) return ResultFactory.buildFailResult("not connected");
         authenticated = false;
+        username = null;
         return ResultFactory.buildSuccessResult(null);
     }
 
@@ -102,6 +104,7 @@ public class ClientHandler implements Runnable {
         Result result = core.connect(parser.getName(), parser.getPassword());
         if (result.code == ResultFactory.SUCCESS) {
             authenticated = true;
+            username = parser.getName();
         }
         return result;
     }

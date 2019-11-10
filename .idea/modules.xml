@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/DBClient/DBClient.iml" filepath="$PROJECT_DIR$/DBClient/DBClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/DBCmd/DBCmd.iml" filepath="$PROJECT_DIR$/DBCmd/DBCmd.iml" />
       <module fileurl="file://$PROJECT_DIR$/DBServer/DBServer.iml" filepath="$PROJECT_DIR$/DBServer/DBServer.iml" />
     </modules>
   </component>
