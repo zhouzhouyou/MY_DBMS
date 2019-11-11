@@ -1,18 +1,18 @@
 PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二进制存储。
 
-1. **DBMS_ROOT/database.db**
+# **DBMS_ROOT/database.db**
 
 此文件用于保存当前数据库：数据库类型（sys,user）；数据库名称，数据库存放路径。
 
 其中”database“可换为别的名字。
 
-#####  文件结构：
+文件结构：
 
 | 数据库基本信息 (DatabaseBlock) | structure   | structure    |
 | ------------------------------ | ----------- | ------------ |
 |                                | ........... | ............ |
 
-##### 表格信息结构：
+表格信息结构：
 
 | 结构体成员 | 数据类型  | 说明                                              |
 | ---------- | --------- | ------------------------------------------------- |
@@ -23,23 +23,23 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 ​           
 
-  2.
+#   **DBMS_ROOT/data    (For every single database)**
 
-​       （1）**DBMS_ROOT/data/DatabaseName**
+##        **DBMS_ROOT/data/DatabaseName**
 
    此文件夹名与创建的数据库名同名。
 
-​       （2）**DBMS_ROOT/data/DatabaseName/DatabaseName.tb**
+##        **DBMS_ROOT/data/DatabaseName/DatabaseName.tb**
 
    此为当前数据库保存所有表的信息的文件。
 
-#####   文件结构：
+文件结构：
 
 | 表格信息 (TableBlock) | structure   | structure    |
 | --------------------- | ----------- | ------------ |
 |                       | ........... | ............ |
 
-##### 表格信息结构：
+表格信息结构：
 
 | 结构体成员 | 数据类型  | 说明               |
 | ---------- | --------- | ------------------ |
@@ -53,17 +53,17 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 | crtime     | DATETIME  | 创建时间           |
 | mtime      | INTERGER  | 最后修改时间       |
 
-​        （3）**DBMS_ROOT/data/DatabaseName/DatabaseName.log**
+##         **DBMS_ROOT/data/DatabaseName/DatabaseName.log**
 
    此为日志文件。
 
-3.
+# **DBMS_ROOT/data/DatabaseName   (For every single table)**
 
-​        （1）**DBMS_ROOT/data/DatabaseName/TableName.tdf** 
+##         **DBMS_ROOT/data/DatabaseName/TableName.tdf** 
 
 ​    此为当前数据库中一个表的定义文件。
 
-#####  文件结构：
+文件结构：
 
 | 字段块 FieldBlock |
 | ----------------- |
@@ -73,7 +73,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 
 
-##### 表格信息结构：
+表格信息结构：
 
 | 结构体成员  | 数据类型  | 说明                         |
 | ----------- | --------- | ---------------------------- |
@@ -84,7 +84,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 | mtime       | DATETIME  | 最后修改时间                 |
 | integrities | INTERGER  | 完整性约束信息               |
 
-​        （2）**DBMS_ROOT/data/DatabaseName/TableName.trd**
+##         **DBMS_ROOT/data/DatabaseName/TableName.trd**
 
 ​    此为当前数据库中一个表的记录文件。
 
@@ -92,17 +92,17 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 ​      2、基于系统数据存储的特点，所有的块和字段大小，在存储时都调整成 4 的倍数，以提高 数据  的读取效率。  
 
-#####  文件结构：
+文件结构：
 
 | 记录 1 | 记录 2 | ……   | 记录 N |
 | ------ | ------ | ---- | ------ |
 |        |        |      |        |
 
-​        （3）**DBMS_ROOT/data/DatabaseName/TableName.tic**
+##         **DBMS_ROOT/data/DatabaseName/TableName.tic**
 
 ​    此为当前数据库中一个表的完整性描述文件。 
 
-#####  文件结构：
+文件结构：
 
 | 约束 1 | 约束 2 | ……   | 约束 N |
 | ------ | ------ | ---- | ------ |
@@ -110,7 +110,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 
 
-##### 表格信息结构：
+表格信息结构：
 
 | 结构体成员 | 数据类型  | 说明     |
 | ---------- | --------- | -------- |
@@ -119,7 +119,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 | type       | INTERGER  | 约束类型 |
 | param      | CHAR[256] | 参数     |
 
-​        （4）**DBMS_ROOT/data/DatabaseName/TableName.tid**
+##         **DBMS_ROOT/data/DatabaseName/TableName.tid**
 
 ​    此为当前数据库中一个表的 索引描述文件  。
 
@@ -131,7 +131,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 
 
-##### 表格信息结构：
+表格信息结构：
 
 | 结构体成员  | 数据类型     | 说明                                               |
 | ----------- | ------------ | -------------------------------------------------- |
@@ -145,7 +145,7 @@ PS: **DBMS_ROOT** 为 **DBMS**程序安装的根目录，所有文件均为二�
 
 ​               
 
-​     (5)  **DBMS_ROOT/data/DatabaseName/TableName/FiledNameIndex.ix**
+##       **DBMS_ROOT/data/DatabaseName/TableName/FieldNameIndex.ix**
 
 此文件为一个表的一个字段的索引数据文件，他描述此文件的存储路径为”表格文件夹“，但
 
