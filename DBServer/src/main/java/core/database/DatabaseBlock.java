@@ -3,6 +3,7 @@ package core.database;
 
 import core.table.factory.TableFactory;
 import util.file.Block;
+import util.file.BlockCollections;
 
 import java.util.Date;
 
@@ -29,5 +30,9 @@ public class DatabaseBlock extends Block {
         if (factory == null)
             factory = new TableFactory(this);
         return factory;
+    }
+
+    public void delete() {
+        BlockCollections.delete("./data/" + name);
     }
 }

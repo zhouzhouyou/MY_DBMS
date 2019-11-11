@@ -24,7 +24,8 @@ class ParserFactoryTest {
             "create database yuri;",
             "drop table student;",
             "drop database yuri;",
-            "connect yuri 123456;"
+            "connect yuri 123456;",
+            "choose database yuri"
     })
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);

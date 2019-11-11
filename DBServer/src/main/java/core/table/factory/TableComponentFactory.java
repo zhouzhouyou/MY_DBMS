@@ -5,6 +5,7 @@ import util.file.BlockCollections;
 import util.file.exception.IllegalNameException;
 import core.table.block.TableBlock;
 import core.table.collection.TableComponentCollection;
+import util.result.Result;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -65,6 +66,10 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
         return map.containsKey(tableName);
     }
 
+    public void add(T t) {
+        collection.add(t);
+    }
+
     /**
      * Save current table component file.
      */
@@ -74,6 +79,5 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

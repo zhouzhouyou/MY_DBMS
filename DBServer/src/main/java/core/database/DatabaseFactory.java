@@ -1,5 +1,6 @@
 package core.database;
 
+import core.table.factory.TableFactory;
 import util.file.BlockCollections;
 import util.file.exception.IllegalNameException;
 import util.result.Result;
@@ -62,6 +63,9 @@ public enum DatabaseFactory {
         DatabaseBlock databaseBlock = new DatabaseBlock(name, type);
         collection.add(databaseBlock);
         map.put(name, databaseBlock);
+        saveInstance();
+        TableFactory tableFactory = new TableFactory(databaseBlock);
+        tableFactory.saveInstance();
         return ResultFactory.buildSuccessResult(name);
     }
 
@@ -106,7 +110,8 @@ public enum DatabaseFactory {
         if (!databaseBlock.free()) return ResultFactory.buildObjectOccupiedResult();
         map.values().removeIf(value -> value.equals(databaseBlock));
         collection.remove(databaseBlock);
-        //TODO remove relative files
+        databaseBlock.delete();
+        saveInstance();
         return ResultFactory.buildSuccessResult(name);
     }
 

@@ -3,6 +3,7 @@ package util.file;
 import util.file.exception.IllegalNameException;
 
 import java.io.*;
+import java.util.Arrays;
 
 public class BlockCollections {
     /**
@@ -55,5 +56,14 @@ public class BlockCollections {
         BlockCollection blockCollection = (BlockCollection) ois.readObject();
         ois.close();
         return blockCollection;
+    }
+
+    public static boolean delete(String path) {
+        File file = new File(path);
+        if (!file.exists()) return false;
+        if (file.isDirectory()) {
+            Arrays.asList(file.listFiles()).forEach(File::delete);
+        }
+        return file.delete();
     }
 }

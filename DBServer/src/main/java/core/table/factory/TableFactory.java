@@ -5,20 +5,23 @@ import core.table.block.TableBlock;
 import core.table.collection.TableCollection;
 import util.file.BlockCollections;
 import util.file.exception.IllegalNameException;
+import util.parser.parsers.CreateTableParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TableFactory {
     private TableCollection collection;
     private Map<String, TableBlock> map = new HashMap<>();
-
+    private DatabaseBlock databaseBlock;
 
     public TableFactory(DatabaseBlock databaseBlock) {
+        this.databaseBlock = databaseBlock;
         String absolutePath = databaseBlock.path + databaseBlock.name + "." + TableCollection.TABLE_POSTFIX;
         if (BlockCollections.exists(absolutePath)) {
             try {
@@ -83,6 +86,8 @@ public class TableFactory {
         if (!tableBlock.free()) return ResultFactory.buildObjectOccupiedResult();
         map.values().removeIf(value -> value.equals(tableBlock));
         collection.remove(tableBlock);
+        saveInstance();
+        BlockCollections.delete(databaseBlock.path + tableName);
         //TODO remove relative files
         return ResultFactory.buildSuccessResult(tableName);
     }
@@ -123,6 +128,23 @@ public class TableFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    public Result createTable(CreateTableParser parser) {
+        String tableName = parser.getTableName();
+        if (!BlockCollections.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
+        if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
+        TableBlock tableBlock = new TableBlock(parser, databaseBlock.path);
+        Result result = tableBlock.create();
+        if (result.code == ResultFactory.SUCCESS) {
+            collection.add(tableBlock);
+            map.put(tableName, tableBlock);
+            saveInstance();
+        }
+        return result;
+    }
+
+    public void delete() {
+        if (databaseBlock != null) BlockCollections.delete(databaseBlock.path);
     }
 }

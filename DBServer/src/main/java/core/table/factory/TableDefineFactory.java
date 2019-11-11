@@ -5,9 +5,9 @@ import core.table.block.DefineBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableDefineCollection;
 
+import java.util.List;
+
 public class TableDefineFactory extends TableComponentFactory<DefineBlock, TableDefineCollection> {
-
-
     public TableDefineFactory(TableBlock tableBlock) {
         super(tableBlock);
     }

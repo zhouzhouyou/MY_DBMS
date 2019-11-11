@@ -26,6 +26,7 @@ public class ParserFactory {
         else if (contains(sql, "(disconnect)")) return new DisconnectParser(sql);
         else if (contains(sql, "(connect)(.+)")) return new ConnectParser(sql);
         else if (contains(sql, "(select)(.+)(from)(.+)")) return new SelectParser(sql);
+        else if (contains(sql, "(choose database)(.+?)")) return new ChooseDatabaseParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;

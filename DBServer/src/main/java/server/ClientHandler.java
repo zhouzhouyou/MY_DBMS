@@ -51,6 +51,13 @@ public class ClientHandler implements Runnable {
                 break;
             }
         }
+        try {
+            input.close();
+            output.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Result handleSQL(String sql) {
@@ -82,8 +89,30 @@ public class ClientHandler implements Runnable {
             return handleCreateDatabase((CreateDatabaseParser) parser);
         } else if (parser instanceof DropDatabaseParser) {
             return handleDropDatabase((DropDatabaseParser) parser);
+        } else if (parser instanceof ChooseDatabaseParser){
+            return handleChooseDatabase((ChooseDatabaseParser) parser);
+        } else if (database == null) {
+            return ResultFactory.buildUnauthorizedResult("Choose Database first");
+        } else if (parser instanceof CreateTableParser) {
+            return handleCreateTable((CreateTableParser) parser);
+        } else if (parser instanceof DropTableParser) {
+            return handleDropTable((DropTableParser) parser);
         }
         return null;
+    }
+
+    private Result handleDropTable(DropTableParser parser) {
+        return core.dropTable(parser.getTableName(), database);
+    }
+
+    private Result handleChooseDatabase(ChooseDatabaseParser parser) {
+        Result result = core.chooseDatabase(parser);
+        if (result.code == ResultFactory.SUCCESS) database = (DatabaseBlock) result.data;
+        return result;
+    }
+
+    private Result handleCreateTable(CreateTableParser parser) {
+        return core.createTable(parser, database);
     }
 
     private Result handleDropDatabase(DropDatabaseParser parser) {

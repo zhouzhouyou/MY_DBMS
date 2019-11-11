@@ -35,4 +35,8 @@ public class ResultFactory {
     public static Result buildUnauthorizedResult() {
         return new Result(UNAUTHORIZED, null);
     }
+
+    public static Result buildUnauthorizedResult(String msg) {
+        return new Result(UNAUTHORIZED, msg);
+    }
 }

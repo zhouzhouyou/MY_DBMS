@@ -1,8 +1,13 @@
 package core;
 
+import core.database.DatabaseBlock;
 import core.database.DatabaseFactory;
+import core.table.factory.TableFactory;
 import server.user.UserFactory;
+import util.parser.parsers.ChooseDatabaseParser;
+import util.parser.parsers.CreateTableParser;
 import util.result.Result;
+import util.result.ResultFactory;
 
 /**
  * Core is meant to handle {@link server.ClientHandler}.
@@ -22,7 +27,7 @@ public enum Core {
      */
     public Result createDatabase(String name, boolean type) {
         Result result = databaseFactory.createDatabase(name, type);
-        saveDatabase();
+        //saveDatabase();
         return result;
     }
 
@@ -33,7 +38,7 @@ public enum Core {
      */
     public Result dropDatabase(String name) {
         Result result = databaseFactory.dropDatabase(name);
-        saveDatabase();
+        //saveDatabase();
         return result;
     }
 
@@ -71,4 +76,22 @@ public enum Core {
         userFactory.saveInstance();
     }
 
+    public Result createTable(CreateTableParser parser, DatabaseBlock database) {
+        TableFactory factory = new TableFactory(database);
+        return factory.createTable(parser);
+    }
+
+    public Result chooseDatabase(ChooseDatabaseParser parser) {
+        try {
+            DatabaseBlock block = databaseFactory.getDatabase(parser.getDatabaseName());
+            return ResultFactory.buildSuccessResult(block);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult();
+        }
+    }
+
+    public Result dropTable(String tableName, DatabaseBlock database) {
+        TableFactory factory = new TableFactory(database);
+        return factory.dropTable(tableName);
+    }
 }
