@@ -33,7 +33,7 @@ public enum InsertUtil {
         TableDefineCollection defineCollection = factory.getCollection();
 
         /*check whether the field amount is correct*/
-        if (fields.size() == 1 && fields.get(0).equals("*")) {
+        if (fields.size() == 0) {
             if (values.size() != block.fieldAmount) return ResultFactory.buildFailResult(AMOUNT_NOT_MATCH);
             fields = defineCollection.getFieldNames();
         }

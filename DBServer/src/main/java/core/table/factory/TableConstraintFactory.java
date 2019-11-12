@@ -6,6 +6,7 @@ import core.table.block.RecordBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableConstraintCollection;
 import util.result.Result;
+import util.result.ResultFactory;
 
 import java.util.List;
 
@@ -27,6 +28,6 @@ public class TableConstraintFactory extends TableComponentFactory<ConstraintBloc
     }
 
     public Result check(List<Object> toInsert) {
-        return null;
+        return ResultFactory.buildSuccessResult(null);
     }
 }
