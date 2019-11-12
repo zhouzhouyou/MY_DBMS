@@ -6,8 +6,12 @@ import core.table.factory.TableFactory;
 import server.user.UserFactory;
 import util.parser.parsers.ChooseDatabaseParser;
 import util.parser.parsers.CreateTableParser;
+import util.parser.parsers.InsertParser;
 import util.result.Result;
 import util.result.ResultFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Core is meant to handle {@link server.ClientHandler}.
@@ -18,6 +22,8 @@ public enum Core {
 
     private DatabaseFactory databaseFactory = DatabaseFactory.INSTANCE;
     private UserFactory userFactory = UserFactory.INSTANCE;
+
+    private Map<String, TableFactory> tableFactoryMap = new HashMap<>();
 
     /**
      * Create a database.
@@ -77,7 +83,7 @@ public enum Core {
     }
 
     public Result createTable(CreateTableParser parser, DatabaseBlock database) {
-        TableFactory factory = new TableFactory(database);
+        TableFactory factory = database.getFactory();
         return factory.createTable(parser);
     }
 
@@ -91,7 +97,12 @@ public enum Core {
     }
 
     public Result dropTable(String tableName, DatabaseBlock database) {
-        TableFactory factory = new TableFactory(database);
+        TableFactory factory = database.getFactory();
         return factory.dropTable(tableName);
+    }
+
+    public Result insert(InsertParser parser, DatabaseBlock database) {
+        TableFactory factory = database.getFactory();
+        return factory.insert(parser);
     }
 }

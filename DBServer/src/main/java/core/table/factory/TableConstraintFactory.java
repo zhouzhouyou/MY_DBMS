@@ -2,8 +2,12 @@ package core.table.factory;
 
 
 import core.table.block.ConstraintBlock;
+import core.table.block.RecordBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableConstraintCollection;
+import util.result.Result;
+
+import java.util.List;
 
 public class TableConstraintFactory extends TableComponentFactory<ConstraintBlock, TableConstraintCollection> {
 
@@ -20,5 +24,9 @@ public class TableConstraintFactory extends TableComponentFactory<ConstraintBloc
     @Override
     protected String getAbsolutePath(TableBlock tableBlock) {
         return tableBlock.constraintPath;
+    }
+
+    public Result check(List<Object> toInsert) {
+        return null;
     }
 }

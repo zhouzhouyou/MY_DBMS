@@ -80,4 +80,8 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
             e.printStackTrace();
         }
     }
+
+    public V getCollection() {
+        return collection;
+    }
 }

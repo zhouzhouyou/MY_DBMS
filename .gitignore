@@ -1,5 +1,6 @@
 # Project exclude paths
 /DBClient/target/
+/data
 *.class
 *.db
 *.tb

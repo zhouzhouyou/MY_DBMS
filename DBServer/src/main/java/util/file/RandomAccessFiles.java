@@ -30,8 +30,8 @@ public class RandomAccessFiles {
         emptyFilePointers = getEmptyFilePointers(emptyFilePointersPath);
     }
 
-    public int insert(String path, List<Object> list) throws IOException {
-        RandomAccessFile raf = new RandomAccessFile(path, "rw");
+    public int insert(List<Object> list) throws IOException {
+        RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         setFilePointer(raf);
         for (int i = 0; i < collection.list.size(); i++) {
             DefineBlock block = collection.list.get(i);

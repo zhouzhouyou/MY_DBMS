@@ -5,8 +5,11 @@ import util.file.Block;
 
 import java.util.Date;
 
-public class DefineBlock extends Block {
-
+public class DefineBlock extends Block implements Comparable<DefineBlock>{
+    @Override
+    public int compareTo(DefineBlock o) {
+        return fieldOrder > o.fieldOrder ? 1 : -1;
+    }
 
     public int fieldOrder;
     public String fieldName;

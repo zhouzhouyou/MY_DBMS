@@ -25,7 +25,7 @@ public class InsertParser extends Parser {
         return splitOriginSQLIntoSegment().get(0).get(0);
     }
 
-    public List<String> getInsertType() {
+    public List<String> getInsertField() {
         return splitOriginSQLIntoSegment().get(1);
     }
 

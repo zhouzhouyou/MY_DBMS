@@ -24,6 +24,10 @@ public class ResultFactory {
         return buildFailResult("name: " + name + " is invalid");
     }
 
+    public static Result buildInvalidValueConvertResult(String targetType, String value) {
+        return buildFailResult("can't convert " + value + " to " + targetType);
+    }
+
     public static Result buildObjectNotExistsResult() {
         return new Result(NOT_FOUND,"object not exists");
     }

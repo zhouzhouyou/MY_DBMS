@@ -6,6 +6,7 @@ import core.table.collection.TableCollection;
 import util.file.BlockCollections;
 import util.file.exception.IllegalNameException;
 import util.parser.parsers.CreateTableParser;
+import util.parser.parsers.InsertParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -146,5 +147,11 @@ public class TableFactory {
 
     public void delete() {
         if (databaseBlock != null) BlockCollections.delete(databaseBlock.path);
+    }
+
+    public Result insert(InsertParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult();
+        return map.get(tableName).insert(parser);
     }
 }

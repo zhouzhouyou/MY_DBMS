@@ -3,12 +3,15 @@ package core.table.block;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
+import util.parser.parsers.InsertParser;
 import util.table.CreateUtil;
 import util.file.Block;
 import util.parser.parsers.CreateTableParser;
 import util.result.Result;
+import util.table.InsertUtil;
 
 import java.util.Date;
+import java.util.List;
 
 public class TableBlock extends Block {
     public String tableName;
@@ -42,6 +45,9 @@ public class TableBlock extends Block {
         this.parser = parser;
         this.path = path;
         String directoryPath = path + parser.getTableName() + "/" + parser.getTableName();
+        this.tableName = parser.getTableName();
+        this.recordAmount = 0;
+        this.fieldAmount = parser.getTableDefine().size();
         this.definePath = directoryPath + ".tdf";
         this.constraintPath = directoryPath + ".tic";
         this.recordPath = directoryPath + ".trd";
@@ -69,6 +75,10 @@ public class TableBlock extends Block {
     public Result create() {
         CreateUtil createUtil = CreateUtil.INSTANCE;
         return createUtil.createTable(this);
+    }
+
+    public Result insert(InsertParser parser) {
+        return InsertUtil.INSTANCE.insert(this, parser);
     }
 }
 
