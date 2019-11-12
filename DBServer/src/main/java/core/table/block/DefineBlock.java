@@ -1,5 +1,6 @@
 package core.table.block;
 
+import util.table.FieldTypes;
 import util.file.Block;
 
 import java.util.Date;
@@ -15,6 +16,7 @@ public class DefineBlock extends Block {
     @Deprecated
     public int integrity;
 
+
     public DefineBlock(int fieldOrder, String fieldName, int fieldType, int param, Date lastChangeTime, int integrity) {
         this.fieldOrder = fieldOrder;
         this.fieldName = fieldName;
@@ -22,5 +24,31 @@ public class DefineBlock extends Block {
         this.param = param;
         this.lastChangeTime = lastChangeTime;
         this.integrity = integrity;
+    }
+
+    public int getDataLength() {
+        int length = 0;
+        switch (fieldType) {
+            case FieldTypes.BOOL:
+                length = 1;
+                break;
+            case FieldTypes.DOUBLE:
+                length = 8;
+                break;
+            case FieldTypes.INTEGER:
+                length = 4;
+                break;
+            case FieldTypes.DATETIME:
+                length = 10;
+                break;
+            case FieldTypes.VARCHAR:
+                length = param;
+                break;
+            default:
+                length = 0;
+                break;
+
+        }
+        return length;
     }
 }

@@ -3,7 +3,7 @@ package core.table.block;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
-import util.create.CreateUtil;
+import util.table.CreateUtil;
 import util.file.Block;
 import util.parser.parsers.CreateTableParser;
 import util.result.Result;

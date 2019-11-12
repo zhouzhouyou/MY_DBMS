@@ -1,4 +1,4 @@
-package util.create;
+package util.table;
 
 import core.table.block.ConstraintBlock;
 import core.table.block.DefineBlock;
@@ -10,12 +10,13 @@ import util.parser.parsers.CreateTableParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import static util.SQL.FOREIGN_KEY;
-import static util.SQL.PRIMARY_KEY;
+import static util.table.FieldTypes.*;
 
 public enum  CreateUtil {
     INSTANCE;
@@ -23,19 +24,19 @@ public enum  CreateUtil {
     public Map<String, Integer> fieldTypeMap = new HashMap<>();
     public Map<String, Integer> constraintTypeMap = new HashMap<>();
 
-    public static final int INTEGER = 0;
-    public static final int BOOL = 1;
-    public static final int DOUBLE = 2;
-    public static final int VARCHAR = 3;
-    public static final int DATETIME = 4;
-
-    public static final int PK = 0;
-    public static final int FK = 1;
-    public static final int CHECK = 2;
-    public static final int UNIQUE = 3;
-    public static final int NOT_NULL = 4;
-    public static final int DEFAULT = 5;
-    public static final int IDENTITY = 6;
+//    public static final int INTEGER = 0;
+//    public static final int BOOL = 1;
+//    public static final int DOUBLE = 2;
+//    public static final int VARCHAR = 3;
+//    public static final int DATETIME = 4;
+//
+//    public static final int PK = 0;
+//    public static final int FK = 1;
+//    public static final int CHECK = 2;
+//    public static final int UNIQUE = 3;
+//    public static final int NOT_NULL = 4;
+//    public static final int DEFAULT = 5;
+//    public static final int IDENTITY = 6;
 
 
     CreateUtil() {

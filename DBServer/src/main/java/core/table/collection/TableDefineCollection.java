@@ -16,4 +16,11 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
     public TableDefineCollection(String absolutePath) {
         super(absolutePath);
     }
+
+    public int getTotalDataLength() {
+        int totalLength = 0;
+        for (DefineBlock defineBlock : list)
+            totalLength += defineBlock.getDataLength();
+        return totalLength;
+    }
 }
