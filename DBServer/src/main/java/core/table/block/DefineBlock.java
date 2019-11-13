@@ -5,7 +5,7 @@ import util.file.Block;
 
 import java.util.Date;
 
-public class DefineBlock extends Block implements Comparable<DefineBlock>{
+public class DefineBlock extends Block implements Comparable<DefineBlock> {
     @Override
     public int compareTo(DefineBlock o) {
         return fieldOrder > o.fieldOrder ? 1 : -1;
@@ -36,11 +36,9 @@ public class DefineBlock extends Block implements Comparable<DefineBlock>{
                 length = 1;
                 break;
             case FieldTypes.DOUBLE:
-                length = 8;
+                length = 16;
                 break;
             case FieldTypes.INTEGER:
-                length = 4;
-                break;
             case FieldTypes.DATETIME:
                 length = 10;
                 break;
@@ -48,9 +46,7 @@ public class DefineBlock extends Block implements Comparable<DefineBlock>{
                 length = param;
                 break;
             default:
-                length = 0;
                 break;
-
         }
         return length;
     }

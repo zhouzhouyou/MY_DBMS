@@ -33,31 +33,12 @@ public class RandomAccessFiles {
     public int insert(List<Object> list) throws IOException {
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         setFilePointer(raf);
-        for (int i = 0; i < collection.list.size(); i++) {
-            DefineBlock block = collection.list.get(i);
-            switch (block.fieldType) {
-                case FieldTypes.BOOL:
-                    raf.writeBoolean((Boolean) list.get(i));
-                    break;
-                case FieldTypes.DOUBLE:
-                    raf.writeDouble((Double) list.get(i));
-                    break;
-                case FieldTypes.INTEGER:
-                    raf.writeInt((Integer) list.get(i));
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeStamp = ((Date) list.get(i)).getTime() / 1000;
-                    raf.writeLong(timeStamp);
-                    break;
-                case FieldTypes.VARCHAR:
-                    String varcharData = formatVarcharData((String) list.get(i), block.param);
-                    raf.writeBytes(varcharData);
-                    break;
-                default:
-                    break;
-            }
-        }
-        return (int) (raf.getFilePointer() / recordLength);
+        writeData(list, raf);
+        int insertLine = (int) (raf.getFilePointer() / recordLength);
+        raf.close();
+        updateEmptyFilePointers();
+        return insertLine;
+
     }
 
     public Result update(int recordNumber, List<Object> list) throws IOException {
@@ -65,107 +46,44 @@ public class RandomAccessFiles {
         if (recordNumber > raf.length() / recordLength)
             return ResultFactory.buildObjectNotExistsResult();
         raf.seek((recordNumber - 1) * recordLength);
-        for (int i = 0; i < collection.list.size(); i++) {
-            DefineBlock block = collection.list.get(i);
-            switch (block.fieldType) {
-                case FieldTypes.BOOL:
-                    raf.writeBoolean((Boolean) list.get(i));
-                    break;
-                case FieldTypes.DOUBLE:
-                    raf.writeDouble((Double) list.get(i));
-                    break;
-                case FieldTypes.INTEGER:
-                    raf.writeInt((Integer) list.get(i));
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeStamp = ((Date) list.get(i)).getTime() / 1000;
-                    raf.writeLong(timeStamp);
-                    break;
-                case FieldTypes.VARCHAR:
-                    String varcharData = formatVarcharData((String) list.get(i), block.param);
-                    raf.writeBytes(varcharData);
-                    break;
-                default:
-                    break;
-            }
-        }
+        writeData(list, raf);
+        raf.close();
+        updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
     }
+
 
     public List<List<Object>> select() throws IOException {
         List<List<Object>> resultSet = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         for (int i = 0; i < raf.length() / recordLength; i++) {
             List<Object> result = new ArrayList<>();
-            for (int j = 0; j < collection.list.size(); j++) {
-                DefineBlock block = collection.list.get(j);
-                switch (block.fieldType) {
-                    case FieldTypes.BOOL:
-                        boolean boolData = raf.readBoolean();
-                        result.add(boolData);
-                        break;
-                    case FieldTypes.DOUBLE:
-                        double doubleData = raf.readDouble();
-                        result.add(doubleData);
-                        break;
-                    case FieldTypes.INTEGER:
-                        int intData = raf.readInt();
-                        result.add(intData);
-                        break;
-                    case FieldTypes.DATETIME:
-                        long timeData = raf.readLong();
-                        Date dateData = new Date(timeData);
-                        result.add(dateData);
-                        break;
-                    case FieldTypes.VARCHAR:
-                        byte[] originVarchar = new byte[block.param];
-                        raf.readFully(originVarchar);
-                        String resultVarchar = new String(originVarchar).trim();
-                        result.add(resultVarchar);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            readData(result, raf);
             resultSet.add(result);
         }
+        raf.close();
         return resultSet;
     }
 
-    public List<Object> select(int recordNumber) throws IOException{
+    public List<List<Object>> select(List<Integer> recordNumbers) throws IOException {
+        List<List<Object>> resultSet = new ArrayList<>();
+        RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        for (int recordNumber : recordNumbers) {
+            List<Object> result = new ArrayList<>();
+            raf.seek((recordNumber - 1) * recordLength);
+            readData(result, raf);
+            resultSet.add(result);
+        }
+        raf.close();
+        return resultSet;
+    }
+
+    public List<Object> select(int recordNumber) throws IOException {
         List<Object> result = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         raf.seek((recordNumber - 1) * recordLength);
-        for (int j = 0; j < collection.list.size(); j++) {
-            DefineBlock block = collection.list.get(j);
-            switch (block.fieldType) {
-                case FieldTypes.BOOL:
-                    boolean boolData = raf.readBoolean();
-                    result.add(boolData);
-                    break;
-                case FieldTypes.DOUBLE:
-                    double doubleData = raf.readDouble();
-                    result.add(doubleData);
-                    break;
-                case FieldTypes.INTEGER:
-                    int intData = raf.readInt();
-                    result.add(intData);
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeData = raf.readLong();
-                    Date dateData = new Date(timeData);
-                    result.add(dateData);
-                    break;
-                case FieldTypes.VARCHAR:
-                    byte[] originVarchar = new byte[block.param];
-                    raf.readFully(originVarchar);
-                    String resultVarchar = new String(originVarchar).trim();
-                    result.add(resultVarchar);
-                    break;
-                default:
-                    break;
-            }
-        }
+        readData(result, raf);
+        raf.close();
         return result;
     }
 
@@ -179,7 +97,88 @@ public class RandomAccessFiles {
         Collections.sort(emptyFilePointers);
         char[] tempContent = new char[recordLength];
         raf.writeBytes(new String(tempContent));
+        raf.close();
+        updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
+    }
+
+    private void writeData(List<Object> list, RandomAccessFile raf) throws IOException {
+        for (int i = 0; i < collection.list.size(); i++) {
+            DefineBlock block = collection.list.get(i);
+            Object recordItem = list.get(i);
+            String data;
+            if (recordItem == null) {
+                data = formatVarcharData("", block.getDataLength());
+                raf.writeBytes(data);
+                break;
+            }
+            switch (block.fieldType) {
+                case FieldTypes.BOOL:
+                    if ((Boolean) recordItem)
+                        data = "1";
+                    else
+                        data = "0";
+                    raf.writeBytes(data);
+                    break;
+                case FieldTypes.DOUBLE:
+                case FieldTypes.INTEGER:
+                    String originDouble = String.valueOf(recordItem);
+                    data = formatVarcharData(originDouble, block.getDataLength());
+                    raf.writeBytes(data);
+                    break;
+                case FieldTypes.DATETIME:
+                    long timeStamp = ((Date) recordItem).getTime() / 1000;
+                    data = String.valueOf(timeStamp);
+                    raf.writeBytes(data);
+                    break;
+                case FieldTypes.VARCHAR:
+                    data = formatVarcharData((String) recordItem, block.getDataLength());
+                    raf.writeBytes(data);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+
+    private void readData(List<Object> result, RandomAccessFile raf) throws IOException {
+        for (int j = 0; j < collection.list.size(); j++) {
+            DefineBlock block = collection.list.get(j);
+
+            byte[] originData = new byte[block.getDataLength()];
+            raf.readFully(originData);
+            String resultData = new String(originData).trim();
+            if (resultData.length() == 0) {
+                result.add(null);
+                break;
+            }
+
+            switch (block.fieldType) {
+                case FieldTypes.BOOL:
+                    boolean boolData;
+                    boolData = resultData.equals("1");
+                    result.add(boolData);
+                    break;
+                case FieldTypes.DOUBLE:
+                    double doubleData = Double.parseDouble(resultData);
+                    result.add(doubleData);
+                    break;
+                case FieldTypes.INTEGER:
+                    int intData = Integer.parseInt(resultData);
+                    result.add(intData);
+                    break;
+                case FieldTypes.DATETIME:
+                    long timeData = Long.parseLong(resultData);
+                    Date dateData = new Date(timeData);
+                    result.add(dateData);
+                    break;
+                case FieldTypes.VARCHAR:
+                    result.add(resultData);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 
 
@@ -208,7 +207,7 @@ public class RandomAccessFiles {
         return emptyFilePointers;
     }
 
-    public void updateEmptyFilePointers() throws IOException {
+    private void updateEmptyFilePointers() throws IOException {
         File file = new File(emptyFilePointersPath);
         if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
         FileOutputStream fos = new FileOutputStream(file);
