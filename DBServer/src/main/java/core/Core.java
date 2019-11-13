@@ -7,6 +7,7 @@ import server.user.UserFactory;
 import util.parser.parsers.ChooseDatabaseParser;
 import util.parser.parsers.CreateTableParser;
 import util.parser.parsers.InsertParser;
+import util.parser.parsers.ReleaseDatabaseParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -104,5 +105,10 @@ public enum Core {
     public Result insert(InsertParser parser, DatabaseBlock database) {
         TableFactory factory = database.getFactory();
         return factory.insert(parser);
+    }
+
+    public Result releaseDatabase(DatabaseBlock database) {
+        databaseFactory.releaseDatabase(database);
+        return ResultFactory.buildSuccessResult(null);
     }
 }

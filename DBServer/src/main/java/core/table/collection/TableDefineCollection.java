@@ -49,6 +49,7 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
                 if (!block.fieldName.equals(fieldName)) continue;
                 existField = true;
                 fieldTypes.add(block.fieldType);
+                break;
             }
             if (!existField) return ResultFactory.buildObjectNotExistsResult();
         }

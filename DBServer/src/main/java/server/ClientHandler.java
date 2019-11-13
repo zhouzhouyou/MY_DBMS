@@ -99,8 +99,16 @@ public class ClientHandler implements Runnable {
             return handleDropTable((DropTableParser) parser);
         } else if (parser instanceof InsertParser) {
             return handleInsert((InsertParser) parser);
+        } else if (parser instanceof ReleaseDatabaseParser) {
+            return handleReleaseDatabase((ReleaseDatabaseParser) parser);
         }
         return null;
+    }
+
+    private Result handleReleaseDatabase(ReleaseDatabaseParser parser) {
+        Result result = core.releaseDatabase(database);
+        database = null;
+        return result;
     }
 
     private Result handleInsert(InsertParser parser) {

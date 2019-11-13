@@ -13,4 +13,5 @@ public @interface Permission {
     String DROP_TABLE = "dropTable";
     String DROP_DATABASE = "dropDatabase";
     String GRANT = "grant";
+    String NORMAL = "normal";
 }

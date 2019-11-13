@@ -71,7 +71,10 @@ public enum InsertUtil {
                     map.put(fieldName, date);
                     break;
                 case FieldTypes.VARCHAR:
-                    map.put(fieldName, value);
+                    if (!value.startsWith("'") || !value.endsWith("'"))
+                        return ResultFactory.buildInvalidValueConvertResult(SQL.VARCHAR, value);
+                    map.put(fieldName, value.substring(1, value.length()));
+                    break;
                 default:
                     break;
             }
