@@ -1,9 +1,9 @@
 package util.parser.parsers;
 
-import util.parser.annoation.Permission;
-import util.parser.annoation.Start;
 import util.parser.annoation.Body;
 import util.parser.annoation.End;
+import util.parser.annoation.Permission;
+import util.parser.annoation.Start;
 
 import java.util.List;
 

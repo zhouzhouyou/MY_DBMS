@@ -1,14 +1,11 @@
 package util.parser.parsers;
 
 
-import util.parser.annoation.Body;
 import util.parser.annoation.Parts;
 import util.parser.annoation.Permission;
-import util.parser.annoation.Start;
 
 import java.util.List;
 
-import static util.SQL.AND_OR_SPLIT;
 import static util.SQL.DEFAULT_SPLIT;
 
 @Permission(Permission.CREATE_TABLE)

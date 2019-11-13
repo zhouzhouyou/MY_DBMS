@@ -26,7 +26,11 @@ class ParserFactoryTest {
             "drop table student;",
             "drop database yuri;",
             "connect yuri 123456;",
-            "choose database yuri"
+            "choose database yuri",
+            "release database",
+            "create index a_index on student (sno, age)",
+            "create unique index a_index on student (sno desc)",
+            "create unique index a_index on student (sno, age desc)"
     })
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);

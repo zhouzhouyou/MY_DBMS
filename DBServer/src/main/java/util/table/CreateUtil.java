@@ -10,34 +10,17 @@ import util.parser.parsers.CreateTableParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static util.table.FieldTypes.*;
 
-public enum  CreateUtil {
+public enum CreateUtil {
     INSTANCE;
 
     public Map<String, Integer> fieldTypeMap = new HashMap<>();
     public Map<String, Integer> constraintTypeMap = new HashMap<>();
-
-//    public static final int INTEGER = 0;
-//    public static final int BOOL = 1;
-//    public static final int DOUBLE = 2;
-//    public static final int VARCHAR = 3;
-//    public static final int DATETIME = 4;
-//
-//    public static final int PK = 0;
-//    public static final int FK = 1;
-//    public static final int CHECK = 2;
-//    public static final int UNIQUE = 3;
-//    public static final int NOT_NULL = 4;
-//    public static final int DEFAULT = 5;
-//    public static final int IDENTITY = 6;
-
 
     CreateUtil() {
         fieldTypeMap.put(SQL.INTEGER, INTEGER);
@@ -60,8 +43,9 @@ public enum  CreateUtil {
     public Result createTable(TableBlock block) {
         CreateTableParser parser = block.parser;
         List<String> tableDefine = parser.getTableDefine();
-        TableDefineFactory defineFactory = block.getDefineFactory();
-        TableConstraintFactory constraintFactory = block.getConstraintFactory();
+
+        List<DefineBlock> defineBlocks = new ArrayList<>();
+        List<ConstraintBlock> constraintBlocks = new ArrayList<>();
         for (int i = 0; i < tableDefine.size(); i++) {
             String s = tableDefine.get(i).trim().replaceAll("\\s+", " ");
             String[] strings = s.split(" ");
@@ -72,39 +56,37 @@ public enum  CreateUtil {
                 type = VARCHAR;
                 param = getParameter(fieldType);
             } else {
-                type = fieldTypeMap.get(strings[1]);
+                if (!fieldTypeMap.containsKey(fieldType)) return ResultFactory.buildObjectNotExistsResult(fieldName);
+                type = fieldTypeMap.get(fieldType);
             }
-            DefineBlock defineBlock = new DefineBlock(i, fieldName, type, param, new Date(), 0);
-            defineFactory.add(defineBlock);
+            defineBlocks.add(new DefineBlock(i, fieldName, type, param, new Date(), 0));
 
             String cname = "sys_" + block.tableName + "_" + fieldName + "_";
             if (s.contains(SQL.PRIMARY_KEY)) {
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "pk", fieldName, PK, "");
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "pk", fieldName, PK, ""));
             }
             if (s.contains(SQL.FOREIGN_KEY)) {
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "fk", fieldName, FK, "");
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "fk", fieldName, FK, ""));
             }
             if (s.contains(SQL.CHECK)) {
                 String parameter = getCheck(s);
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "check", fieldName, CHECK, parameter);
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "check", fieldName, CHECK, parameter));
             }
             if (s.contains(SQL.UNIQUE)) {
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "unique", fieldName, UNIQUE, "");
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "unique", fieldName, UNIQUE, ""));
             }
             if (s.contains(SQL.NOT_NULL)) {
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "not_null", fieldName, NOT_NULL, "");
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "not_null", fieldName, NOT_NULL, ""));
             }
             if (s.contains(SQL.DEFAULT)) {
                 String parameter = getDefault(s);
-                ConstraintBlock constraintBlock = new ConstraintBlock(cname + "default", fieldName, DEFAULT, parameter);
-                constraintFactory.add(constraintBlock);
+                constraintBlocks.add(new ConstraintBlock(cname + "default", fieldName, DEFAULT, parameter));
             }
         }
+        TableDefineFactory defineFactory = block.getDefineFactory();
+        TableConstraintFactory constraintFactory = block.getConstraintFactory();
+        defineBlocks.forEach(defineBlock -> defineFactory.add(defineBlock.fieldName, defineBlock));
+        constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
         defineFactory.saveInstance();
         constraintFactory.saveInstance();
         return ResultFactory.buildSuccessResult(parser.getTableName());

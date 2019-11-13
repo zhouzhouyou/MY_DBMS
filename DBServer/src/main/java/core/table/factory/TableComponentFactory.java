@@ -1,11 +1,10 @@
 package core.table.factory;
 
+import core.table.block.TableBlock;
+import core.table.collection.TableComponentCollection;
 import util.file.Block;
 import util.file.BlockCollections;
 import util.file.exception.IllegalNameException;
-import core.table.block.TableBlock;
-import core.table.collection.TableComponentCollection;
-import util.result.Result;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,14 +17,14 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
     @SuppressWarnings("unchecked")
     public TableComponentFactory(TableBlock tableBlock) {
         String absolutePath = getAbsolutePath(tableBlock);
-        if(BlockCollections.exists(absolutePath)){
+        if (BlockCollections.exists(absolutePath)) {
             try {
                 collection = (V) BlockCollections.deserialize(absolutePath);
                 collection.list.forEach(tableComponent -> map.put(tableBlock.tableName, tableComponent));
             } catch (IOException | ClassNotFoundException | IllegalNameException e) {
                 e.printStackTrace();
             }
-        }else {
+        } else {
             collection = getInstance(tableBlock);
         }
 
@@ -50,24 +49,31 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
     protected abstract String getAbsolutePath(TableBlock tableBlock);
 
     /**
-     *
      * @return absolute path of this table component file.
      */
-    public String getAbsolutePath(){
+    public String getAbsolutePath() {
         return collection.absolutePath;
     }
+
     /**
      * Check if the table component file exists.
      *
      * @param tableName name of the table component is related to
      * @return true if exists
      */
-    public boolean exists(String tableName){
+    public boolean exists(String tableName) {
         return map.containsKey(tableName);
     }
 
-    public void add(T t) {
+    /**
+     * 新增一个元素
+     *
+     * @param name 元素名
+     * @param t    元素
+     */
+    public void add(String name, T t) {
         collection.add(t);
+        map.put(name, t);
     }
 
     /**

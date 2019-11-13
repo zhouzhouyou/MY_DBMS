@@ -29,11 +29,15 @@ public class ResultFactory {
     }
 
     public static Result buildObjectNotExistsResult() {
-        return new Result(NOT_FOUND,"object not exists");
+        return new Result(NOT_FOUND, "object not exists");
+    }
+
+    public static Result buildObjectNotExistsResult(String object) {
+        return new Result(NOT_FOUND, object + " not exists");
     }
 
     public static Result buildObjectOccupiedResult() {
-        return new Result(CONFLICT,"object occupied");
+        return new Result(CONFLICT, "object occupied");
     }
 
     public static Result buildUnauthorizedResult() {

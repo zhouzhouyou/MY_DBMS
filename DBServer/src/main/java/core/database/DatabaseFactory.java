@@ -2,21 +2,23 @@ package core.database;
 
 import core.table.factory.TableFactory;
 import util.file.BlockCollections;
+import util.file.FileUtils;
 import util.file.exception.IllegalNameException;
 import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 import static util.file.Path.DATABASE_PATH;
 
 /**
- * The {@code DatabaseFactory} class is a singleton class created by enum method.
- * {@link core.Core} hold the instance of this.
- * <p>This class can control the serialization and the deserialization of the {@link DatabaseCollection}.</p>
- * <p>This factory read and write file {@code "./system.db"}, which save how many databases are there in the system.</p>
- * <p>This factory control the create and drop actions of database as well.</p>
+ * 这个类是使用enum实现的单例。
+ * {@link core.Core} 持有这个类的对象。
+ * <p>这个类控制着{@link DatabaseCollection}的序列化和反序列化</p>
+ * <p>这个类可以读写{@code "./system.db"}， 这个文件保存着这个数据中心下的所有数据库</p>
+ *
  * @see DatabaseBlock
  * @see DatabaseCollection
  * @see BlockCollections
@@ -28,14 +30,14 @@ public enum DatabaseFactory {
     public static final boolean USER = false;
 
     private DatabaseCollection collection;
-    private Map<String, DatabaseBlock>  map = new HashMap<>();
+    private Map<String, DatabaseBlock> map = new HashMap<>();
 
     /**
-     * When initializing the {@link #INSTANCE}, try to deserialize object from the "system.db" at first.
-     * If succeeded, populate all database blocks into {@link #map}.
-     * If failed, it means that the system is launched at the first time, then we create a new instance.
-     * Before the application being closed,
-     * should invoke {@link #saveInstance()}} to serialize the {@link #collection} to "system.db".
+     * 初始化时，首先尝试从文件中反序列化{@link #collection}。
+     * 如果成功了，就把所有数据写入{@link #map}。
+     * 如果失败了，就意味着这数据中心是第一次被打开，于是创建一个新的对象并保存到文件，
+     * 在应用程序关闭前，应当调用{@link #saveInstance()}}来把{@link #collection}序列化。
+     *
      * @see DatabaseCollection#absolutePath
      */
     DatabaseFactory() {
@@ -52,13 +54,14 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Create a Database. Return the result whether the factory create a <b>new</b> database
-     * @param name database's name
-     * @param type type of database, using {@link #SYSTEM} or {@link #USER}
+     * 创建一个数据库。
+     *
+     * @param name 数据库名
+     * @param type 数据库类型，参数为{@link #SYSTEM}或{@link #USER}
      * @return result
      */
     public Result createDatabase(String name, boolean type) {
-        if (!BlockCollections.isValidFileName(name)) return ResultFactory.buildInvalidNameResult(name);
+        if (!FileUtils.isValidFileName(name)) return ResultFactory.buildInvalidNameResult(name);
         if (exists(name)) return ResultFactory.buildObjectAlreadyExistsResult();
         DatabaseBlock databaseBlock = new DatabaseBlock(name, type);
         collection.add(databaseBlock);
@@ -70,27 +73,32 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Check if the database exists.
-     * @param name database's name
-     * @return true if exists
+     * 检查数据库是否存在
+     *
+     * @param name 数据库名
+     * @return 是否存在
      */
     public boolean exists(String name) {
         return map.containsKey(name);
     }
 
     /**
-     * Release database so it can be deleted.
-     * @param databaseBlock database to release
+     * 释放对数据库的引用，以便于删除数据库
+     * 只有有客户端持有对数据库的引用，这个数据库就不能被删除
+     *
+     * @param databaseBlock 需要释放的数据库
+     * @see #dropDatabase(String)
      */
     public void releaseDatabase(DatabaseBlock databaseBlock) {
         databaseBlock.release();
     }
 
     /**
-     * Get the database from the map.
-     * @param name database's name
-     * @return database or null
-     * @throws Exception the database doesn't exists
+     * 获取数据库的引用
+     *
+     * @param name 数据库名
+     * @return 数据库
+     * @throws Exception 数据库不存在
      */
     public DatabaseBlock getDatabase(String name) throws Exception {
         if (!exists(name)) throw new Exception(name + " not exists");
@@ -100,11 +108,12 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Drop the database.
-     * @param name database's name
+     * 删除数据库
+     *
+     * @param name 数据库名
      * @return result
      */
-    public Result dropDatabase(String name)  {
+    public Result dropDatabase(String name) {
         if (!exists(name)) return ResultFactory.buildObjectNotExistsResult();
         DatabaseBlock databaseBlock = map.get(name);
         if (!databaseBlock.free()) return ResultFactory.buildObjectOccupiedResult();
@@ -116,7 +125,7 @@ public enum DatabaseFactory {
     }
 
     /**
-     * Save current system.db.
+     * 序列化至system.db.
      */
     public void saveInstance() {
         try {

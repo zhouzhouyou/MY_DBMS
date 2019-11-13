@@ -7,7 +7,6 @@ import core.table.collection.TableIndexCollection;
 
 public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIndexCollection> {
 
-
     public TableIndexFactory(TableBlock tableBlock) {
         super(tableBlock);
     }

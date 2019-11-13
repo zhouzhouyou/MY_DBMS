@@ -5,7 +5,7 @@ import util.parser.annoation.Start;
 
 @Permission(Permission.DROP_TABLE)
 @Start("(drop table)(.+?)(ENDOFSQL)")
-public class DropTableParser extends Parser{
+public class DropTableParser extends Parser {
     public DropTableParser(String originSQL) {
         super(originSQL);
     }

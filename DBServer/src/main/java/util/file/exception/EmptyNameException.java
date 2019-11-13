@@ -1,6 +1,6 @@
 package util.file.exception;
 
-public class EmptyNameException extends Exception{
+public class EmptyNameException extends Exception {
     public EmptyNameException(String message) {
         super("No " + message);
     }

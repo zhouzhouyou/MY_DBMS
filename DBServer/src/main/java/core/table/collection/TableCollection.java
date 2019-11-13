@@ -1,12 +1,14 @@
 package core.table.collection;
 
 
+import core.table.block.TableBlock;
+import util.file.BlockCollection;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
-import util.file.BlockCollection;
-import core.table.block.TableBlock;
 
-
+/**
+ * 存储着数据库下所有的表
+ */
 public class TableCollection extends BlockCollection<TableBlock> {
     public static final String TABLE_POSTFIX = "tb";
 

@@ -2,7 +2,6 @@ package core.table.factory;
 
 
 import core.table.block.ConstraintBlock;
-import core.table.block.RecordBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableConstraintCollection;
 import util.result.Result;
@@ -27,7 +26,14 @@ public class TableConstraintFactory extends TableComponentFactory<ConstraintBloc
         return tableBlock.constraintPath;
     }
 
-    public Result check(List<Object> toInsert) {
+    /**
+     * 判断记录是否满足条件
+     *
+     * @param record 记录
+     * @return 是否满足条件
+     */
+    public Result check(List<Object> record) {
+        //TODO: 判断是否满足条件
         return ResultFactory.buildSuccessResult(null);
     }
 }

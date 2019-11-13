@@ -9,5 +9,6 @@ import static util.SQL.DEFAULT_SPLIT;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Start {
     String value();
+
     String split() default DEFAULT_SPLIT;
 }

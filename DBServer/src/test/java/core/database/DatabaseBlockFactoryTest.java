@@ -5,8 +5,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 import util.result.Result;
 import util.result.ResultFactory;
 
-import java.io.IOException;
-
 class DatabaseBlockFactoryTest {
     private DatabaseFactory factory = DatabaseFactory.INSTANCE;
 

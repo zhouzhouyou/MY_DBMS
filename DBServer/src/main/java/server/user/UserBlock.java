@@ -10,6 +10,7 @@ public class UserBlock extends Block {
     public boolean createDatabase = false;
     public boolean dropDatabase = false;
     public boolean grant = false;
+    public boolean normal = false;
 
     public UserBlock(String name, String password) {
         this.name = name;
@@ -20,6 +21,7 @@ public class UserBlock extends Block {
             createTable = true;
             dropTable = true;
             grant = true;
+            normal = true;
         }
     }
 }

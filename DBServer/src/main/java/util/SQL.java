@@ -31,6 +31,7 @@ public class SQL {
     public static final String SET = "set";
     public static final String EQUAL = "=";
     public static final String DELETE_FROM = "delete from";
+    public static final String DESC = "desc";
 
     /*Column Type*/
     public static final String INTEGER = "integer";

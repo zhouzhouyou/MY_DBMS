@@ -6,7 +6,6 @@ public class NormalWhereItem extends WhereItem {
     }
 
 
-
     @Override
     public boolean getResult() {
         return false;

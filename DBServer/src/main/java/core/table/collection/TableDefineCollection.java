@@ -10,7 +10,9 @@ import util.result.ResultFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * 表的定义
+ */
 public class TableDefineCollection extends TableComponentCollection<DefineBlock> {
     public static final String TABLE_DEFINE_POSTFIX = "tdf";
 
@@ -22,6 +24,12 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
         super(absolutePath);
     }
 
+    /**
+     * 获取表中一条记录所需要的长度
+     *
+     * @return 一条记录的总长度
+     * @see DefineBlock#getDataLength()
+     */
     public int getTotalDataLength() {
         int totalLength = 0;
         for (DefineBlock defineBlock : list)
@@ -29,18 +37,34 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
         return totalLength;
     }
 
+    /**
+     * 获取域的名字，按顺序排列
+     *
+     * @return 域的名字
+     */
     public List<String> getFieldNames() {
         List<String> fieldNames = new ArrayList<>();
         list.forEach(defineBlock -> fieldNames.add(defineBlock.fieldName));
         return fieldNames;
     }
 
+    /**
+     * 返回域的类型
+     *
+     * @return 返回域的类型
+     */
     public List<Integer> getFieldTypes() {
         List<Integer> fieldTypes = new ArrayList<>();
         list.forEach(defineBlock -> fieldTypes.add(defineBlock.fieldType));
         return fieldTypes;
     }
 
+    /**
+     * 返回对应域名的域的类型
+     *
+     * @param fieldNames 域名
+     * @return 对应的域的类型
+     */
     public Result getFieldTypes(List<String> fieldNames) {
         List<Integer> fieldTypes = new ArrayList<>();
         for (String fieldName : fieldNames) {

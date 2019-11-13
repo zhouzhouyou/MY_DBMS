@@ -38,7 +38,7 @@ public abstract class Parser {
             Parts parts = (Parts) child.getAnnotation(Parts.class);
             String[] strings = parts.value();
             if (strings.length % 2 == 0) {
-                for (int i = 0; i < strings.length-1; i++) {
+                for (int i = 0; i < strings.length - 1; i++) {
                     segments.add(new SQLSegment(strings[i++], strings[i]));
                 }
             }

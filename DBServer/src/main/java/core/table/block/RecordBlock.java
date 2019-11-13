@@ -1,9 +1,10 @@
 package core.table.block;
 
-import core.table.collection.TableConstraintCollection;
-
 import java.util.Map;
 
+/**
+ * 存储着一条记录，暂时无用
+ */
 public class RecordBlock {
     private Map<String, Object> map;
 

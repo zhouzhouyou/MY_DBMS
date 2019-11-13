@@ -3,15 +3,16 @@ package core.table.block;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
-import util.parser.parsers.InsertParser;
-import util.table.CreateUtil;
 import util.file.Block;
+import util.parser.parsers.CreateIndexParser;
 import util.parser.parsers.CreateTableParser;
+import util.parser.parsers.InsertParser;
 import util.result.Result;
+import util.table.CreateUtil;
+import util.table.IndexUtil;
 import util.table.InsertUtil;
 
 import java.util.Date;
-import java.util.List;
 
 public class TableBlock extends Block {
     public String tableName;
@@ -79,6 +80,10 @@ public class TableBlock extends Block {
 
     public Result insert(InsertParser parser) {
         return InsertUtil.INSTANCE.insert(this, parser);
+    }
+
+    public Result createIndex(CreateIndexParser parser) {
+        return IndexUtil.INSTANCE.createIndex(this, parser);
     }
 }
 

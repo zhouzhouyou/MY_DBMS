@@ -3,11 +3,10 @@ package util.file;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
 
-import java.io.*;
+import java.io.File;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import static util.file.BlockCollections.isValidFileName;
 
 public class BlockCollection<T extends Block> implements Serializable {
     public List<T> list;
@@ -19,18 +18,17 @@ public class BlockCollection<T extends Block> implements Serializable {
     public String absolutePath;
 
     /**
-     *
      * @param relativePath path of the file
-     * @param prefix name of the file like "student"
-     * @param postfix like "db"
-     * @throws EmptyNameException prefix or postfix is empty
+     * @param prefix       name of the file like "student"
+     * @param postfix      like "db"
+     * @throws EmptyNameException   prefix or postfix is empty
      * @throws IllegalNameException filename is illegal
      */
     public BlockCollection(String relativePath, String prefix, String postfix) throws EmptyNameException, IllegalNameException {
         if (prefix == null || prefix.length() == 0) throw new EmptyNameException("prefix");
         if (postfix == null || postfix.length() == 0) throw new EmptyNameException("postfix");
         filename = prefix + "." + postfix;
-        if (!isValidFileName(filename)) throw new IllegalNameException(filename);
+        if (!FileUtils.isValidFileName(filename)) throw new IllegalNameException(filename);
         this.relativePath = relativePath;
         this.prefix = prefix;
         this.postfix = postfix;
@@ -43,10 +41,9 @@ public class BlockCollection<T extends Block> implements Serializable {
         list = new ArrayList<>();
     }
 
-
-
     /**
      * Get the absolute path the file.
+     *
      * @return absolute path of the file
      */
     public String getAbsolutePath() {
@@ -55,6 +52,7 @@ public class BlockCollection<T extends Block> implements Serializable {
 
     /**
      * Check if the file exists.
+     *
      * @return true if exists
      */
     public boolean exists() {

@@ -4,7 +4,9 @@ import core.database.DatabaseBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableCollection;
 import util.file.BlockCollections;
+import util.file.FileUtils;
 import util.file.exception.IllegalNameException;
+import util.parser.parsers.CreateIndexParser;
 import util.parser.parsers.CreateTableParser;
 import util.parser.parsers.InsertParser;
 import util.result.Result;
@@ -13,7 +15,6 @@ import util.result.ResultFactory;
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class TableFactory {
@@ -51,7 +52,7 @@ public class TableFactory {
      * @return result
      */
     public Result createTable(String tableName, int recordAmount, int fieldAmount, String definePath, String constraintPath, String recordPath, String indexPath, Date createTime, Date lastChangeTime) {
-        if (!BlockCollections.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
+        if (!FileUtils.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
         if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
         TableBlock tableBlock = new TableBlock(tableName, recordAmount, fieldAmount, definePath, constraintPath, recordPath, indexPath, createTime, lastChangeTime);
         collection.add(tableBlock);
@@ -80,7 +81,6 @@ public class TableFactory {
      * @param tableName table's name
      * @return
      */
-
     public Result dropTable(String tableName) {
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult();
         TableBlock tableBlock = map.get(tableName);
@@ -88,7 +88,7 @@ public class TableFactory {
         map.values().removeIf(value -> value.equals(tableBlock));
         collection.remove(tableBlock);
         saveInstance();
-        BlockCollections.delete(databaseBlock.path + tableName);
+        FileUtils.delete(databaseBlock.path + tableName);
         //TODO remove relative files
         return ResultFactory.buildSuccessResult(tableName);
     }
@@ -133,7 +133,7 @@ public class TableFactory {
 
     public Result createTable(CreateTableParser parser) {
         String tableName = parser.getTableName();
-        if (!BlockCollections.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
+        if (!FileUtils.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
         if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
         TableBlock tableBlock = new TableBlock(parser, databaseBlock.path);
         Result result = tableBlock.create();
@@ -146,12 +146,30 @@ public class TableFactory {
     }
 
     public void delete() {
-        if (databaseBlock != null) BlockCollections.delete(databaseBlock.path);
+        if (databaseBlock != null) FileUtils.delete(databaseBlock.path);
     }
 
+    /**
+     * 插入一条记录
+     *
+     * @param parser 插入SQL语法解析器
+     * @return 插入结果
+     */
     public Result insert(InsertParser parser) {
         String tableName = parser.getTableName();
-        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).insert(parser);
+    }
+
+    /**
+     * 创建一个索引
+     *
+     * @param parser 创建索引SQL语法解析器
+     * @return 创建索引结果
+     */
+    public Result createIndex(CreateIndexParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).createIndex(parser);
     }
 }

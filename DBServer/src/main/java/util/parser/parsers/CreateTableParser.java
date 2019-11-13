@@ -9,7 +9,7 @@ import java.util.List;
 @Permission(Permission.CREATE_TABLE)
 @Start("(create table)(.+?)([(])")
 @Body("([(])(.+)([)])")
-public class CreateTableParser extends Parser{
+public class CreateTableParser extends Parser {
     public CreateTableParser(String originSQL) {
         super(originSQL);
     }

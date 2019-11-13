@@ -1,6 +1,5 @@
 package util.table;
 
-import core.table.block.DefineBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableDefineCollection;
 import core.table.factory.TableConstraintFactory;
@@ -14,8 +13,6 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.RandomAccessFile;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,7 +70,7 @@ public enum InsertUtil {
                 case FieldTypes.VARCHAR:
                     if (!value.startsWith("'") || !value.endsWith("'"))
                         return ResultFactory.buildInvalidValueConvertResult(SQL.VARCHAR, value);
-                    map.put(fieldName, value.substring(1, value.length()));
+                    map.put(fieldName, value.substring(1));
                     break;
                 default:
                     break;
@@ -88,7 +85,7 @@ public enum InsertUtil {
                 int index = new RandomAccessFiles(defineCollection).insert(toInsert);
                 return ResultFactory.buildSuccessResult(index);
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                return ResultFactory.buildFailResult(e.toString());
             }
         }
         return result;

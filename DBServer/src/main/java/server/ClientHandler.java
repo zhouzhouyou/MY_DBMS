@@ -84,12 +84,12 @@ public class ClientHandler implements Runnable {
         if (parser instanceof ConnectParser) {
             return handleConnect((ConnectParser) parser);
         } else if (parser instanceof DisconnectParser) {
-            return handleDisconnect((DisconnectParser)parser);
+            return handleDisconnect((DisconnectParser) parser);
         } else if (parser instanceof CreateDatabaseParser) {
             return handleCreateDatabase((CreateDatabaseParser) parser);
         } else if (parser instanceof DropDatabaseParser) {
             return handleDropDatabase((DropDatabaseParser) parser);
-        } else if (parser instanceof ChooseDatabaseParser){
+        } else if (parser instanceof ChooseDatabaseParser) {
             return handleChooseDatabase((ChooseDatabaseParser) parser);
         } else if (database == null) {
             return ResultFactory.buildUnauthorizedResult("Choose Database first");
@@ -101,8 +101,14 @@ public class ClientHandler implements Runnable {
             return handleInsert((InsertParser) parser);
         } else if (parser instanceof ReleaseDatabaseParser) {
             return handleReleaseDatabase((ReleaseDatabaseParser) parser);
+        } else if (parser instanceof CreateIndexParser) {
+            return handleCreateIndex((CreateIndexParser) parser);
         }
         return null;
+    }
+
+    private Result handleCreateIndex(CreateIndexParser parser) {
+        return core.createIndex(parser, database);
     }
 
     private Result handleReleaseDatabase(ReleaseDatabaseParser parser) {

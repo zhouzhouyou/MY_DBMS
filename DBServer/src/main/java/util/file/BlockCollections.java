@@ -2,15 +2,18 @@ package util.file;
 
 import util.file.exception.IllegalNameException;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class BlockCollections {
     /**
      * Check if the filename is legal.
+     *
      * @param filename file's name
      * @return true if legal
      */
+    @Deprecated
     public static boolean isValidFileName(String filename) {
         if (filename == null || filename.length() > 255) return false;
         return filename.matches("[^\\s\\\\/:\\*\\?\\\"<>\\|](\\x20|[^\\s\\\\/:\\*\\?\\\"<>\\|])*[^\\s\\\\/:\\*\\?\\\"<>\\|\\.]$");
@@ -18,6 +21,7 @@ public class BlockCollections {
 
     /**
      * Check if the collection exists.
+     *
      * @param absolutePath absolute path of the collection
      * @return true if exists
      */
@@ -27,37 +31,42 @@ public class BlockCollections {
 
     /**
      * Serial a collection into binary file.
+     *
      * @param blockCollection collection to serial
      * @throws IOException fail to open collection
      */
     public static void serialize(BlockCollection blockCollection) throws IOException {
-        File file = new File(blockCollection.absolutePath);
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-        FileOutputStream fos = new FileOutputStream(file);
-        ObjectOutputStream oos = new ObjectOutputStream(fos);
-        oos.writeObject(blockCollection);
-        oos.close();
+//        File file = new File(blockCollection.absolutePath);
+//        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+//        FileOutputStream fos = new FileOutputStream(file);
+//        ObjectOutputStream oos = new ObjectOutputStream(fos);
+//        oos.writeObject(blockCollection);
+//        oos.close();
+        FileUtils.serialize(blockCollection, blockCollection.absolutePath);
     }
 
     /**
      * Build a {@link BlockCollection} object from file.
+     *
      * @param absolutePath file's absolute path
      * @return instance of a {@link BlockCollection}
-     * @throws IOException fail to find or open the file
+     * @throws IOException            fail to find or open the file
      * @throws ClassNotFoundException serialVersionUID changed
-     * @throws IllegalNameException name is illegal
+     * @throws IllegalNameException   name is illegal
      */
-    public static BlockCollection deserialize(String absolutePath) throws IOException, ClassNotFoundException, IllegalNameException{
-        File file = new File(absolutePath);
-        if (!isValidFileName(file.getName())) throw new IllegalNameException(absolutePath);
-        if (!file.exists()) throw new IOException(absolutePath + " not exists");
-        FileInputStream fis = new FileInputStream(file);
-        ObjectInputStream ois = new ObjectInputStream(fis);
-        BlockCollection blockCollection = (BlockCollection) ois.readObject();
-        ois.close();
-        return blockCollection;
+    public static BlockCollection deserialize(String absolutePath) throws IOException, ClassNotFoundException, IllegalNameException {
+//        File file = new File(absolutePath);
+//        if (!isValidFileName(file.getName())) throw new IllegalNameException(absolutePath);
+//        if (!file.exists()) throw new IOException(absolutePath + " not exists");
+//        FileInputStream fis = new FileInputStream(file);
+//        ObjectInputStream ois = new ObjectInputStream(fis);
+//        BlockCollection blockCollection = (BlockCollection) ois.readObject();
+//        ois.close();
+//        return blockCollection;
+        return (BlockCollection) FileUtils.deserialize(absolutePath);
     }
 
+    @Deprecated
     public static boolean delete(String path) {
         File file = new File(path);
         if (!file.exists()) return false;

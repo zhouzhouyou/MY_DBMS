@@ -5,9 +5,9 @@ import core.database.DatabaseFactory;
 import core.table.factory.TableFactory;
 import server.user.UserFactory;
 import util.parser.parsers.ChooseDatabaseParser;
+import util.parser.parsers.CreateIndexParser;
 import util.parser.parsers.CreateTableParser;
 import util.parser.parsers.InsertParser;
-import util.parser.parsers.ReleaseDatabaseParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -28,6 +28,7 @@ public enum Core {
 
     /**
      * Create a database.
+     *
      * @param name name of the database
      * @param type type of the database, use {@link DatabaseFactory#SYSTEM} or {@link DatabaseFactory#USER}
      * @return result
@@ -40,6 +41,7 @@ public enum Core {
 
     /**
      * Drop a database.
+     *
      * @param name name of the database
      * @return result whether the database dropped
      */
@@ -51,7 +53,8 @@ public enum Core {
 
     /**
      * Get grant of a certain grant type of a user.
-     * @param user user
+     *
+     * @param user      user
      * @param grantType grant type
      * @return result whether user has the grant
      */
@@ -61,7 +64,8 @@ public enum Core {
 
     /**
      * Connect user to system.
-     * @param user username
+     *
+     * @param user     username
      * @param password password
      * @return result whether the connect is valid
      */
@@ -110,5 +114,10 @@ public enum Core {
     public Result releaseDatabase(DatabaseBlock database) {
         databaseFactory.releaseDatabase(database);
         return ResultFactory.buildSuccessResult(null);
+    }
+
+    public Result createIndex(CreateIndexParser parser, DatabaseBlock database) {
+        TableFactory factory = database.getFactory();
+        return factory.createIndex(parser);
     }
 }
