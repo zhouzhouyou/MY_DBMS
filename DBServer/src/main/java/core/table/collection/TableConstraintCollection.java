@@ -5,6 +5,9 @@ import core.table.block.ConstraintBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
 
+/**
+ * 表的所有约束
+ */
 public class TableConstraintCollection extends TableComponentCollection<ConstraintBlock> {
     public static final String TABLE_CONSTRAINT_POSTFIX = "tic";
 

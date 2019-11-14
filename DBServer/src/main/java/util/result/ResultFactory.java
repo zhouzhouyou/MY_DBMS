@@ -20,6 +20,10 @@ public class ResultFactory {
         return buildFailResult("object already exists");
     }
 
+    public static Result buildObjectAlreadyExistsResult(String object) {
+        return buildFailResult(object + " already exists");
+    }
+
     public static Result buildInvalidNameResult(String name) {
         return buildFailResult("name: " + name + " is invalid");
     }

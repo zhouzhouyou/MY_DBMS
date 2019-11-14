@@ -3,7 +3,7 @@
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/DBServer/Document" />
     <option name="OPTION_SCOPE" value="private" />
-    <option name="OTHER_OPTIONS" value="-link http://docs.oracle.com/javase/8/docs/api" />
+    <option name="OTHER_OPTIONS" value="-link http://docs.oracle.com/javase/8/docs/api -encoding utf-8 -charset utf-8 " />
     <option name="LOCALE" value="zh_CN" />
   </component>
   <component name="MavenProjectsManager">

@@ -13,6 +13,7 @@ public enum IndexUtil {
         String fieldName = parser.getFieldName();
         boolean fieldAsc = parser.getFieldAsc();
         boolean unique = parser.isUnique();
+
         //TODO: 创建一个IxBlock对象并且序列化到对应的位置
         return null;
 

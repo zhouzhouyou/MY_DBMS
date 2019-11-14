@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 表的定义
+ * 表的所有定义
  */
 public class TableDefineCollection extends TableComponentCollection<DefineBlock> {
     public static final String TABLE_DEFINE_POSTFIX = "tdf";

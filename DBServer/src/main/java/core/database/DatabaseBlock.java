@@ -28,7 +28,7 @@ public class DatabaseBlock extends Block {
      */
     public boolean type;
     /**
-     * 数据库的路径
+     * 数据库的路径, 例如{@code ./data/database_name/}
      */
     public String path;
     /**
@@ -50,7 +50,7 @@ public class DatabaseBlock extends Block {
     /**
      * 因为每个DatabaseBlock只有一个实例，这里也保证了每个TableFactory也只有一个实例
      *
-     * @return
+     * @return 该DatabaseBlock的TableFactory
      */
     public TableFactory getFactory() {
         if (factory == null)

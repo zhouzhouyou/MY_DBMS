@@ -8,13 +8,36 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * 存储Block的数据结构
+ *
+ * @param <T> 继承{@link Block}的类
+ */
 public class BlockCollection<T extends Block> implements Serializable {
+    /**
+     * 存储Block的List
+     */
     public List<T> list;
 
+    /**
+     * 前缀，例如student.trd的前缀是student
+     */
     public transient String prefix;
+    /**
+     * 后缀，例如student.trd的后缀是trd
+     */
     public transient String postfix;
+    /**
+     * 前缀.后缀
+     */
     public transient String filename;
+    /**
+     * 相对路径位置，和filename组成绝对路径
+     */
     public transient String relativePath;
+    /**
+     * 绝对路径
+     */
     public String absolutePath;
 
     /**

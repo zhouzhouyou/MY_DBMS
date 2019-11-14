@@ -7,7 +7,6 @@ import core.table.factory.TableDefineFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import util.SQL;
-import util.file.RandomAccessFiles;
 import util.parser.parsers.InsertParser;
 import util.result.Result;
 import util.result.ResultFactory;
@@ -82,9 +81,9 @@ public enum InsertUtil {
         result = constraintFactory.check(toInsert);
         if (result.code == ResultFactory.SUCCESS) {
             try {
-                int index = new RandomAccessFiles(defineCollection).insert(toInsert);
+                int index = block.raf.insert(toInsert);
                 return ResultFactory.buildSuccessResult(index);
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (IOException e) {
                 return ResultFactory.buildFailResult(e.toString());
             }
         }

@@ -4,6 +4,9 @@ import core.table.block.IndexBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
 
+/**
+ * 表的所有索引
+ */
 public class TableIndexCollection extends TableComponentCollection<IndexBlock> {
     public static final String TABLE_INDEX_POSTFIX = "tid";
 

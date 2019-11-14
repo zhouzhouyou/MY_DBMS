@@ -17,14 +17,27 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 对一个数据库下的Table进行操作的工厂
+ */
 public class TableFactory {
+    /**
+     * 存储这所有Table的集合
+     */
     private TableCollection collection;
+    /**
+     * 为了防止Table被多次实例化
+     */
     private Map<String, TableBlock> map = new HashMap<>();
-    private DatabaseBlock databaseBlock;
+    /**
+     * 数据库地址，例如{@code ./data/database_name/}
+     */
+    private String databasePath;
+
 
     public TableFactory(DatabaseBlock databaseBlock) {
-        this.databaseBlock = databaseBlock;
-        String absolutePath = databaseBlock.path + databaseBlock.name + "." + TableCollection.TABLE_POSTFIX;
+        databasePath = databaseBlock.path;
+        String absolutePath = databasePath + databaseBlock.name + "." + TableCollection.TABLE_POSTFIX;
         if (BlockCollections.exists(absolutePath)) {
             try {
                 collection = (TableCollection) BlockCollections.deserialize(absolutePath);
@@ -51,6 +64,7 @@ public class TableFactory {
      * @param lastChangeTime time of the latest change of this table
      * @return result
      */
+    @Deprecated
     public Result createTable(String tableName, int recordAmount, int fieldAmount, String definePath, String constraintPath, String recordPath, String indexPath, Date createTime, Date lastChangeTime) {
         if (!FileUtils.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
         if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
@@ -61,11 +75,11 @@ public class TableFactory {
     }
 
     /**
-     * Get the table from map or file.
+     * 从map中获取table，并且让table的计数加一（释放后才能删除表）。
      *
-     * @param tableName table's name
-     * @return table or null
-     * @throws Exception the table doesn't exists
+     * @param tableName 表名
+     * @return 表
+     * @throws Exception 表不存在
      */
 
     public TableBlock getTable(String tableName) throws Exception {
@@ -76,10 +90,10 @@ public class TableFactory {
     }
 
     /**
-     * Drop a table.
+     * 删除表。
      *
-     * @param tableName table's name
-     * @return
+     * @param tableName 表名
+     * @return 如果不存在这个表，返回{@link ResultFactory#NOT_FOUND}, 如果表被占用了，返回{@link ResultFactory#CONFLICT}
      */
     public Result dropTable(String tableName) {
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult();
@@ -88,40 +102,39 @@ public class TableFactory {
         map.values().removeIf(value -> value.equals(tableBlock));
         collection.remove(tableBlock);
         saveInstance();
-        FileUtils.delete(databaseBlock.path + tableName);
-        //TODO remove relative files
+        FileUtils.delete(databasePath + tableName);
         return ResultFactory.buildSuccessResult(tableName);
     }
 
     /**
-     * @return absolute path of the DatabaseName.tb file
+     * @return DatabaseName.tb的绝对路径
      */
     public String getAbsolutePath() {
         return collection.absolutePath;
     }
 
     /**
-     * Check if the table exists.
+     * 检测表是否存在。
      *
-     * @param tableName name of the table
-     * @return true if exists
+     * @param tableName 表名
+     * @return 表是否存在
      */
     public boolean exists(String tableName) {
         return map.containsKey(tableName);
     }
 
     /**
-     * Release table from the{@link #map} so it can be deleted.
-     * Invoked by{@link TableBlock#release()}.
+     * 从{@link #map}中释放对表的占用。
+     * 被{@link TableBlock#release()}调用。
      *
-     * @param tableBlock table to release
+     * @param tableBlock 需要释放的表
      */
     public void releaseTable(TableBlock tableBlock) {
         tableBlock.release();
     }
 
     /**
-     * Save current DatabaseName.tb.
+     * 实例化表的集合至DatabaseName.tb。
      */
     public void saveInstance() {
         try {
@@ -131,11 +144,17 @@ public class TableFactory {
         }
     }
 
+    /**
+     * 创建表
+     *
+     * @param parser 创建表SQL解析器
+     * @return 创建表的结果
+     */
     public Result createTable(CreateTableParser parser) {
         String tableName = parser.getTableName();
         if (!FileUtils.isValidFileName(tableName)) return ResultFactory.buildInvalidNameResult(tableName);
         if (exists(tableName)) return ResultFactory.buildObjectAlreadyExistsResult();
-        TableBlock tableBlock = new TableBlock(parser, databaseBlock.path);
+        TableBlock tableBlock = new TableBlock(parser, databasePath);
         Result result = tableBlock.create();
         if (result.code == ResultFactory.SUCCESS) {
             collection.add(tableBlock);
@@ -143,10 +162,6 @@ public class TableFactory {
             saveInstance();
         }
         return result;
-    }
-
-    public void delete() {
-        if (databaseBlock != null) FileUtils.delete(databaseBlock.path);
     }
 
     /**

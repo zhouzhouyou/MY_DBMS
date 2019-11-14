@@ -1,7 +1,9 @@
 package core.table.block;
 
 import util.file.Block;
+import util.file.FileUtils;
 
+import java.io.IOException;
 import java.util.List;
 
 //TODO: 这个是实现你数据结构的地方，Block实现了序列化接口，可以调用SerializeFiles.serialize(absolutePath)
@@ -24,6 +26,14 @@ public class IxBlock extends Block {
      * 索引名，也就是域名，最后这个类会保存在name.ix
      */
     private String name;
+    /**
+     * IndexBlock
+     */
+    private transient IndexBlock indexBlock;
+
+    public IxBlock(IndexBlock indexBlock) {
+        this.indexBlock = indexBlock;
+    }
 
     /**
      * 返回与某个具体值相等或不等的索引的集合。
@@ -136,22 +146,22 @@ public class IxBlock extends Block {
     /**
      * 将所有数据插入索引
      *
-     * @param comparables 所有数据
+     * @param list 所有数据
      * @return 插入是否成功
      */
-    public boolean insert(List<Comparable> comparables) {
+    public boolean insert(List<Comparable> list) {
         //TODO: 插入所有数据进入索引，这发生事后建立索引的情况下。
         return false;
     }
 
     /**
-     * 删除一个索引（这是因为表中删除了一条记录，那么也需要删除对应的索引）
+     * 删除一组索引（这是因为表中删除了一组记录，那么也需要删除对应的索引）
      *
      * @param index 索引
      * @return 删除是否成功
      */
-    public boolean delete(int index) {
-        //TODO: 删除一个索引
+    public boolean delete(List<Integer> index) {
+        //TODO: 删除一组索引
         return false;
     }
 
@@ -165,5 +175,13 @@ public class IxBlock extends Block {
     public boolean update(int index, Comparable newKey) {
         //TODO: 更新了一条数据，需要移动索引的位置
         return false;
+    }
+
+    public void saveInstance() {
+        try {
+            FileUtils.serialize(this, indexBlock.indexFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
