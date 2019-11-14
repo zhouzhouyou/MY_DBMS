@@ -168,38 +168,33 @@ public class RandomAccessFiles {
         for (int i = 0; i < collection.list.size(); i++) {
             DefineBlock block = collection.list.get(i);
             Object recordItem = list.get(i);
-            String data;
+            String data = null;
             if (recordItem == null) {
                 data = formatVarcharData("", block.getDataLength());
-                raf.writeBytes(data);
-                break;
             }
-            switch (block.fieldType) {
-                case FieldTypes.BOOL:
-                    if ((Boolean) recordItem)
-                        data = "1";
-                    else
-                        data = "0";
-                    raf.writeBytes(data);
-                    break;
-                case FieldTypes.DOUBLE:
-                case FieldTypes.INTEGER:
-                    String originDouble = String.valueOf(recordItem);
-                    data = formatVarcharData(originDouble, block.getDataLength());
-                    raf.writeBytes(data);
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeStamp = ((Date) recordItem).getTime() / 1000;
-                    data = String.valueOf(timeStamp);
-                    raf.writeBytes(data);
-                    break;
-                case FieldTypes.VARCHAR:
-                    data = formatVarcharData((String) recordItem, block.getDataLength());
-                    raf.writeBytes(data);
-                    break;
-                default:
-                    break;
+            else {
+                switch (block.fieldType) {
+                    case FieldTypes.BOOL:
+                        data = ((Boolean) recordItem) ? "1" : "0";
+                        break;
+                    case FieldTypes.DOUBLE:
+                    case FieldTypes.INTEGER:
+                        String originDouble = String.valueOf(recordItem);
+                        data = formatVarcharData(originDouble, block.getDataLength());
+                        break;
+                    case FieldTypes.DATETIME:
+                        long timeStamp = ((Date) recordItem).getTime() / 1000;
+                        data = String.valueOf(timeStamp);
+                        break;
+                    case FieldTypes.VARCHAR:
+                        data = formatVarcharData((String) recordItem, block.getDataLength());
+                        break;
+                    default:
+                        break;
+                }
             }
+            raf.writeBytes(data);
+
         }
     }
 

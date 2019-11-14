@@ -16,7 +16,7 @@ public class ParserFactory {
         if (sql.contains(";")) sql = sql.substring(0, sql.lastIndexOf(";"));
         sql += (" " + END_OF_SQL);
 
-        if (contains(sql, "(insert into)(.+)(values)(.+)")) return new InsertParser(sql);
+        if (contains(sql, "(insert into)(.+?)(values)(.+)")) return new InsertParser(sql);
         else if (contains(sql, "(update)(.+)(set)(.+)")) return new UpdateParser(sql);
         else if (contains(sql, "(delete from)(.+)")) return new DeleteParser(sql);
         else if (contains(sql, "(create database)(.+)")) return new CreateDatabaseParser(sql);
@@ -28,7 +28,7 @@ public class ParserFactory {
         else if (contains(sql, "(select)(.+)(from)(.+)")) return new SelectParser(sql);
         else if (contains(sql, "(choose database)(.+?)")) return new ChooseDatabaseParser(sql);
         else if (contains(sql, "(release database)")) return new ReleaseDatabaseParser(sql);
-        else if (contains(sql, "(create index|create unique index)(.+?)(on)([(])(.+?)([)])"))
+        else if (contains(sql, "(create index|create unique index)(.+?)(on)"))
             return new CreateIndexParser(sql);
         else if (contains(sql, "(drop index)(.+)(on)([(])(.+?)([)])")) return new DropIndexParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)

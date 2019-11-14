@@ -15,7 +15,7 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
 
     public TableIndexFactory(TableBlock tableBlock) {
         super(tableBlock);
-        raf = tableBlock.raf;
+        raf = tableBlock.getRaf();
     }
 
     @Override

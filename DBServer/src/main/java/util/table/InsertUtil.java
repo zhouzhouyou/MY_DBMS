@@ -69,7 +69,7 @@ public enum InsertUtil {
                 case FieldTypes.VARCHAR:
                     if (!value.startsWith("'") || !value.endsWith("'"))
                         return ResultFactory.buildInvalidValueConvertResult(SQL.VARCHAR, value);
-                    map.put(fieldName, value.substring(1));
+                    map.put(fieldName, value.substring(1, value.length()-1));
                     break;
                 default:
                     break;
@@ -81,7 +81,7 @@ public enum InsertUtil {
         result = constraintFactory.check(toInsert);
         if (result.code == ResultFactory.SUCCESS) {
             try {
-                int index = block.raf.insert(toInsert);
+                int index = block.getRaf().insert(toInsert);
                 return ResultFactory.buildSuccessResult(index);
             } catch (IOException e) {
                 return ResultFactory.buildFailResult(e.toString());

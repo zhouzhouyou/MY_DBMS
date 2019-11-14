@@ -35,7 +35,11 @@ class ParserFactoryTest {
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);
         assert parser != null;
-        if (parser instanceof InsertParser) System.out.println(INSERT_INTO);
+        if (parser instanceof InsertParser) {
+            System.out.println(INSERT_INTO);
+            ((InsertParser) parser).getInsertField().forEach(System.out::println);
+            ((InsertParser) parser).getInsertValue().forEach(System.out::println);
+        }
         else if (parser instanceof DeleteParser) System.out.println(DELETE_FROM);
         else if (parser instanceof UpdateParser) System.out.println(UPDATE);
         else if (parser instanceof CreateTableParser) System.out.println(CREATE_TABLE);

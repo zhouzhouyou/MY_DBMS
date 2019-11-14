@@ -82,7 +82,7 @@ public class TableBlock extends Block {
     /**
      * 随机读写的工具
      */
-    public transient RandomAccessFiles raf;
+    private transient RandomAccessFiles raf;
 
     @Deprecated
     public TableBlock(String tableName, int recordAmount, int fieldAmount, String definePath, String constraintPath, String recordPath, String indexPath, Date createTime, Date lastChangeTime) {
@@ -109,11 +109,6 @@ public class TableBlock extends Block {
         this.constraintPath = temp + ".tic";
         this.recordPath = temp + ".trd";
         this.indexPath = temp + ".tix";
-        try {
-            raf = new RandomAccessFiles(getDefineFactory().getCollection());
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -150,6 +145,17 @@ public class TableBlock extends Block {
         if (constraintFactory == null)
             constraintFactory = new TableConstraintFactory(this);
         return constraintFactory;
+    }
+
+    public RandomAccessFiles getRaf() {
+        if (raf == null) {
+            try {
+                raf = new RandomAccessFiles(getDefineFactory().getCollection());
+            } catch (IOException | ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+        return raf;
     }
 
     /**
