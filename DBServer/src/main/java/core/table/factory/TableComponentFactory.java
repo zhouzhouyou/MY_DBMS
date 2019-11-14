@@ -107,7 +107,7 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
      * 获取一个组件。
      *
      * @param name 组件名
-     * @return
+     * @return 组件
      */
     public T get(String name) {
         return map.get(name);
