@@ -30,7 +30,7 @@ public class TableFactory {
      */
     private Map<String, TableBlock> map = new HashMap<>();
     /**
-     * 数据库地址，例如{@code ./data/database_name/}
+     * 数据库地址，例如{@code .\/data\/database_name\/}
      */
     private String databasePath;
 

@@ -8,7 +8,7 @@ import util.file.FileUtils;
 import java.util.Date;
 
 /**
- * 这个类实践上保管了一个Database，作为DatabaseCollection的list中的一个元素存在。
+ * 这个类实际上保管了一个Database，作为DatabaseCollection的list中的一个元素存在。
  * DatabaseCollection序列化时，这个类也会序列化。
  */
 public class DatabaseBlock extends Block {
@@ -28,7 +28,7 @@ public class DatabaseBlock extends Block {
      */
     public boolean type;
     /**
-     * 数据库的路径, 例如{@code ./data/database_name/}
+     * 数据库的路径, 例如 "./data/database_name/"
      */
     public String path;
     /**

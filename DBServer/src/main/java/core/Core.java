@@ -89,7 +89,8 @@ public enum Core {
 
     /**
      * 创建一个表
-     * @param parser 创建表SQL解析器
+     *
+     * @param parser   创建表SQL解析器
      * @param database 数据库名
      * @return 创建表的结果
      */
@@ -115,6 +116,7 @@ public enum Core {
 
     /**
      * 删除一张表
+     *
      * @param tableName 删除的表名
      * @param database  数据库名
      * @return 删除表的结果
@@ -131,9 +133,10 @@ public enum Core {
 
     /**
      * 插入一条记录
-     * @param parser 插入记录SQL解析器
+     *
+     * @param parser   插入记录SQL解析器
      * @param database 数据库名
-     * @return
+     * @return 插入记录的结果
      */
     public Result insert(InsertParser parser, String database) {
         try {
@@ -148,6 +151,7 @@ public enum Core {
 
     /**
      * 释放数据库
+     *
      * @param database 数据库名
      * @return 释放数据库的结果
      */
@@ -158,7 +162,8 @@ public enum Core {
 
     /**
      * 创建一个索引
-     * @param parser 创建索引SQL解析器
+     *
+     * @param parser   创建索引SQL解析器
      * @param database 数据库名
      * @return 创建索引的结果
      */

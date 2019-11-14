@@ -17,7 +17,7 @@ import static util.file.Path.DATABASE_PATH;
  * 这个类是使用enum实现的单例。
  * {@link core.Core} 持有这个类的对象。
  * <p>这个类控制着{@link DatabaseCollection}的序列化和反序列化</p>
- * <p>这个类可以读写{@code "./system.db"}， 这个文件保存着这个数据中心下的所有数据库</p>
+ * <p>这个类可以读写{@code .\/system.db}， 这个文件保存着这个数据中心下的所有数据库</p>
  *
  * @see DatabaseBlock
  * @see DatabaseCollection

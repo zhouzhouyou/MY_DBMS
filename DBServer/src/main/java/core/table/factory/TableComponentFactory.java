@@ -22,11 +22,11 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
      */
     protected String tableName;
     /**
-     * 表的路径，例如{@code ./data/database_name/table_name/}
+     * 表的路径，例如{@code .\/data\/database_name\/table_name\/}
      */
     protected String tablePath;
     /**
-     * 集合的绝对路径，例如{@code ./data/database_name/table_name/table_name.xxx}
+     * 集合的绝对路径，例如{@code .\/data\/database_name\/table_name\/table_name.xxx}
      */
     protected String absolutePath;
     /**

@@ -5,6 +5,7 @@ import util.parser.parsers.CreateIndexParser;
 import util.parser.parsers.DropIndexParser;
 import util.result.Result;
 
+@Deprecated
 public enum IndexUtil {
     INSTANCE;
 

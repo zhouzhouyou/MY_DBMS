@@ -32,7 +32,7 @@ public class IndexBlock extends Block {
      */
     public String field;
     /**
-     * 记录文件的绝对路径
+     * 文件随机读写工具
      */
     public transient RandomAccessFiles raf;
     /**
