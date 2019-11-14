@@ -3,7 +3,7 @@ import Client.Client;
 import java.io.*;
 import java.net.Socket;
 
-public class Starter {
+public class ClientStarter {
 //    public static final int SUCCESS = 200;
 //    public static final int BAD_REQUEST = 400;
 //    public static final int UNAUTHORIZED = 401;
