@@ -86,11 +86,12 @@ public enum DatabaseFactory {
      * 释放对数据库的引用，以便于删除数据库
      * 只有有客户端持有对数据库的引用，这个数据库就不能被删除
      *
-     * @param databaseBlock 需要释放的数据库
+     * @param databaseName 需要释放的数据库
      * @see #dropDatabase(String)
      */
-    public void releaseDatabase(DatabaseBlock databaseBlock) {
-        databaseBlock.release();
+    public void releaseDatabase(String databaseName) {
+        DatabaseBlock block = map.get(databaseName);
+        block.release();
     }
 
     /**

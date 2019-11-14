@@ -3,10 +3,10 @@ package server;
 import com.google.gson.Gson;
 import core.Core;
 import core.database.DatabaseBlock;
-import server.user.UserBlock;
 import util.parser.ParserFactory;
 import util.parser.annoation.Permission;
 import util.parser.parsers.*;
+import util.result.Request;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -24,7 +24,6 @@ public class ClientHandler implements Runnable {
     private boolean authenticated = false;
     private Core core = Core.INSTANCE;
     private String username;
-    private UserBlock userBlock;
     private Gson gson;
 
     public ClientHandler(Socket socket) {
@@ -42,9 +41,10 @@ public class ClientHandler implements Runnable {
     public void run() {
         while (true) {
             try {
-                String sql = input.readLine();
-                //if (sql == null) break;
-                Result result = handleSQL(sql);
+                String input = this.input.readLine();
+                Request request = Request.fromGson(input);
+//                if (request.databaseName != null)
+                Result result = handleSQL(request.sql, request.databaseName);
                 output.println(gson.toJson(result));
             } catch (IOException e) {
                 e.printStackTrace();
@@ -60,13 +60,13 @@ public class ClientHandler implements Runnable {
         }
     }
 
-    private Result handleSQL(String sql) {
+    private Result handleSQL(String sql, String databaseName) {
         Parser parser = ParserFactory.generateParser(sql);
         if (parser == null) return ResultFactory.buildInvalidNameResult(sql);
 
         Class child = parser.getClass();
         //Connect, Disconnect or quit
-        if (!child.isAnnotationPresent(Permission.class)) return handleParser(parser);
+        if (!child.isAnnotationPresent(Permission.class)) return handleParser(parser, databaseName);
 
         //Should connect first
         if (!authenticated) return ResultFactory.buildUnauthorizedResult();
@@ -74,13 +74,13 @@ public class ClientHandler implements Runnable {
         Permission permission = (Permission) child.getAnnotation(Permission.class);
         Result result = core.getGrant(username, permission.value());
         if (result.code == ResultFactory.SUCCESS) {
-            return handleParser(parser);
+            return handleParser(parser, databaseName);
         } else {
             return ResultFactory.buildUnauthorizedResult();
         }
     }
 
-    private Result handleParser(Parser parser) {
+    private Result handleParser(Parser parser, String databaseName) {
         if (parser instanceof ConnectParser) {
             return handleConnect((ConnectParser) parser);
         } else if (parser instanceof DisconnectParser) {
@@ -91,38 +91,38 @@ public class ClientHandler implements Runnable {
             return handleDropDatabase((DropDatabaseParser) parser);
         } else if (parser instanceof ChooseDatabaseParser) {
             return handleChooseDatabase((ChooseDatabaseParser) parser);
-        } else if (database == null) {
-            return ResultFactory.buildUnauthorizedResult("Choose Database first");
+        } else if (databaseName == null) {
+            return ResultFactory.buildUnauthorizedResult("Missing Database Info");
         } else if (parser instanceof CreateTableParser) {
-            return handleCreateTable((CreateTableParser) parser);
+            return handleCreateTable((CreateTableParser) parser, databaseName);
         } else if (parser instanceof DropTableParser) {
-            return handleDropTable((DropTableParser) parser);
+            return handleDropTable((DropTableParser) parser, databaseName);
         } else if (parser instanceof InsertParser) {
-            return handleInsert((InsertParser) parser);
+            return handleInsert((InsertParser) parser, databaseName);
         } else if (parser instanceof ReleaseDatabaseParser) {
-            return handleReleaseDatabase((ReleaseDatabaseParser) parser);
+            return handleReleaseDatabase((ReleaseDatabaseParser) parser, databaseName);
         } else if (parser instanceof CreateIndexParser) {
-            return handleCreateIndex((CreateIndexParser) parser);
+            return handleCreateIndex((CreateIndexParser) parser, databaseName);
         }
         return null;
     }
 
-    private Result handleCreateIndex(CreateIndexParser parser) {
-        return core.createIndex(parser, database);
+    private Result handleCreateIndex(CreateIndexParser parser, String databaseName) {
+        return core.createIndex(parser, databaseName);
     }
 
-    private Result handleReleaseDatabase(ReleaseDatabaseParser parser) {
-        Result result = core.releaseDatabase(database);
+    private Result handleReleaseDatabase(ReleaseDatabaseParser parser, String databaseName) {
+        Result result = core.releaseDatabase(databaseName);
         database = null;
         return result;
     }
 
-    private Result handleInsert(InsertParser parser) {
-        return core.insert(parser, database);
+    private Result handleInsert(InsertParser parser, String databaseName) {
+        return core.insert(parser, databaseName);
     }
 
-    private Result handleDropTable(DropTableParser parser) {
-        return core.dropTable(parser.getTableName(), database);
+    private Result handleDropTable(DropTableParser parser, String databaseName) {
+        return core.dropTable(parser.getTableName(), databaseName);
     }
 
     private Result handleChooseDatabase(ChooseDatabaseParser parser) {
@@ -131,8 +131,8 @@ public class ClientHandler implements Runnable {
         return result;
     }
 
-    private Result handleCreateTable(CreateTableParser parser) {
-        return core.createTable(parser, database);
+    private Result handleCreateTable(CreateTableParser parser, String databaseName) {
+        return core.createTable(parser, databaseName);
     }
 
     private Result handleDropDatabase(DropDatabaseParser parser) {

@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Core is meant to handle {@link server.ClientHandler}.
- * It's a layer between client and basic functions.
+ * 分发{@link server.ClientHandler}中的事件。
+ * 请求和基础功能调用之间的耦合层。
  */
 public enum Core {
     INSTANCE;
@@ -27,11 +27,11 @@ public enum Core {
     private Map<String, TableFactory> tableFactoryMap = new HashMap<>();
 
     /**
-     * Create a database.
+     * 创建一个数据库。
      *
-     * @param name name of the database
-     * @param type type of the database, use {@link DatabaseFactory#SYSTEM} or {@link DatabaseFactory#USER}
-     * @return result
+     * @param name 数据库名
+     * @param type 数据库类型，使用{@link DatabaseFactory#SYSTEM} 或 {@link DatabaseFactory#USER}
+     * @return 创建数据库结果
      */
     public Result createDatabase(String name, boolean type) {
         Result result = databaseFactory.createDatabase(name, type);
@@ -40,10 +40,10 @@ public enum Core {
     }
 
     /**
-     * Drop a database.
+     * 删除一个数据库。
      *
-     * @param name name of the database
-     * @return result whether the database dropped
+     * @param name 数据库名
+     * @return 删除数据库的结果
      */
     public Result dropDatabase(String name) {
         Result result = databaseFactory.dropDatabase(name);
@@ -52,22 +52,22 @@ public enum Core {
     }
 
     /**
-     * Get grant of a certain grant type of a user.
+     * 获取一个用户是否拥有一个权限。
      *
-     * @param user      user
-     * @param grantType grant type
-     * @return result whether user has the grant
+     * @param user      用户名
+     * @param grantType 权限类型
+     * @return 用户是否拥有该权限
      */
     public Result getGrant(String user, String grantType) {
         return userFactory.getGrant(user, grantType);
     }
 
     /**
-     * Connect user to system.
+     * 用户登录。
      *
-     * @param user     username
-     * @param password password
-     * @return result whether the connect is valid
+     * @param user     用户名
+     * @param password 用户密码
+     * @return 登录是否有效
      */
     public Result connect(String user, String password) {
         return userFactory.connect(user, password);
@@ -87,11 +87,23 @@ public enum Core {
         userFactory.saveInstance();
     }
 
-    public Result createTable(CreateTableParser parser, DatabaseBlock database) {
-        TableFactory factory = database.getFactory();
-        return factory.createTable(parser);
+    /**
+     * 创建一个表
+     * @param parser 创建表SQL解析器
+     * @param database 数据库名
+     * @return 创建表的结果
+     */
+    public Result createTable(CreateTableParser parser, String database) {
+        try {
+            DatabaseBlock block = databaseFactory.getDatabase(database);
+            TableFactory factory = block.getFactory();
+            return factory.createTable(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
     }
 
+    @Deprecated
     public Result chooseDatabase(ChooseDatabaseParser parser) {
         try {
             DatabaseBlock block = databaseFactory.getDatabase(parser.getDatabaseName());
@@ -101,23 +113,62 @@ public enum Core {
         }
     }
 
-    public Result dropTable(String tableName, DatabaseBlock database) {
-        TableFactory factory = database.getFactory();
-        return factory.dropTable(tableName);
+    /**
+     * 删除一张表
+     * @param tableName 删除的表名
+     * @param database  数据库名
+     * @return 删除表的结果
+     */
+    public Result dropTable(String tableName, String database) {
+        try {
+            DatabaseBlock block = databaseFactory.getDatabase(database);
+            TableFactory factory = block.getFactory();
+            return factory.dropTable(tableName);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
     }
 
-    public Result insert(InsertParser parser, DatabaseBlock database) {
-        TableFactory factory = database.getFactory();
-        return factory.insert(parser);
+    /**
+     * 插入一条记录
+     * @param parser 插入记录SQL解析器
+     * @param database 数据库名
+     * @return
+     */
+    public Result insert(InsertParser parser, String database) {
+        try {
+            DatabaseBlock block = databaseFactory.getDatabase(database);
+            TableFactory factory = block.getFactory();
+            return factory.insert(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
+
     }
 
-    public Result releaseDatabase(DatabaseBlock database) {
+    /**
+     * 释放数据库
+     * @param database 数据库名
+     * @return 释放数据库的结果
+     */
+    public Result releaseDatabase(String database) {
         databaseFactory.releaseDatabase(database);
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public Result createIndex(CreateIndexParser parser, DatabaseBlock database) {
-        TableFactory factory = database.getFactory();
-        return factory.createIndex(parser);
+    /**
+     * 创建一个索引
+     * @param parser 创建索引SQL解析器
+     * @param database 数据库名
+     * @return 创建索引的结果
+     */
+    public Result createIndex(CreateIndexParser parser, String database) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.createIndex(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
     }
 }
