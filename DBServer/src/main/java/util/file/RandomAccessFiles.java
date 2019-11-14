@@ -96,6 +96,55 @@ public class RandomAccessFiles {
         List<Object> result = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         //TODO: get all data from a column
+        int filedRecordPointer = 0;
+        DefineBlock resultBlock = null;
+        for (int i = 0; i < collection.list.size(); i++) {
+            DefineBlock block = collection.list.get(i);
+            if (!block.fieldName.equals(fieldName))
+                filedRecordPointer += block.getDataLength();
+            else {
+                resultBlock = block;
+                break;
+            }
+        }
+        if (resultBlock == null)
+            return null;
+        for (int i = 0; i < raf.length() / recordLength; i++) {
+            raf.seek(i * recordLength + filedRecordPointer);
+            byte[] originData = new byte[resultBlock.getDataLength()];
+            raf.readFully(originData);
+            String resultData = new String(originData).trim();
+            if (resultData.length() == 0) {
+                result.add(null);
+                break;
+            }
+            switch (resultBlock.fieldType){
+                case FieldTypes.BOOL:
+                    boolean boolData;
+                    boolData = resultData.equals("1");
+                    result.add(boolData);
+                    break;
+                case FieldTypes.DOUBLE:
+                    double doubleData = Double.parseDouble(resultData);
+                    result.add(doubleData);
+                    break;
+                case FieldTypes.INTEGER:
+                    int intData = Integer.parseInt(resultData);
+                    result.add(intData);
+                    break;
+                case FieldTypes.DATETIME:
+                    long timeData = Long.parseLong(resultData);
+                    Date dateData = new Date(timeData);
+                    result.add(dateData);
+                    break;
+                case FieldTypes.VARCHAR:
+                    result.add(resultData);
+                    break;
+                default:
+                    break;
+
+            }
+        }
         raf.close();
         return result;
     }
