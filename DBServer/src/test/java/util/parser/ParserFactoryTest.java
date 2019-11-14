@@ -13,8 +13,8 @@ class ParserFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "insert into student (name, sex) values ('zzy', 'male);",
-            "insert into student values ('zzy', 'male')",
+            "insert into student (name, sex) values('zzy', 'male);",
+            "insert into student values('zzy', 'male')",
             "delete from student where name='zzy' or sex='male';",
             "update student set sex='male', birthday=sysdate where name='zzy' or (name='ckf' and age=20);",
             "create table student (" +

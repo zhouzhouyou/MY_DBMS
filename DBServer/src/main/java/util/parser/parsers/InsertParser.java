@@ -9,8 +9,8 @@ import java.util.List;
 
 @Permission(Permission.CREATE_TABLE)
 @Start("(insert into)(.+?)([(]|values)")
-@Body("([(])(.+?)([)] values )")
-@End("(values [(])(.+)([)])")
+@Body("([(])(.+?)([)] values|[)]values)")
+@End("(values[(]|values [(])(.+)([)])")
 public class InsertParser extends Parser {
     public InsertParser(String originSQL) {
         super(originSQL);

@@ -140,7 +140,7 @@ public class IxBlock extends Block {
      */
     public boolean insert(Comparable Comparable, int index) {
         //TODO: 插入一条数据进入索引
-        return false;
+        return true;
     }
 
     /**
@@ -151,7 +151,7 @@ public class IxBlock extends Block {
      */
     public boolean insert(List<Comparable> list) {
         //TODO: 插入所有数据进入索引，这发生事后建立索引的情况下。
-        return false;
+        return true;
     }
 
     /**

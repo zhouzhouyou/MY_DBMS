@@ -100,4 +100,17 @@ public class IndexBlock extends Block {
         }
         return ixBlock;
     }
+
+    /**
+     * 插入一条记录进入当前索引
+     *
+     * @param comparable 值
+     * @param index      索引
+     * @return 插入是否成功
+     */
+    public Result insertRecord(Comparable comparable, int index) {
+        boolean result = ixBlock.insert(comparable, index);
+        if (result) return ResultFactory.buildSuccessResult(comparable);
+        return ResultFactory.buildFailResult(comparable);
+    }
 }

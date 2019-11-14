@@ -18,7 +18,6 @@ import java.util.*;
 
 public enum InsertUtil {
     INSTANCE;
-    private final String AMOUNT_NOT_MATCH = "Field Amount doesn't match";
 
     @SuppressWarnings("unchecked")
     public Result insert(TableBlock block, InsertParser parser) {
@@ -29,6 +28,7 @@ public enum InsertUtil {
         TableDefineCollection defineCollection = factory.getCollection();
 
         /*check whether the field amount is correct*/
+        String AMOUNT_NOT_MATCH = "Field Amount doesn't match";
         if (fields.size() == 0) {
             if (values.size() != block.fieldAmount) return ResultFactory.buildFailResult(AMOUNT_NOT_MATCH);
             fields = defineCollection.getFieldNames();
@@ -82,7 +82,9 @@ public enum InsertUtil {
         if (result.code == ResultFactory.SUCCESS) {
             try {
                 int index = block.getRaf().insert(toInsert);
-                return ResultFactory.buildSuccessResult(index);
+                result = block.getIndexFactory().insertRecord(toInsert, index);
+                if (result.code != ResultFactory.SUCCESS) block.getRaf().delete(index);
+                return result;
             } catch (IOException e) {
                 return ResultFactory.buildFailResult(e.toString());
             }

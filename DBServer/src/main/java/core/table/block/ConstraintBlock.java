@@ -16,7 +16,7 @@ public class ConstraintBlock extends Block {
     /**
      * 约束作用的域名
      */
-    public String filedName;
+    public String fieldName;
     /**
      * 约束类型
      *
@@ -28,9 +28,9 @@ public class ConstraintBlock extends Block {
      */
     public String param;
 
-    public ConstraintBlock(String constraintName, String filedName, int constraintType, String param) {
+    public ConstraintBlock(String constraintName, String fieldName, int constraintType, String param) {
         this.constraintName = constraintName;
-        this.filedName = filedName;
+        this.fieldName = fieldName;
         this.constraintType = constraintType;
         this.param = param;
     }

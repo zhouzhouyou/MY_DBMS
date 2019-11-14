@@ -3,6 +3,7 @@ package core.table.factory;
 
 import core.table.block.IndexBlock;
 import core.table.block.TableBlock;
+import core.table.collection.TableDefineCollection;
 import core.table.collection.TableIndexCollection;
 import util.file.RandomAccessFiles;
 import util.parser.parsers.CreateIndexParser;
@@ -10,12 +11,16 @@ import util.parser.parsers.DropIndexParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
+import java.util.List;
+
 public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIndexCollection> {
     private RandomAccessFiles raf;
+    private TableDefineFactory defineFactory;
 
     public TableIndexFactory(TableBlock tableBlock) {
         super(tableBlock);
         raf = tableBlock.getRaf();
+        defineFactory = tableBlock.getDefineFactory();
     }
 
     @Override
@@ -63,5 +68,24 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
         map.values().removeIf(indexBlock -> indexBlock.equals(block));
         collection.remove(block);
         return block.delete();
+    }
+
+    /**
+     * 试图插入一条记录进入索引，没有在索引中的域会被无视
+     *
+     * @param objects 一条记录
+     * @param index   记录的索引
+     * @return 成功插入则返回 {@link ResultFactory#SUCCESS}
+     */
+    public Result insertRecord(List<Object> objects, int index) {
+        TableDefineCollection defineCollection = defineFactory.collection;
+        List<String> fieldNames = defineCollection.getFieldNames();
+        for (int i = 0; i < objects.size(); i++) {
+            IndexBlock indexBlock = get(fieldNames.get(i));
+            if (indexBlock == null) continue;
+            Result result = indexBlock.insertRecord((Comparable) objects.get(i), index);
+            if (result.code != ResultFactory.SUCCESS) return result;
+        }
+        return ResultFactory.buildSuccessResult(index);
     }
 }
