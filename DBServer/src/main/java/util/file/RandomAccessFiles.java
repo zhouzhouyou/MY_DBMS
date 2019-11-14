@@ -116,33 +116,33 @@ public class RandomAccessFiles {
             String resultData = new String(originData).trim();
             if (resultData.length() == 0) {
                 result.add(null);
-                break;
-            }
-            switch (resultBlock.fieldType){
-                case FieldTypes.BOOL:
-                    boolean boolData;
-                    boolData = resultData.equals("1");
-                    result.add(boolData);
-                    break;
-                case FieldTypes.DOUBLE:
-                    double doubleData = Double.parseDouble(resultData);
-                    result.add(doubleData);
-                    break;
-                case FieldTypes.INTEGER:
-                    int intData = Integer.parseInt(resultData);
-                    result.add(intData);
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeData = Long.parseLong(resultData);
-                    Date dateData = new Date(timeData);
-                    result.add(dateData);
-                    break;
-                case FieldTypes.VARCHAR:
-                    result.add(resultData);
-                    break;
-                default:
-                    break;
+            } else {
+                switch (resultBlock.fieldType) {
+                    case FieldTypes.BOOL:
+                        boolean boolData;
+                        boolData = resultData.equals("1");
+                        result.add(boolData);
+                        break;
+                    case FieldTypes.DOUBLE:
+                        double doubleData = Double.parseDouble(resultData);
+                        result.add(doubleData);
+                        break;
+                    case FieldTypes.INTEGER:
+                        int intData = Integer.parseInt(resultData);
+                        result.add(intData);
+                        break;
+                    case FieldTypes.DATETIME:
+                        long timeData = Long.parseLong(resultData);
+                        Date dateData = new Date(timeData);
+                        result.add(dateData);
+                        break;
+                    case FieldTypes.VARCHAR:
+                        result.add(resultData);
+                        break;
+                    default:
+                        break;
 
+                }
             }
         }
         raf.close();
@@ -171,8 +171,7 @@ public class RandomAccessFiles {
             String data = null;
             if (recordItem == null) {
                 data = formatVarcharData("", block.getDataLength());
-            }
-            else {
+            } else {
                 switch (block.fieldType) {
                     case FieldTypes.BOOL:
                         data = ((Boolean) recordItem) ? "1" : "0";
@@ -207,33 +206,34 @@ public class RandomAccessFiles {
             String resultData = new String(originData).trim();
             if (resultData.length() == 0) {
                 result.add(null);
-                break;
-            }
 
-            switch (block.fieldType) {
-                case FieldTypes.BOOL:
-                    boolean boolData;
-                    boolData = resultData.equals("1");
-                    result.add(boolData);
-                    break;
-                case FieldTypes.DOUBLE:
-                    double doubleData = Double.parseDouble(resultData);
-                    result.add(doubleData);
-                    break;
-                case FieldTypes.INTEGER:
-                    int intData = Integer.parseInt(resultData);
-                    result.add(intData);
-                    break;
-                case FieldTypes.DATETIME:
-                    long timeData = Long.parseLong(resultData);
-                    Date dateData = new Date(timeData);
-                    result.add(dateData);
-                    break;
-                case FieldTypes.VARCHAR:
-                    result.add(resultData);
-                    break;
-                default:
-                    break;
+            } else {
+
+                switch (block.fieldType) {
+                    case FieldTypes.BOOL:
+                        boolean boolData;
+                        boolData = resultData.equals("1");
+                        result.add(boolData);
+                        break;
+                    case FieldTypes.DOUBLE:
+                        double doubleData = Double.parseDouble(resultData);
+                        result.add(doubleData);
+                        break;
+                    case FieldTypes.INTEGER:
+                        int intData = Integer.parseInt(resultData);
+                        result.add(intData);
+                        break;
+                    case FieldTypes.DATETIME:
+                        long timeData = Long.parseLong(resultData);
+                        Date dateData = new Date(timeData);
+                        result.add(dateData);
+                        break;
+                    case FieldTypes.VARCHAR:
+                        result.add(resultData);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
