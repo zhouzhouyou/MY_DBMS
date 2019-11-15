@@ -79,25 +79,28 @@ public enum CreateUtil {
                 constraintBlocks.add(new ConstraintBlock(cname + "not_null", fieldName, NOT_NULL, ""));
             }
             if (s.contains(SQL.DEFAULT)) {
-                String parameter = getDefault(s);
-                constraintBlocks.add(new ConstraintBlock(cname + "default", fieldName, DEFAULT, parameter));
+                Result convertResult = getDefault(s, type);
+                if (convertResult.code != ResultFactory.SUCCESS) return convertResult;
+                constraintBlocks.add(new ConstraintBlock(cname + "default", fieldName, DEFAULT, convertResult.data));
             }
         }
         TableDefineFactory defineFactory = block.getDefineFactory();
-        TableConstraintFactory constraintFactory = block.getConstraintFactory();
         defineBlocks.forEach(defineBlock -> defineFactory.add(defineBlock.fieldName, defineBlock));
-        constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
         defineFactory.saveInstance();
+
+        TableConstraintFactory constraintFactory = block.getConstraintFactory();
+        constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
         constraintFactory.saveInstance();
         return ResultFactory.buildSuccessResult(parser.getTableName());
     }
 
-    static String getDefault(String s) {
+    static Result getDefault(String s, int type) {
         String reg = "(default )(.+)";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(s);
         matcher.find();
-        return matcher.group(2);
+        String result = matcher.group(2);
+        return ConvertUtil.getConvertedObject(result, type);
     }
 
     static String getCheck(String s) {

@@ -20,6 +20,6 @@ class CreateUtilTest {
     @ParameterizedTest
     @ValueSource(strings = "dsad default 20")
     public void testDefault(String string) {
-        System.out.println(CreateUtil.getDefault(string));
+        System.out.println(CreateUtil.getDefault(string, FieldTypes.INTEGER));
     }
 }

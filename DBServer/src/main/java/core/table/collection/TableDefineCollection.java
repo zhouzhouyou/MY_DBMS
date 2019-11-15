@@ -4,6 +4,7 @@ package core.table.collection;
 import core.table.block.DefineBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
+import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -35,6 +36,21 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
         for (DefineBlock defineBlock : list)
             totalLength += defineBlock.getDataLength();
         return totalLength;
+    }
+
+    /**
+     * 返回这个域之前的总长度和对应的DefineBlock
+     *
+     * @param fieldName 域名
+     * @return 这个域之前的总长度和对应的DefineBlock
+     */
+    public Pair<DefineBlock, Integer> getPreInfo(String fieldName) {
+        int totalLength = 0;
+        for (DefineBlock defineBlock : list) {
+            if (!defineBlock.fieldName.equals(fieldName)) totalLength += defineBlock.getDataLength();
+            else return new Pair<>(defineBlock, totalLength);
+        }
+        return null;
     }
 
     /**

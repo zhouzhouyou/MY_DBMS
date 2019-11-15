@@ -2,6 +2,7 @@ package util.file;
 
 import core.table.block.DefineBlock;
 import core.table.collection.TableDefineCollection;
+import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 import util.table.FieldTypes;
@@ -25,7 +26,7 @@ public class RandomAccessFiles {
         recordLength = collection.getTotalDataLength();
         emptyFilePointersPath = collection.absolutePath.substring(0, collection.absolutePath.length() - 3) + "emLine";
         recordFilePath = collection.absolutePath.substring(0, collection.absolutePath.length() - 3) + "trd";
-        emptyFilePointers = getEmptyFilePointers(emptyFilePointersPath);
+        getEmptyFilePointers(emptyFilePointersPath);
     }
 
     public int insert(List<Object> list) throws IOException {
@@ -36,7 +37,6 @@ public class RandomAccessFiles {
         raf.close();
         updateEmptyFilePointers();
         return insertLine;
-
     }
 
     public Result update(int recordNumber, List<Object> list) throws IOException {
@@ -49,7 +49,6 @@ public class RandomAccessFiles {
         updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
     }
-
 
     public List<List<Object>> select() throws IOException {
         List<List<Object>> resultSet = new ArrayList<>();
@@ -90,62 +89,56 @@ public class RandomAccessFiles {
      *
      * @param fieldName 域名
      * @return 某一列数据
-     * @throws IOException 文件读写错误
      */
     public List<Object> selectField(String fieldName) throws IOException {
         List<Object> result = new ArrayList<>();
-        RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-        //TODO: get all data from a column
-        int filedRecordPointer = 0;
-        DefineBlock resultBlock = null;
-        for (int i = 0; i < collection.list.size(); i++) {
-            DefineBlock block = collection.list.get(i);
-            if (!block.fieldName.equals(fieldName))
-                filedRecordPointer += block.getDataLength();
-            else {
-                resultBlock = block;
-                break;
-            }
-        }
-        if (resultBlock == null)
-            return null;
+        RandomAccessFile raf;
+
+        raf = new RandomAccessFile(recordFilePath, "rw");
+        Pair<DefineBlock, Integer> pair = collection.getPreInfo(fieldName);
+        if (pair.getFirst() == null) return null;
+
+        int fieldRecordPointer = pair.getLast();
+        DefineBlock resultBlock = pair.getFirst();
+
         for (int i = 0; i < raf.length() / recordLength; i++) {
-            raf.seek(i * recordLength + filedRecordPointer);
+            raf.seek(i * recordLength + fieldRecordPointer);
             byte[] originData = new byte[resultBlock.getDataLength()];
             raf.readFully(originData);
             String resultData = new String(originData).trim();
             if (resultData.length() == 0) {
                 result.add(null);
-            } else {
-                switch (resultBlock.fieldType) {
-                    case FieldTypes.BOOL:
-                        boolean boolData;
-                        boolData = resultData.equals("1");
-                        result.add(boolData);
-                        break;
-                    case FieldTypes.DOUBLE:
-                        double doubleData = Double.parseDouble(resultData);
-                        result.add(doubleData);
-                        break;
-                    case FieldTypes.INTEGER:
-                        int intData = Integer.parseInt(resultData);
-                        result.add(intData);
-                        break;
-                    case FieldTypes.DATETIME:
-                        long timeData = Long.parseLong(resultData);
-                        Date dateData = new Date(timeData);
-                        result.add(dateData);
-                        break;
-                    case FieldTypes.VARCHAR:
-                        result.add(resultData);
-                        break;
-                    default:
-                        break;
-
-                }
+                continue;
+            }
+            switch (resultBlock.fieldType) {
+                case FieldTypes.BOOL:
+                    boolean boolData;
+                    boolData = resultData.equals("1");
+                    result.add(boolData);
+                    break;
+                case FieldTypes.DOUBLE:
+                    double doubleData = Double.parseDouble(resultData);
+                    result.add(doubleData);
+                    break;
+                case FieldTypes.INTEGER:
+                    int intData = Integer.parseInt(resultData);
+                    result.add(intData);
+                    break;
+                case FieldTypes.DATETIME:
+                    long timeData = Long.parseLong(resultData);
+                    Date dateData = new Date(timeData);
+                    result.add(dateData);
+                    break;
+                case FieldTypes.VARCHAR:
+                    result.add(resultData);
+                    break;
+                default:
+                    break;
             }
         }
         raf.close();
+        //TODO: get all data from a column
+
         return result;
     }
 
@@ -206,9 +199,7 @@ public class RandomAccessFiles {
             String resultData = new String(originData).trim();
             if (resultData.length() == 0) {
                 result.add(null);
-
             } else {
-
                 switch (block.fieldType) {
                     case FieldTypes.BOOL:
                         boolean boolData;
@@ -251,17 +242,19 @@ public class RandomAccessFiles {
 
 
     @SuppressWarnings("unchecked")
-    private List<Integer> getEmptyFilePointers(String emptyFilePointersPath) throws IOException, ClassNotFoundException {
+    private void getEmptyFilePointers(String emptyFilePointersPath) throws IOException, ClassNotFoundException {
         File file = new File(emptyFilePointersPath);
         if (!file.exists()) {
+            FileUtils.createParentPath(emptyFilePointersPath);
             file.createNewFile();
-            return new ArrayList<>();
+            emptyFilePointers = new ArrayList<>();
+            updateEmptyFilePointers();
+            return;
         }
         FileInputStream fis = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fis);
-        List<Integer> emptyFilePointers = (List<Integer>) ois.readObject();
+        emptyFilePointers = (List<Integer>) ois.readObject();
         ois.close();
-        return emptyFilePointers;
     }
 
     private void updateEmptyFilePointers() throws IOException {

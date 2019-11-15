@@ -150,7 +150,7 @@ public class TableBlock extends Block {
     public RandomAccessFiles getRaf() {
         if (raf == null) {
             try {
-                raf = new RandomAccessFiles(getDefineFactory().getCollection());
+                raf = new RandomAccessFiles(defineFactory.getCollection());
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }

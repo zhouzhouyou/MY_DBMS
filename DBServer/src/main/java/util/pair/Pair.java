@@ -24,16 +24,8 @@ public class Pair<T, V> {
         return map;
     }
 
-    public static <T, V> List<T> firstFromList(List<Pair<T, V>> pairs) {
-        List<T> list = new ArrayList<>();
-        pairs.forEach(tvPair -> list.add(tvPair.getFirst()));
-        return list;
-    }
-
-    public static <T, V> List<V> lastFromList(List<Pair<T, V>> pairs) {
-        List<V> list = new ArrayList<>();
-        pairs.forEach(tvPair -> list.add(tvPair.getLast()));
-        return list;
+    public static <T, V> List<T> fromMap(Map<V, T>map) {
+        return new ArrayList<>(map.values());
     }
 
     public T getFirst() {

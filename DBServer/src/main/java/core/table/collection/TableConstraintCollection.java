@@ -2,6 +2,7 @@ package core.table.collection;
 
 
 import core.table.block.ConstraintBlock;
+import util.file.RandomAccessFiles;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
 import util.pair.Pair;
@@ -25,11 +26,11 @@ public class TableConstraintCollection extends TableComponentCollection<Constrai
         super(absolutePath);
     }
 
-    public Result check(Map<String, Object> recordMap) {
+    public Result check(Map<String, Object> recordMap, RandomAccessFiles raf) {
         for (ConstraintBlock block : list) {
-            Result result = block.check(recordMap);
+            Result result = block.check(recordMap, raf);
             if (result.code != ResultFactory.SUCCESS) return result;
         }
-        return ResultFactory.buildSuccessResult(null);
+        return ResultFactory.buildSuccessResult(recordMap);
     }
 }

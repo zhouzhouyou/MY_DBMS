@@ -68,16 +68,17 @@ public class IndexBlock extends Block {
     public Result create() {
         ixBlock = new IxBlock(this);
         //创建一个IxBlock，创建失败立即返回
+        List<Object> list = null;
         try {
-            List<Object> list = raf.selectField(field);
-            List<Comparable> comparableList = list.stream().map(object -> (Comparable) object).collect(Collectors.toList());
-            //把现有的所有数据插入IxBlock
-            boolean result = ixBlock.insert(comparableList);
-            if (result) return ResultFactory.buildSuccessResult(null);
-            else return ResultFactory.buildFailResult(null);
+            list = raf.selectField(field);
         } catch (IOException e) {
-            return ResultFactory.buildFailResult(e.toString());
+            e.printStackTrace();
         }
+        List<Comparable> comparableList = list.stream().map(object -> (Comparable) object).collect(Collectors.toList());
+        //把现有的所有数据插入IxBlock
+        boolean result = ixBlock.insert(comparableList);
+        if (result) return ResultFactory.buildSuccessResult(null);
+        else return ResultFactory.buildFailResult(null);
     }
 
     public Result delete() {

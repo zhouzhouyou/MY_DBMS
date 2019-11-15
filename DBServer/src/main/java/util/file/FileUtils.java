@@ -39,7 +39,7 @@ public class FileUtils {
      */
     public static <T extends Serializable> void serialize(T t, String absolutePath) throws IOException {
         File file = new File(absolutePath);
-        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+        createParentPath(absolutePath);
         FileOutputStream fos = new FileOutputStream(file);
         ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(t);
@@ -81,5 +81,10 @@ public class FileUtils {
             Arrays.asList(file.listFiles()).forEach(File::delete);
         }
         return file.delete();
+    }
+
+    public static void createParentPath(String path) {
+        File file = new File(path);
+        if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
     }
 }

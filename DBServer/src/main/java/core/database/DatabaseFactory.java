@@ -101,7 +101,7 @@ public enum DatabaseFactory {
      * @return 数据库
      * @throws Exception 数据库不存在
      */
-    public DatabaseBlock getDatabase(String name) throws Exception {
+    public synchronized DatabaseBlock getDatabase(String name) throws Exception {
         if (!exists(name)) throw new Exception(name + " not exists");
         DatabaseBlock databaseBlock = map.get(name);
         databaseBlock.request();
