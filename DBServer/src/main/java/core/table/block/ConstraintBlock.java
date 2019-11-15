@@ -1,6 +1,10 @@
 package core.table.block;
 
 import util.file.Block;
+import util.result.Result;
+import util.result.ResultFactory;
+
+import java.util.Map;
 
 /**
  * 存储着一条约束
@@ -33,5 +37,10 @@ public class ConstraintBlock extends Block {
         this.fieldName = fieldName;
         this.constraintType = constraintType;
         this.param = param;
+    }
+
+    public Result check(Map<String, Object> recordMap) {
+        //TODO: 判断是否成功
+        return ResultFactory.buildSuccessResult(null);
     }
 }

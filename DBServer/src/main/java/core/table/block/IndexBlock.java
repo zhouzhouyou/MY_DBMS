@@ -8,6 +8,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class IndexBlock extends Block {
     /**
-     * 缩影名
+     * 索引名
      */
     public String indexName;
     /**
@@ -112,5 +113,27 @@ public class IndexBlock extends Block {
         boolean result = ixBlock.insert(comparable, index);
         if (result) return ResultFactory.buildSuccessResult(comparable);
         return ResultFactory.buildFailResult(comparable);
+    }
+
+    /**
+     * 删除一条记录
+     *
+     * @param index 记录的索引
+     * @return 删除是否成功
+     */
+    public Result deleteRecord(int index) {
+        return deleteRecord(Collections.singletonList(index));
+    }
+
+    /**
+     * 删除一组记录
+     *
+     * @param indexes 记录的索引列表
+     * @return 删除是否成功
+     */
+    public Result deleteRecord(List<Integer> indexes) {
+        boolean result = ixBlock.delete(indexes);
+        if (result) return ResultFactory.buildSuccessResult(null);
+        return ResultFactory.buildFailResult(null);
     }
 }

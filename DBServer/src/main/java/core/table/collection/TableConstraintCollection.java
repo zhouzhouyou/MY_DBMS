@@ -4,6 +4,12 @@ package core.table.collection;
 import core.table.block.ConstraintBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
+import util.pair.Pair;
+import util.result.Result;
+import util.result.ResultFactory;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * 表的所有约束
@@ -17,5 +23,13 @@ public class TableConstraintCollection extends TableComponentCollection<Constrai
 
     public TableConstraintCollection(String absolutePath) {
         super(absolutePath);
+    }
+
+    public Result check(Map<String, Object> recordMap) {
+        for (ConstraintBlock block : list) {
+            Result result = block.check(recordMap);
+            if (result.code != ResultFactory.SUCCESS) return result;
+        }
+        return ResultFactory.buildSuccessResult(null);
     }
 }

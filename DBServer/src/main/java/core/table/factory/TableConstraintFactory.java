@@ -5,10 +5,11 @@ import core.table.block.ConstraintBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableConstraintCollection;
 import core.table.collection.TableDefineCollection;
+import util.pair.Pair;
 import util.result.Result;
-import util.result.ResultFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class TableConstraintFactory extends TableComponentFactory<ConstraintBlock, TableConstraintCollection> {
     private TableDefineFactory defineFactory;
@@ -35,10 +36,9 @@ public class TableConstraintFactory extends TableComponentFactory<ConstraintBloc
      * @return 是否满足条件
      */
     public Result check(List<Object> record) {
-        //TODO: 判断是否满足条件
         TableDefineCollection defineCollection = defineFactory.getCollection();
         List<String> fieldNames = defineCollection.getFieldNames();
-        //TODO: for 循环来判断
-        return ResultFactory.buildSuccessResult(null);
+        Map<String, Object> recordMap = Pair.buildMap(fieldNames, record);
+        return collection.check(recordMap);
     }
 }

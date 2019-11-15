@@ -6,12 +6,14 @@ import core.table.block.TableBlock;
 import core.table.collection.TableDefineCollection;
 import core.table.collection.TableIndexCollection;
 import util.file.RandomAccessFiles;
+import util.pair.Pair;
 import util.parser.parsers.CreateIndexParser;
 import util.parser.parsers.DropIndexParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.List;
+import java.util.Map;
 
 public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIndexCollection> {
     private RandomAccessFiles raf;
@@ -71,21 +73,36 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
     }
 
     /**
+     * 删除一组记录
+     *
+     * @param indexes 一组记录的索引
+     * @return 删除结果
+     */
+    public Result deleteRecord(List<Integer> indexes) {
+        return collection.deleteRecord(indexes);
+    }
+
+    /**
+     * 删除一条记录
+     *
+     * @param index 记录的索引
+     * @return 删除结果
+     */
+    public Result deleteRecord(int index) {
+        return collection.deleteRecord(index);
+    }
+
+    /**
      * 试图插入一条记录进入索引，没有在索引中的域会被无视
      *
-     * @param objects 一条记录
+     * @param record 一条记录
      * @param index   记录的索引
      * @return 成功插入则返回 {@link ResultFactory#SUCCESS}
      */
-    public Result insertRecord(List<Object> objects, int index) {
+    public Result insertRecord(List<Object> record, int index) {
         TableDefineCollection defineCollection = defineFactory.collection;
         List<String> fieldNames = defineCollection.getFieldNames();
-        for (int i = 0; i < objects.size(); i++) {
-            IndexBlock indexBlock = get(fieldNames.get(i));
-            if (indexBlock == null) continue;
-            Result result = indexBlock.insertRecord((Comparable) objects.get(i), index);
-            if (result.code != ResultFactory.SUCCESS) return result;
-        }
-        return ResultFactory.buildSuccessResult(index);
+        Map<String, Object> recordMap = Pair.buildMap(fieldNames, record);
+        return collection.insertRecord(recordMap, index);
     }
 }
