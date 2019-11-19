@@ -3,7 +3,6 @@ package core.table.collection;
 import core.table.block.IndexBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
-import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 

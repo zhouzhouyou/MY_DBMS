@@ -1,4 +1,4 @@
-package util.where;
+package util.parser.condition;
 
 public class NormalWhereItem extends WhereItem {
     public NormalWhereItem(String whereCondition) {

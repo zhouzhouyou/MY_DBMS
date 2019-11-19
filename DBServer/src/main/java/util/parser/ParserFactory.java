@@ -2,19 +2,13 @@ package util.parser;
 
 import util.parser.parsers.*;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static util.SQL.END_OF_SQL;
+import static util.parser.ParserUtil.contains;
+import static util.parser.ParserUtil.preProcess;
 
 public class ParserFactory {
 
     public static Parser generateParser(String sql) {
-        sql = sql.trim();
-        sql = sql.toLowerCase();
-        sql = sql.replaceAll("\\s+", " ");
-        if (sql.contains(";")) sql = sql.substring(0, sql.lastIndexOf(";"));
-        sql += (" " + END_OF_SQL);
+        sql = preProcess(sql);
 
         if (contains(sql, "(insert into)(.+?)(values)(.+)")) return new InsertParser(sql);
         else if (contains(sql, "(update)(.+)(set)(.+)")) return new UpdateParser(sql);
@@ -34,11 +28,5 @@ public class ParserFactory {
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;
-    }
-
-    private static boolean contains(String sql, String reg) {
-        Pattern pattern = Pattern.compile(reg, Pattern.CASE_INSENSITIVE);
-        Matcher matcher = pattern.matcher(sql);
-        return matcher.find();
     }
 }

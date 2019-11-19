@@ -60,6 +60,7 @@ public class SQL {
     public static final String END_OF_SQL = "ENDOFSQL";
     public static final String LB = "(";
     public static final String RB = ")";
-    public static final String DEFAULT_SPLIT = "[,]";
-    public static final String AND_OR_SPLIT = "(and|or)";
+    public static final String DEFAULT_SPLIT = ", *(?=((([^']|'')*'){2})*([^']|'')*$)";
+    public static final String AND_OR_SPLIT = "(and|or|[(]|[)]) *(?=((([^']|'')*'){2})*([^']|'')*$)";
+    public static final String WITH_DELIMITER = "((?<=%1$s)|(?=%1$s))";
 }

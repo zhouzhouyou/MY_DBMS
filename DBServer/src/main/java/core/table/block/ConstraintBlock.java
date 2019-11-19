@@ -9,7 +9,6 @@ import util.table.CheckUtil;
 import util.table.FieldTypes;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +45,7 @@ public class ConstraintBlock extends Block {
         this.param = param;
     }
 
-    public Result check(Map<String, Object> recordMap, RandomAccessFiles raf) {
+    public Result check(Map<String, Object> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
         //TODO: 判断是否成功
         switch (constraintType) {
             case FieldTypes.PK:
@@ -59,7 +58,7 @@ public class ConstraintBlock extends Block {
             case FieldTypes.UNIQUE:
                 return checkUnique(recordMap, raf);
             case FieldTypes.CHECK:
-                return checkCheck(recordMap, raf);
+                return checkCheck(recordMap, fieldTypes, raf);
             case FieldTypes.DEFAULT:
                 return checkDefault(recordMap);
         }
@@ -71,8 +70,8 @@ public class ConstraintBlock extends Block {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result checkCheck(Map<String, Object> recordMap, RandomAccessFiles raf) {
-        return CheckUtil.check(recordMap, raf, (String)param);
+    private Result checkCheck(Map<String, Object> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
+        return CheckUtil.check(recordMap, (String) param);
     }
 
     private Result checkUnique(Map<String, Object> recordMap, RandomAccessFiles raf) {

@@ -24,7 +24,7 @@ public class Pair<T, V> {
         return map;
     }
 
-    public static <T, V> List<T> fromMap(Map<V, T>map) {
+    public static <T, V> List<T> fromMap(Map<V, T> map) {
         return new ArrayList<>(map.values());
     }
 

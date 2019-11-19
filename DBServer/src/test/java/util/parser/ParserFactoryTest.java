@@ -13,7 +13,8 @@ class ParserFactoryTest {
 
     @ParameterizedTest
     @ValueSource(strings = {
-            "insert into student (name, sex) values('zzy', 'male);",
+            "insert into student (name, sex) values('zzy', 'male');",
+            "insert into student (name, sex) values('and',or,,', 'female')",
             "insert into student values('zzy', 'male')",
             "delete from student where name='zzy' or sex='male';",
             "update student set sex='male', birthday=sysdate where name='zzy' or (name='ckf' and age=20);",
@@ -39,8 +40,7 @@ class ParserFactoryTest {
             System.out.println(INSERT_INTO);
             ((InsertParser) parser).getInsertField().forEach(System.out::println);
             ((InsertParser) parser).getInsertValue().forEach(System.out::println);
-        }
-        else if (parser instanceof DeleteParser) System.out.println(DELETE_FROM);
+        } else if (parser instanceof DeleteParser) System.out.println(DELETE_FROM);
         else if (parser instanceof UpdateParser) System.out.println(UPDATE);
         else if (parser instanceof CreateTableParser) System.out.println(CREATE_TABLE);
         else if (parser instanceof CreateDatabaseParser) System.out.println(CREATE_DATABASE);

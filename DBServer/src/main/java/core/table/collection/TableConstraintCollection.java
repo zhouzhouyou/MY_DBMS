@@ -5,7 +5,6 @@ import core.table.block.ConstraintBlock;
 import util.file.RandomAccessFiles;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
-import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -26,9 +25,9 @@ public class TableConstraintCollection extends TableComponentCollection<Constrai
         super(absolutePath);
     }
 
-    public Result check(Map<String, Object> recordMap, RandomAccessFiles raf) {
+    public Result check(Map<String, Object> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
         for (ConstraintBlock block : list) {
-            Result result = block.check(recordMap, raf);
+            Result result = block.check(recordMap, fieldTypes, raf);
             if (result.code != ResultFactory.SUCCESS) return result;
         }
         return ResultFactory.buildSuccessResult(recordMap);

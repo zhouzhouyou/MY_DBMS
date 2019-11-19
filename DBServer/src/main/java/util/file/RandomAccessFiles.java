@@ -89,6 +89,7 @@ public class RandomAccessFiles {
      *
      * @param fieldName 域名
      * @return 某一列数据
+     * @throws IOException 文件读写错误
      */
     public List<Object> selectField(String fieldName) throws IOException {
         List<Object> result = new ArrayList<>();

@@ -71,4 +71,19 @@ public class ConvertUtil {
         if (convert == null) return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(type), string);
         return ResultFactory.buildSuccessResult(convert);
     }
+
+    public static int getType(String value) {
+        Object object = null;
+        object = getDate(value);
+        if (object != null) return FieldTypes.DATETIME;
+        object = getBoolean(value);
+        if (object != null) return FieldTypes.BOOL;
+        object = getInteger(value);
+        if (object != null) return FieldTypes.INTEGER;
+        object = getDouble(value);
+        if (object != null) return FieldTypes.DOUBLE;
+        object = getString(value);
+        if (object != null) return FieldTypes.VARCHAR;
+        return -1;
+    }
 }

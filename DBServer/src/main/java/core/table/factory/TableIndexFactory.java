@@ -96,7 +96,7 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
      * 试图插入一条记录进入索引，没有在索引中的域会被无视
      *
      * @param record 一条记录
-     * @param index   记录的索引
+     * @param index  记录的索引
      * @return 成功插入则返回 {@link ResultFactory#SUCCESS}
      */
     public Result insertRecord(List<Object> record, int index) {

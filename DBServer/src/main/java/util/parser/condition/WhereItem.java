@@ -1,4 +1,4 @@
-package util.where;
+package util.parser.condition;
 
 public abstract class WhereItem {
     public String whereCondition;
