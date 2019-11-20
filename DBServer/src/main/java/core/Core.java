@@ -4,10 +4,7 @@ import core.database.DatabaseBlock;
 import core.database.DatabaseFactory;
 import core.table.factory.TableFactory;
 import server.user.UserFactory;
-import util.parser.parsers.ChooseDatabaseParser;
-import util.parser.parsers.CreateIndexParser;
-import util.parser.parsers.CreateTableParser;
-import util.parser.parsers.InsertParser;
+import util.parser.parsers.*;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -172,6 +169,36 @@ public enum Core {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
             return factory.createIndex(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
+    }
+
+    public Result select(SelectParser parser, String database) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.select(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
+    }
+
+    public Result update(UpdateParser parser, String database) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.update(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(database);
+        }
+    }
+
+    public Result delete(DeleteParser parser, String database) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.delete(parser);
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }

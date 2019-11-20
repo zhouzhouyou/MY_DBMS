@@ -6,9 +6,7 @@ import core.table.collection.TableCollection;
 import util.file.BlockCollections;
 import util.file.FileUtils;
 import util.file.exception.IllegalNameException;
-import util.parser.parsers.CreateIndexParser;
-import util.parser.parsers.CreateTableParser;
-import util.parser.parsers.InsertParser;
+import util.parser.parsers.*;
 import util.result.Result;
 import util.result.ResultFactory;
 
@@ -186,5 +184,21 @@ public class TableFactory {
         String tableName = parser.getTableName();
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).createIndex(parser);
+    }
+
+    public Result select(SelectParser parser) {
+        return null;
+    }
+
+    public Result update(UpdateParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).update(parser);
+    }
+
+    public Result delete(DeleteParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).delete(parser);
     }
 }

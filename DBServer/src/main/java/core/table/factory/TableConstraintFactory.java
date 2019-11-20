@@ -10,6 +10,7 @@ import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -43,11 +44,11 @@ public class TableConstraintFactory extends TableComponentFactory<ConstraintBloc
         TableDefineCollection defineCollection = defineFactory.getCollection();
         List<Integer> fieldTypes = defineCollection.getFieldTypes();
         List<String> fieldNames = defineCollection.getFieldNames();
-        Map<String, Object> recordMap = Pair.buildMap(fieldNames, record);
+        List<Pair<String, Object>> recordMap = Pair.buildPairList(fieldNames, record);
         Result result = collection.check(recordMap, fieldTypes, raf);
         if (result.code != ResultFactory.SUCCESS) return result;
         record.clear();
-        record.addAll(Pair.fromMap(recordMap));
+        record.addAll(Pair.fromPairList(recordMap));
         return result;
     }
 }

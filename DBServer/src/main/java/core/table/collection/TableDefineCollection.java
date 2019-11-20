@@ -95,4 +95,24 @@ public class TableDefineCollection extends TableComponentCollection<DefineBlock>
         }
         return ResultFactory.buildSuccessResult(fieldTypes);
     }
+
+    /**
+     * 是否含有某个域
+     *
+     * @param fieldName 域名
+     * @return 是否含有某个域
+     */
+    public boolean hasField(String fieldName) {
+        for (DefineBlock defineBlock : list) {
+            if (defineBlock.fieldName.equals(fieldName)) return true;
+        }
+        return false;
+    }
+
+    public DefineBlock getDefineBlock(String fieldName) {
+        for (DefineBlock defineBlock : list) {
+            if (defineBlock.fieldName.equals(fieldName)) return defineBlock;
+        }
+        return null;
+    }
 }

@@ -2,6 +2,7 @@ package core.table.factory;
 
 
 import core.table.block.IndexBlock;
+import core.table.block.IxBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableDefineCollection;
 import core.table.collection.TableIndexCollection;
@@ -104,5 +105,9 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
         List<String> fieldNames = defineCollection.getFieldNames();
         Map<String, Object> recordMap = Pair.buildMap(fieldNames, record);
         return collection.insertRecord(recordMap, index);
+    }
+
+    public IxBlock getRelativeIxBlock(String fieldName) {
+        return collection.getRelativeIxBlock(fieldName);
     }
 }

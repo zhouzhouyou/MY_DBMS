@@ -1,6 +1,7 @@
 package core.table.collection;
 
 import core.table.block.IndexBlock;
+import core.table.block.IxBlock;
 import util.file.exception.EmptyNameException;
 import util.file.exception.IllegalNameException;
 import util.result.Result;
@@ -59,5 +60,13 @@ public class TableIndexCollection extends TableComponentCollection<IndexBlock> {
             }
         }
         return ResultFactory.buildSuccessResult(index);
+    }
+
+    public IxBlock getRelativeIxBlock(String fieldName) {
+        for (IndexBlock block : list) {
+            if (!block.field.equals(fieldName)) continue;
+            return block.getIxBlock();
+        }
+        return null;
     }
 }

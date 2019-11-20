@@ -24,7 +24,7 @@ public class UpdateParser extends Parser {
         return splitOriginSQLIntoSegment().get(1);
     }
 
-    public List<String> getWhereCondition() {
-        return splitOriginSQLIntoSegment().get(2);
+    public String getWhereCondition() {
+        return splitOriginSQLIntoSegment().get(2).get(0);
     }
 }
