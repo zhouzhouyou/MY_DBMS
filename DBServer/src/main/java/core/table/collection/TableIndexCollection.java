@@ -8,6 +8,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -66,6 +67,18 @@ public class TableIndexCollection extends TableComponentCollection<IndexBlock> {
         for (IndexBlock block : list) {
             if (!block.field.equals(fieldName)) continue;
             return block.getIxBlock();
+        }
+        return null;
+    }
+
+    public Result deleteAll() {
+        list.forEach(indexBlock -> indexBlock.deleteAll());
+        return null;
+    }
+
+    public IxBlock getIx(String fieldName) {
+        for (IndexBlock indexBlock : list) {
+            if (indexBlock.field.equals(fieldName)) return indexBlock.getIxBlock();
         }
         return null;
     }

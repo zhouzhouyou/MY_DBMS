@@ -1,7 +1,5 @@
 package Client;
 
-import com.google.gson.Gson;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -58,6 +56,10 @@ public class Client implements Runnable {
             System.out.println("3. create or drop database");
             System.out.println("4. do database operation.");
             System.out.println("5. disconnect");
+        }
+        while (!scanner.hasNextInt()) {
+            scanner.nextLine();
+            System.out.println("invalid");
         }
         operationID = scanner.nextInt();
     }

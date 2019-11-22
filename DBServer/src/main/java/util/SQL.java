@@ -58,6 +58,10 @@ public class SQL {
 
     /*Other*/
     public static final String END_OF_SQL = "ENDOFSQL";
+    public static final String AND = "and";
+    public static final String AA = "&&";
+    public static final String OR = "or";
+    public static final String OO = "||";
     public static final String LB = "(";
     public static final String RB = ")";
     public static final String DEFAULT_SPLIT = ", *(?=((([^']|'')*'){2})*([^']|'')*$)";

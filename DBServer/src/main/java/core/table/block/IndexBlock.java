@@ -137,4 +137,8 @@ public class IndexBlock extends Block {
         if (result) return ResultFactory.buildSuccessResult(null);
         return ResultFactory.buildFailResult(null);
     }
+
+    public void deleteAll() {
+        //ixBlock.deleteAll();
+    }
 }

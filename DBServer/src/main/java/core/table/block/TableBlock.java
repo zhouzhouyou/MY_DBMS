@@ -155,7 +155,7 @@ public class TableBlock extends Block {
     public RandomAccessFiles getRaf() {
         if (raf == null) {
             try {
-                raf = new RandomAccessFiles(defineFactory.getCollection());
+                raf = new RandomAccessFiles(getDefineFactory().getCollection());
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -199,6 +199,10 @@ public class TableBlock extends Block {
 
     public Result delete(DeleteParser parser) {
         return DeleteUtil.delete(this, parser);
+    }
+
+    public boolean hasField(String fieldName) {
+        return getDefineFactory().getCollection().hasField(fieldName);
     }
 }
 

@@ -110,4 +110,12 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
     public IxBlock getRelativeIxBlock(String fieldName) {
         return collection.getRelativeIxBlock(fieldName);
     }
+
+    public Result deleteAll() {
+        return collection.deleteAll();
+    }
+
+    public IxBlock getIx(String fieldName) {
+        return collection.getIx(fieldName);
+    }
 }

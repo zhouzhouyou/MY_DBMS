@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class UpdateUtil {
+    @SuppressWarnings("unchecked")
     public static Result update(TableBlock tableBlock, UpdateParser parser) {
         List<String> updateInfo = parser.getUpdateInfo();
         TableDefineCollection defineCollection = tableBlock.getDefineFactory().getCollection();
@@ -24,8 +25,9 @@ public class UpdateUtil {
             Object value = ConvertUtil.getConvertedObject(assign[1], defineBlock.fieldType);
             if (value == null) return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(defineBlock.fieldType), assign[1]);
         }
-
-        List<Integer> toUpdate = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
+        Result result = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
+        if (result.code != ResultFactory.SUCCESS) return result;
+        List<Integer> toUpdate = (List<Integer>) result.data;
         RandomAccessFiles raf = tableBlock.getRaf();
 
         for (int index : toUpdate) {
