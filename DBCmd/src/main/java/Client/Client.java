@@ -1,12 +1,15 @@
 package Client;
 
-import com.google.gson.Gson;
+import util.Request;
+import util.Result;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Client implements Runnable {
@@ -14,7 +17,7 @@ public class Client implements Runnable {
     private BufferedReader input;
     private PrintStream output;
     private boolean connected = false;
-    private String operatingDatabaseName = null;
+    private String currentDatabase = null;
     private int operationID = 0;
     private Scanner scanner = new Scanner(System.in);
 
@@ -62,6 +65,33 @@ public class Client implements Runnable {
         operationID = scanner.nextInt();
     }
 
+    private void handleSelectResult(Result result) {
+        Map resultSet = (Map) result.data;
+
+        Object[] dataLengthGetter = resultSet.values().toArray();
+        List tempDataLengthGetter = (List) dataLengthGetter[0];
+        int dataLength = tempDataLengthGetter.size();
+
+        StringBuilder line = new StringBuilder();
+        for (Object field : resultSet.keySet()) {
+            String key = (String) field;
+            line.append(key).append("     ");
+        }
+        System.out.println(line);
+        System.out.println();
+        line.delete(0, line.length());
+
+        for (int i = 0; i < dataLength; i++) {
+            for (Object dataList : resultSet.values()) {
+                List data = (List) dataList;
+                line.append(data.get(i)).append("     ");
+            }
+            System.out.println(line);
+            line.delete(0, line.length());
+        }
+    }
+
+
     public void run() {
         while (true) {
             printOperationHint();
@@ -69,66 +99,57 @@ public class Client implements Runnable {
                 System.out.println("Please input connect statement.");
                 String connectSql = scanner.next();
                 Result result = getResult(connectSql);
-                System.out.println(result.code);
                 if (result.code == Result.SUCCESS)
                     connected = true;
+                else {
+                    System.out.println(result.data.toString());
+                }
             } else if (operationID == 2) {
                 break;
             } else if (operationID == 3) {
                 System.out.println("Please input create/drop database statement.");
                 String sql = scanner.next();
                 Result result = getResult(sql);
-                System.out.println(result.code);
+                if (result.code != Result.SUCCESS)
+                    System.out.println(result.data.toString());
             } else if (operationID == 4) {
-                System.out.println("Please input database name.");
-                operatingDatabaseName = scanner.next();
+                if (currentDatabase != null) {
+                    System.out.println("Do you want to change database? (y/n)");
+                    if (scanner.next().equals("y")) {
+                        System.out.println("Please input database name.");
+                        currentDatabase = scanner.next();
+                    }
+                } else {
+                    System.out.println("Please input database name.");
+                    currentDatabase = scanner.next();
+                }
                 System.out.println("Please input sql statement.");
                 String sql = scanner.next();
-                Result result = getResult(sql, operatingDatabaseName);
-                System.out.println(result.code);
+                Result result = getResult(sql, currentDatabase);
+                if (result.code == Result.SUCCESS && sql.contains("select")) {
+                    handleSelectResult(result);
+                } else
+                    System.out.println(result.data.toString());
             } else if (operationID == 5) {
                 Result result = getResult("disconnect");
-                System.out.println(result.code);
-                if (result.code == Result.SUCCESS)
+                if (result.code == Result.SUCCESS) {
                     connected = false;
+                    System.out.println("disconnect success");
+                }
+
+            } else {
+                System.out.println("Please check the number you input");
+            }
+
+            try {
+                input.close();
+                output.close();
+                socket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
         }
     }
 
-
-//    public void run() {
-//        while (true) {
-//            sql = scanner.next();
-//            sql = sql.trim();
-//            String result = "";
-//            Result resultSet = null;
-//            if (sql.equals("") || sql.length() == 0) {
-//                System.out.println("Check Your Input.");
-//            } else if (sql.contains("connect") && !sql.contains("disconnect")) {
-//                resultSet = getResultSet(result);
-//                if (resultSet.code == Result.SUCCESS) {
-//                    connected = true;
-//                    System.out.println("Success to connect.");
-//                } else System.out.println("Fail to connect.");
-//            } else if (connected) {
-//                resultSet = getResultSet(result);
-//                if (sql.contains("disconnect") && resultSet.code == Result.SUCCESS) {
-//                    connected = false;
-//                    System.out.println("Disconnect.");
-//                }
-//            } else if (sql.contains("quit")) {
-//                break;
-//            } else System.out.println("Please connect first.");
-//        }
-//
-//        try {
-//            input.close();
-//            output.close();
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
 }

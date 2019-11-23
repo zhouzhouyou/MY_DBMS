@@ -1,13 +1,13 @@
-package Client;
+package util;
 
 import com.google.gson.Gson;
 
 public class Result {
-    static final int SUCCESS = 200;
-    static final int BAD_REQUEST = 400;
-    static final int UNAUTHORIZED = 401;
-    static final int NOT_FOUND = 404;
-    static final int CONFLICT = 409;
+    public static final int SUCCESS = 200;
+    public static final int BAD_REQUEST = 400;
+    public static final int UNAUTHORIZED = 401;
+    public static final int NOT_FOUND = 404;
+    public static final int CONFLICT = 409;
 
     public int code;
     public Object data;
