@@ -6,15 +6,15 @@ import core.table.collection.TableCollection;
 import util.file.BlockCollections;
 import util.file.FileUtils;
 import util.file.exception.IllegalNameException;
-import util.parser.parsers.CreateIndexParser;
-import util.parser.parsers.CreateTableParser;
-import util.parser.parsers.InsertParser;
+import util.parser.parsers.*;
 import util.result.Result;
 import util.result.ResultFactory;
+import util.table.SelectUtil;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,6 +88,13 @@ public class TableFactory {
         tableBlock.request();
         return tableBlock;
     }
+
+    public void releaseTable(String tableName) {
+        if (!exists(tableName)) return;
+        TableBlock tableBlock = map.get(tableName);
+        tableBlock.release();
+    }
+
 
     /**
      * 删除表。
@@ -186,5 +193,26 @@ public class TableFactory {
         String tableName = parser.getTableName();
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).createIndex(parser);
+    }
+
+    public Result select(SelectParser parser) {
+        try {
+            SelectUtil selectUtil = new SelectUtil(this, parser);
+            return selectUtil.select();
+        } catch (Exception e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
+    }
+
+    public Result update(UpdateParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).update(parser);
+    }
+
+    public Result delete(DeleteParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).delete(parser);
     }
 }

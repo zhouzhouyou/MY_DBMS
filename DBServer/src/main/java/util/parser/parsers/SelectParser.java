@@ -28,8 +28,12 @@ public class SelectParser extends Parser {
         return splitOriginSQLIntoSegment().get(1);
     }
 
-    public List<String> getWhereCondition() {
-        return splitOriginSQLIntoSegment().get(2);
+    public boolean hasWhereCondition() {
+        return splitOriginSQLIntoSegment().get(2).size() > 0;
+    }
+
+    public String getWhereCondition() {
+        return splitOriginSQLIntoSegment().get(2).get(0);
     }
 
     public List<String> getGroupBy() {

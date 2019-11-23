@@ -48,7 +48,7 @@ public class IndexBlock extends Block {
      * 系统重启时，需要从文件反序列化得到IxBlock
      * </p>
      */
-    public transient IxBlock ixBlock;
+    private transient IxBlock ixBlock;
 
 
     public IndexBlock(String indexName, boolean unique, boolean asc, String field, RandomAccessFiles raf, String indexFilePath) {
@@ -136,5 +136,9 @@ public class IndexBlock extends Block {
         boolean result = ixBlock.delete(indexes);
         if (result) return ResultFactory.buildSuccessResult(null);
         return ResultFactory.buildFailResult(null);
+    }
+
+    public void deleteAll() {
+        //ixBlock.deleteAll();
     }
 }

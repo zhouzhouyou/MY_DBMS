@@ -13,13 +13,10 @@ import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Map;
 
+import static util.SQL.*;
+
 public class CheckUtil {
-    private static final String and = "and";
-    private static final String aa = "&&";
-    private static final String or = "or";
-    private static final String oo = "||";
-    private static final String lb = "(";
-    private static final String rb = ")";
+
 
     /**
      * 判断是否该条记录是否满足特定条件
@@ -38,14 +35,14 @@ public class CheckUtil {
             string = string.trim();
             if (string.equals(" ") || string.equals("")) continue;
             switch (string) {
-                case and:
-                    sb.append(aa);
+                case AND:
+                    sb.append(AA);
                     break;
-                case or:
-                    sb.append(oo);
+                case OR:
+                    sb.append(OO);
                     break;
-                case lb:
-                case rb:
+                case LB:
+                case RB:
                     sb.append(string);
                     break;
                 default:

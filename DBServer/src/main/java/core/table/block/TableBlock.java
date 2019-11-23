@@ -5,12 +5,12 @@ import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
 import util.file.Block;
 import util.file.RandomAccessFiles;
-import util.parser.parsers.CreateIndexParser;
-import util.parser.parsers.CreateTableParser;
-import util.parser.parsers.InsertParser;
+import util.parser.parsers.*;
 import util.result.Result;
 import util.table.CreateUtil;
+import util.table.DeleteUtil;
 import util.table.InsertUtil;
+import util.table.UpdateUtil;
 
 import java.io.IOException;
 import java.util.Date;
@@ -64,6 +64,10 @@ public class TableBlock extends Block {
      */
     public transient String directoryPath;
     /**
+     * 建表的SQL
+     */
+    public transient CreateTableParser parser;
+    /**
      * 这个表下的约束
      */
     private transient TableConstraintFactory constraintFactory;
@@ -75,10 +79,6 @@ public class TableBlock extends Block {
      * 这个表下的索引
      */
     private transient TableIndexFactory indexFactory;
-    /**
-     * 建表的SQL
-     */
-    public transient CreateTableParser parser;
     /**
      * 随机读写的工具
      */
@@ -147,10 +147,15 @@ public class TableBlock extends Block {
         return constraintFactory;
     }
 
+    /**
+     * 返回随机访问工具
+     *
+     * @return 这个table的随机访问工具
+     */
     public RandomAccessFiles getRaf() {
         if (raf == null) {
             try {
-                raf = new RandomAccessFiles(defineFactory.getCollection());
+                raf = new RandomAccessFiles(getDefineFactory().getCollection());
             } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -164,8 +169,7 @@ public class TableBlock extends Block {
      * @return 创建结果
      */
     public Result create() {
-        CreateUtil createUtil = CreateUtil.INSTANCE;
-        return createUtil.createTable(this);
+        return CreateUtil.INSTANCE.createTable(this);
     }
 
     /**
@@ -175,7 +179,7 @@ public class TableBlock extends Block {
      * @return 插入结果
      */
     public Result insert(InsertParser parser) {
-        return InsertUtil.INSTANCE.insert(this, parser);
+        return InsertUtil.insert(this, parser);
     }
 
     /**
@@ -187,6 +191,18 @@ public class TableBlock extends Block {
     public Result createIndex(CreateIndexParser parser) {
         Result result = getIndexFactory().createIndex(parser);
         return result;
+    }
+
+    public Result update(UpdateParser parser) {
+        return UpdateUtil.update(this, parser);
+    }
+
+    public Result delete(DeleteParser parser) {
+        return DeleteUtil.delete(this, parser);
+    }
+
+    public boolean hasField(String fieldName) {
+        return getDefineFactory().getCollection().hasField(fieldName);
     }
 }
 

@@ -16,7 +16,9 @@ public class DeleteParser extends Parser {
         return splitOriginSQLIntoSegment().get(0).get(0);
     }
 
+    public boolean deleteAll() {return splitOriginSQLIntoSegment().size() == 1;}
+
     public String getWhereCondition() {
-        return splitOriginSQLIntoSegment().get(0).get(0);
+        return splitOriginSQLIntoSegment().get(1).get(0);
     }
 }

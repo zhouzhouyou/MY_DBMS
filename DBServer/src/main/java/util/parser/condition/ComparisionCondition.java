@@ -17,6 +17,14 @@ public class ComparisionCondition extends Parser {
 
     public ComparisionCondition(String originParam) {
         super("check " + originParam);
+        String reg = "<=|<>|!=|>=|=|<|>";
+        Pattern pattern = Pattern.compile(reg);
+        Matcher matcher = pattern.matcher(originSQL);
+
+        if (matcher.find()) {
+            cmp = matcher.group();
+        }
+        if (cmp.equals("=")) cmp = "==";
     }
 
     public String getLeftValue() {
@@ -27,15 +35,11 @@ public class ComparisionCondition extends Parser {
         return splitOriginSQLIntoSegment().get(1).get(0);
     }
 
-    public Result check(String leftValue, String rightValue) {
-        String reg = "<=|<>|!=|>=|=|<|>";
-        Pattern pattern = Pattern.compile(reg);
-        Matcher matcher = pattern.matcher(originSQL);
+    public String getCmp() {
+        return cmp;
+    }
 
-        if (matcher.find()) {
-            cmp = matcher.group();
-        }
-        if (cmp.equals("=")) cmp = "==";
+    public Result check(String leftValue, String rightValue) {
         if (ConvertUtil.getType(leftValue) == -1)
             return CheckUtil.grenadeResult(String.format("'%s' %s '%s'", leftValue, cmp, rightValue));
         return CheckUtil.grenadeResult(String.format("%s %s %s", leftValue, cmp, rightValue));

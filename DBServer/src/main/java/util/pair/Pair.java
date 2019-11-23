@@ -1,5 +1,7 @@
 package util.pair;
 
+import com.sun.corba.se.spi.ior.ObjectKey;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +44,35 @@ public class Pair<T, V> {
 
     public void setLast(V v) {
         this.v = v;
+    }
+
+    public static List<Pair<String, Object>> buildPairList(List<String> strings, List<Object> objects) {
+        List<Pair<String, Object>> list = new ArrayList<>();
+        int min = Math.min(strings.size(), objects.size());
+        for (int i = 0; i < min; i++) {
+            Pair<String, Object> pair = new Pair<>(strings.get(i), objects.get(i));
+            list.add(pair);
+        }
+        return list;
+    }
+
+    public static Object getObject(List<Pair<String, Object>> record, String fieldName) {
+        for (Pair<String, Object> pair : record) {
+            if (pair.getFirst().equals(fieldName)) return pair.getLast();
+        }
+        return null;
+    }
+
+    public static List<Object> fromPairList(List<Pair<String, Object>> record) {
+        List<Object> objects = new ArrayList<>();
+        record.forEach(stringObjectPair -> objects.add(stringObjectPair.getLast()));
+        return objects;
+    }
+
+    public static Map<String, Object> fromPairListToMap(List<Pair<String, Object>> record) {
+        Map<String, Object> map = new HashMap<>();
+        record.forEach(stringObjectPair -> map.put(stringObjectPair.getFirst(), stringObjectPair.getLast()));
+        return map;
     }
 
 }

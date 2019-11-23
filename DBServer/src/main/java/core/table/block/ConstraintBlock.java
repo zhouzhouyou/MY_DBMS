@@ -1,8 +1,10 @@
 package core.table.block;
 
+import com.sun.corba.se.spi.ior.ObjectKey;
 import util.SQL;
 import util.file.Block;
 import util.file.RandomAccessFiles;
+import util.pair.Pair;
 import util.result.Result;
 import util.result.ResultFactory;
 import util.table.CheckUtil;
@@ -45,7 +47,7 @@ public class ConstraintBlock extends Block {
         this.param = param;
     }
 
-    public Result check(Map<String, Object> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
+    public Result check(List<Pair<String, Object>> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
         //TODO: 判断是否成功
         switch (constraintType) {
             case FieldTypes.PK:
@@ -65,42 +67,44 @@ public class ConstraintBlock extends Block {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result checkDefault(Map<String, Object> recordMap) {
-        recordMap.computeIfAbsent(fieldName, k -> param);
+    private Result checkDefault(List<Pair<String, Object>> recordMap) {
+        for (Pair<String, Object> pair : recordMap) {
+            if (pair.getLast() == null) pair.setLast(param);
+        }
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result checkCheck(Map<String, Object> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
-        return CheckUtil.check(recordMap, (String) param);
+    private Result checkCheck(List<Pair<String, Object>> recordMap, List<Integer> fieldTypes, RandomAccessFiles raf) {
+        return CheckUtil.check(Pair.fromPairListToMap(recordMap), (String) param);
     }
 
-    private Result checkUnique(Map<String, Object> recordMap, RandomAccessFiles raf) {
+    private Result checkUnique(List<Pair<String, Object>> recordMap, RandomAccessFiles raf) {
         List<Object> pks = null;
         try {
             pks = raf.selectField(fieldName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Object pk = recordMap.get(fieldName);
+        Object pk = Pair.getObject(recordMap, fieldName);
         if (pk == null) return ResultFactory.buildSuccessResult(null);
         if (pks.contains(pk)) return ResultFactory.buildObjectAlreadyExistsResult(SQL.UNIQUE);
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result checkNotNull(Map<String, Object> recordMap) {
-        Object notNull = recordMap.get(fieldName);
+    private Result checkNotNull(List<Pair<String, Object>> recordMap) {
+        Object notNull = Pair.getObject(recordMap, fieldName);
         if (notNull == null) return ResultFactory.buildFailResult(SQL.NOT_NULL);
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result checkPK(Map<String, Object> recordMap, RandomAccessFiles raf) {
+    private Result checkPK(List<Pair<String, Object>> recordMap, RandomAccessFiles raf) {
         List<Object> pks = null;
         try {
             pks = raf.selectField(fieldName);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Object pk = recordMap.get(fieldName);
+        Object pk = Pair.getObject(recordMap, fieldName);
         if (pk == null) return ResultFactory.buildFailResult(SQL.NOT_NULL);
         if (pks.contains(pk)) return ResultFactory.buildObjectAlreadyExistsResult(SQL.UNIQUE);
         return ResultFactory.buildSuccessResult(null);

@@ -11,11 +11,10 @@ import util.result.ResultFactory;
 import java.io.IOException;
 import java.util.*;
 
-public enum InsertUtil {
-    INSTANCE;
+public class InsertUtil {
 
     @SuppressWarnings("unchecked")
-    public Result insert(TableBlock block, InsertParser parser) {
+    public static Result insert(TableBlock block, InsertParser parser) {
         List<String> fields = parser.getInsertField();
         List<String> values = parser.getInsertValue();
         TableDefineFactory factory = block.getDefineFactory();

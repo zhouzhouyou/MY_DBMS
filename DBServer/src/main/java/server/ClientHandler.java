@@ -103,8 +103,26 @@ public class ClientHandler implements Runnable {
             return handleReleaseDatabase((ReleaseDatabaseParser) parser, databaseName);
         } else if (parser instanceof CreateIndexParser) {
             return handleCreateIndex((CreateIndexParser) parser, databaseName);
+        } else if (parser instanceof SelectParser) {
+            return handleSelect((SelectParser) parser, databaseName);
+        } else if (parser instanceof UpdateParser) {
+            return handleUpdate((UpdateParser) parser, databaseName);
+        } else if (parser instanceof DeleteParser) {
+            return handleDeleteParser((DeleteParser) parser, databaseName);
         }
         return null;
+    }
+
+    private Result handleDeleteParser(DeleteParser parser, String databaseName) {
+        return core.delete(parser, databaseName);
+    }
+
+    private Result handleUpdate(UpdateParser parser, String databaseName) {
+        return core.update(parser, databaseName);
+    }
+
+    private Result handleSelect(SelectParser parser, String databaseName) {
+        return core.select(parser, databaseName);
     }
 
     private Result handleCreateIndex(CreateIndexParser parser, String databaseName) {
