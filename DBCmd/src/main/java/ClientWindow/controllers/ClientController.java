@@ -37,6 +37,12 @@ public class ClientController extends Tab {
         output = new PrintStream(socket.getOutputStream());
         stream = new MessageStream(outputArea, inputArea);
 
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private Result getResult(String sql) {
@@ -78,10 +84,10 @@ public class ClientController extends Tab {
         } else {
             if (currentDatabase != null) {
                 Result result = getResult(inputContext);
-                stream.printResult(result);
+                stream.printResult(result,null);
             } else {
                 Result result = getResult(inputContext, currentDatabase);
-                stream.printResult(result);
+                stream.printResult(result,null);
             }
 
         }

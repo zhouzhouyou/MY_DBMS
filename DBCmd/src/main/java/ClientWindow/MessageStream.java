@@ -3,15 +3,16 @@ package ClientWindow;
 import javafx.scene.control.TextArea;
 import util.Result;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MessageStream {
     private TextArea outputArea;
     private TextArea inputArea;
-    private ReentrantLock lock = new ReentrantLock();
 
     public MessageStream(TextArea outputArea, TextArea inputArea) {
         this.outputArea = outputArea;
@@ -22,12 +23,15 @@ public class MessageStream {
         return inputArea.getText().trim();
     }
 
-    public synchronized void printResult(Result result) {
-        if (result.data instanceof Map)
-            handleSelectResult(result);
-        else if (result.code != Result.SUCCESS)
+    public synchronized void printResult(Result result, String sql) {
+        if (result.code != Result.SUCCESS) {
             outputArea.appendText(result.data.toString() + "\n");
-
+        } else {
+            if (sql.contains("select"))
+                handleSelectResult(result);
+            else
+                outputArea.appendText("Operation Success" + "\n");
+        }
     }
 
     private void handleSelectResult(Result result) {
@@ -37,24 +41,33 @@ public class MessageStream {
         List tempDataLengthGetter = (List) dataLengthGetter[0];
         int dataLength = tempDataLengthGetter.size();
 
+        Set fieldNames = resultSet.keySet();
         StringBuilder line = new StringBuilder();
-        for (Object field : resultSet.keySet()) {
-            String key = (String) field;
-            line.append(key).append("     ");
-        }
+        fieldNames.forEach(s -> line.append(s).append("     "));
 //        System.out.println(line);
 //        System.out.println();
-        outputArea.appendText(line + "/n/n");
+        outputArea.appendText(line + "\n\n");
         line.delete(0, line.length());
 
+        List<List<Object>> dataLists = new LinkedList<>();
+        fieldNames.forEach(s -> dataLists.add((List<Object>) resultSet.get(s)));
         for (int i = 0; i < dataLength; i++) {
-            for (Object dataList : resultSet.values()) {
-                List data = (List) dataList;
-                line.append(data.get(i)).append("     ");
+            for (Object dataList : dataLists) {
+                List dataItem = (List) dataList;
+                line.append(dataItem.get(i)).append("     ");
             }
-//            System.out.println(line);
-            outputArea.appendText(line + "/n/n");
+            outputArea.appendText(line + "\n\n");
             line.delete(0, line.length());
         }
+
+//        for (int i = 0; i < dataLength; i++) {
+//            for (Object dataList : resultSet.values()) {
+//                List data = (List) dataList;
+//                line.append(data.get(i)).append("     ");
+//            }
+////            System.out.println(line);
+//            outputArea.appendText(line + "/n/n");
+//            line.delete(0, line.length());
+//        }
     }
 }
