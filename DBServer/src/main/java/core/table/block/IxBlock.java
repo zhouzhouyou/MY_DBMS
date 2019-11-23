@@ -61,6 +61,46 @@ public class IxBlock extends Block {
         System.out.println("=======================================");
     }
 
+    public List<Integer> find_overall() {
+        List<Integer> result = new ArrayList<>();
+        Node child = this.root.childs[0];
+        while (!child.getClass().equals(LeafNode.class)) {
+            child = child.childs[0];
+        }
+        LeafNode start = (LeafNode) child;
+        for(int i = 0; i < start.number; i++) {
+            result.add((Integer)start.values[i]);
+        }
+        start = start.right;
+        while (start != null) {
+            for(int i = 0; i < start.number; i++) {
+                result.add((Integer)start.values[i]);
+            }
+            start = start.right;
+        }
+        return result;
+    }
+
+    public List<Integer> find_lager_than(Comparable key) {
+        List<Integer> result = new ArrayList<>();
+        LeafNode leafNode = this.root.find_larger_than(key);
+        int i = 0;
+        for(i = 0; i < leafNode.number; i++) {
+            if((Integer)leafNode.values[i] >= (Integer) key) {
+                break;
+            }
+        }
+        for(int j = i; j < leafNode.number; j++) result.add((Integer) leafNode.values[j]);
+        leafNode = leafNode.right;
+        while (leafNode != null) {
+            for(int m = 0; m < leafNode.number; m++) {
+                result.add((Integer) leafNode.values[m]);
+            }
+            leafNode = leafNode.right;
+        }
+        return result;
+    }
+
 
     /**
      * 节点父类，因为在B+树中，非叶子节点不用存储具体的数据，只需要把索引作为键就可以了
@@ -89,6 +129,8 @@ public class IxBlock extends Block {
 
         //查找
         abstract List<Integer> find(Comparable key);
+        abstract LeafNode find_larger_than(Comparable key);
+
 
         //插入
         abstract Node insert(Comparable value, Comparable key);
@@ -126,6 +168,20 @@ public class IxBlock extends Block {
                 return null;
             // System.out.print(this.keys[i] + " ");
             return this.childs[i].find(key);
+        }
+
+        LeafNode find_larger_than(Comparable key) {
+
+            int i = 0;
+            while(i < this.number){
+                if(this.keys[i] != null && key.compareTo((Comparable) this.keys[i]) <= 0)
+                    break;
+                i++;
+            }
+            if(this.number == i)
+                return null;
+            // System.out.print(this.keys[i] + " ");
+            return this.childs[i].find_larger_than(key);
         }
 
         /**
@@ -357,6 +413,34 @@ public class IxBlock extends Block {
             return null;
         }
 
+        LeafNode find_larger_than(Comparable key) {
+            if(this.number <=0)
+                return null;
+
+//            System.out.println("284叶子节点查找");
+
+            Integer left = 0;
+            Integer right = this.number;
+
+
+            Integer middle = (left + right) / 2;
+
+            while(left < right){
+                Comparable middleKey = (Comparable) this.keys[middle];
+                System.out.print(middleKey+" ");
+                if(middleKey != null && key.compareTo(middleKey) == 0) {
+                    return this;
+                }
+
+                else if(middleKey!=null && key.compareTo(middleKey) < 0)
+                    right = middle;
+                else
+                    left = middle;
+                middle = (left + right) / 2;
+            }
+            return null;
+        }
+
         /**
          *
          * @param value
@@ -525,7 +609,19 @@ public class IxBlock extends Block {
      */
     public List<Integer> lower(Comparable maxKey, boolean exclusive) {
         //TODO: 返回小于（等于）索引，这取决于是否为exclusive
-        return null;
+        List<Integer> result = new ArrayList<>();
+        List<Integer> tem = this.find_lager_than(maxKey);
+        if(!exclusive) tem.remove(0);
+        List<Integer> all = this.find_overall();
+        for(int m = 0; m < all.size(); m++) {
+            int label = 1;
+            for(int n = 0; n < tem.size(); n++) {
+                if(all.get(m) == tem.get(n)) label = 0;
+            }
+            if(label == 1) result.add(all.get(m));
+        }
+
+        return result;
     }
 
     /**
@@ -537,36 +633,12 @@ public class IxBlock extends Block {
      */
     public List<Integer> larger(Comparable minKey, boolean exclusive) {
         //TODO: 返回大于（等于）这个值的索引，这取决于是否为exclusive
-        return null;
+        List<Integer> result = this.find_lager_than(minKey);
+        if(exclusive) result.remove(0);
+        return result;
     }
 
-    /**
-     * 返回两个Comparable之间的值的索引的集合（包含边界）。
-     *
-     * @param minKey 最小值
-     * @param maxKey 最大值
-     * @return 两个Comparable之间的值的索引的集合
-     */
-    @SuppressWarnings("unchecked")
-    public List<Integer> between(Comparable minKey, Comparable maxKey) {
-        //TODO: 两个Comparable之间的值的索引的集合（包含边界）
-        if (maxKey.compareTo(minKey) < 0) return between(maxKey, minKey);
-        return null;
-    }
 
-    /**
-     * 返回两个Comparable之外的值的索引的集合（不包含边界）。
-     *
-     * @param minKey 最小值
-     * @param maxKey 最大值
-     * @return 两个Comparable之外的值的索引的集合
-     */
-    @SuppressWarnings("unchecked")
-    public List<Integer> notBetween(Comparable minKey, Comparable maxKey) {
-        //TODO: 不在两个Comparable之间的值的索引的集合
-        if (maxKey.compareTo(minKey) < 0) return notBetween(maxKey, minKey);
-        return null;
-    }
 
     /**
      * 返回存在于list中的值的索引的集合。
@@ -599,7 +671,26 @@ public class IxBlock extends Block {
      */
     public List<Integer> notIn(List<Comparable> list) {
         //TODO: 不存在于list中的值的索引的集合
-        return null;
+        List<Integer> in = new ArrayList<>();
+        List<Integer> result = new ArrayList<>();
+        List<Integer> all = this.find_overall();
+
+        for(int i = 0; i < list.size(); i++) {
+            List<Integer> tem = new ArrayList<>();
+            tem = this.find(list.get(i));
+            for(int j = 0; j < tem.size(); j++) {
+                in.add(tem.get(j));
+            }
+        }
+
+        for(int m = 0; m < all.size(); m++) {
+            int label = 1;
+            for(int n = 0; n < in.size(); n++) {
+                if(all.get(m) == in.get(n)) label = 0;
+            }
+            if(label == 1) result.add(all.get(m));
+        }
+        return result;
     }
 
     /**
