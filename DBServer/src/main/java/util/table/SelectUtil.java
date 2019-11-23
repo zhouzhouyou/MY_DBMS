@@ -9,6 +9,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SelectUtil {
     private Map<String, TableBlock> tableBlocks;
@@ -72,6 +73,7 @@ public class SelectUtil {
         List<String> allFieldNames = tableBlock.getDefineFactory().getFieldNames();
         List<String> fieldNames = parser.getSelectItem();
         if (fieldNames.get(0).equals("*")) fieldNames = allFieldNames;
+        Map<String, List<Object>> columns = new HashMap<>();
         List<Map<String, Object>> output = new ArrayList<>();
         for (List<Object> data : allData) {
             Map<String, Object> recordMap = new HashMap<>();
@@ -91,8 +93,11 @@ public class SelectUtil {
                 fieldNames.forEach(s -> objectMap.put(s, recordMap.get(s)));
                 output.add(objectMap);
             }
-
         }
-        return ResultFactory.buildSuccessResult(output);
+        fieldNames.forEach(fieldName -> {
+            List<Object> list = output.stream().map(map -> map.get(fieldName)).collect(Collectors.toCollection(LinkedList::new));
+            columns.put(fieldName, list);
+        });
+        return ResultFactory.buildSuccessResult(columns);
     }
 }
