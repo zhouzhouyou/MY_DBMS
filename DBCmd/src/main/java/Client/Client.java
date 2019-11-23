@@ -9,19 +9,19 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 
 public class Client implements Runnable {
-    private Socket socket;
     private BufferedReader input;
     private PrintStream output;
     private boolean connected = false;
-    private String operatingDatabaseName = null;
     private int operationID = 0;
     private Scanner scanner = new Scanner(System.in);
+    private String currentDatabase = null;
 
     public Client(Socket socket) throws IOException {
-        this.socket = socket;
         input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         output = new PrintStream(socket.getOutputStream());
         scanner.useDelimiter("\n");
@@ -49,6 +49,32 @@ public class Client implements Runnable {
             e.printStackTrace();
         }
         return Result.formGson(result);
+    }
+
+    private void handleSelectResult(Result result) {
+        Map resultSet = (Map) result.data;
+
+        Object[] dataLengthGetter = resultSet.values().toArray();
+        List tempDataLengthGetter = (List) dataLengthGetter[0];
+        int dataLength = tempDataLengthGetter.size();
+
+        StringBuilder line = new StringBuilder();
+        for (Object field : resultSet.keySet()) {
+            String key = (String) field;
+            line.append(key).append("     ");
+        }
+        System.out.println(line);
+        System.out.println();
+        line.delete(0, line.length());
+
+        for (int i = 0; i < dataLength; i++) {
+            for (Object dataList : resultSet.values()) {
+                List data = (List) dataList;
+                line.append(data.get(i)).append("     ");
+            }
+            System.out.println(line);
+            line.delete(0, line.length());
+        }
     }
 
     private void printOperationHint() {
@@ -86,12 +112,25 @@ public class Client implements Runnable {
                 Result result = getResult(sql);
                 System.out.println(result.code);
             } else if (operationID == 4) {
-                System.out.println("Please input database name.");
-                operatingDatabaseName = scanner.next();
+                if (currentDatabase != null) {
+                    System.out.println("Do you want to change database? (y/n)");
+                    if (scanner.next().equals("y")) {
+                        System.out.println("Please input database name.");
+                        currentDatabase = scanner.next();
+                    }
+                } else {
+                    System.out.println("Please input database name.");
+                    currentDatabase = scanner.next();
+                }
                 System.out.println("Please input sql statement.");
                 String sql = scanner.next();
-                Result result = getResult(sql, operatingDatabaseName);
-                System.out.println(result.code);
+                Result result = getResult(sql, currentDatabase);
+                if (result.code == Result.SUCCESS && sql.contains("select")) {
+                    handleSelectResult(result);
+                } else{
+                    System.out.println(result.code);
+                }
+
             } else if (operationID == 5) {
                 Result result = getResult("disconnect");
                 System.out.println(result.code);
