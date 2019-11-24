@@ -7,10 +7,7 @@ import util.file.Block;
 import util.file.RandomAccessFiles;
 import util.parser.parsers.*;
 import util.result.Result;
-import util.table.CreateUtil;
-import util.table.DeleteUtil;
-import util.table.InsertUtil;
-import util.table.UpdateUtil;
+import util.table.*;
 
 import java.io.IOException;
 import java.util.Date;
@@ -199,6 +196,10 @@ public class TableBlock extends Block {
 
     public Result delete(DeleteParser parser) {
         return DeleteUtil.delete(this, parser);
+    }
+
+    public Result alterTable(AlterTableParser parser) {
+        return AlterUtil.alterTable(this, parser);
     }
 
     public boolean hasField(String fieldName) {

@@ -215,4 +215,10 @@ public class TableFactory {
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).delete(parser);
     }
+
+    public Result alterTable(AlterTableParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).alterTable(parser);
+    }
 }

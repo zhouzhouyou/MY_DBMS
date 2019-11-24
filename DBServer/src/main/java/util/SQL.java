@@ -12,10 +12,13 @@ public class SQL {
     /*Table*/
     public static final String CREATE_TABLE = "create table";
     public static final String DROP_TABLE = "drop table";
-    public static final String ALTER = "alter";
+    public static final String ALTER_TABLE = "alter table";
     public static final String ADD_COLUMN = "add column";
     public static final String MODIFY_COLUMN = "modify column";
     public static final String DROP_COLUMN = "drop column";
+    public static final String ADD_CONSTRAINT = "add constraint";
+    public static final String DROP_CONSTRAINT = "drop constraint";
+    public static final String MODIFY_CONSTRAINT = "modify constraint";
 
     /*CRUD*/
     public static final String SELECT = "select";

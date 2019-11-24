@@ -109,7 +109,8 @@ public class ClientHandler implements Runnable {
             return handleUpdate((UpdateParser) parser, databaseName);
         } else if (parser instanceof DeleteParser) {
             return handleDeleteParser((DeleteParser) parser, databaseName);
-        }
+        } else if (parser instanceof AlterTableParser)
+            return handleAlterTable((AlterTableParser) parser,databaseName);
         return null;
     }
 
@@ -175,5 +176,9 @@ public class ClientHandler implements Runnable {
             username = parser.getName();
         }
         return result;
+    }
+
+    private Result handleAlterTable(AlterTableParser parser, String databaseName) {
+        return core.alterTable(parser, databaseName);
     }
 }

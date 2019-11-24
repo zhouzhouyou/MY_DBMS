@@ -203,4 +203,14 @@ public enum Core {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
     }
+
+    public Result alterTable(AlterTableParser parser, String database) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.alterTable(parser);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult();
+        }
+    }
 }

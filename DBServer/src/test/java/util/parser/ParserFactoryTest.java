@@ -31,7 +31,9 @@ class ParserFactoryTest {
             "release database",
             "create index a_index on student (sno, age)",
             "create unique index a_index on student (sno desc)",
-            "create unique index a_index on student (sno, age desc)"
+            "create unique index a_index on student (sno, age desc)",
+            "alter table student add column course integer",
+            "alter table student drop column course"
     })
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);
@@ -46,6 +48,7 @@ class ParserFactoryTest {
         else if (parser instanceof CreateDatabaseParser) System.out.println(CREATE_DATABASE);
         else if (parser instanceof DropTableParser) System.out.println(DROP_TABLE);
         else if (parser instanceof DropDatabaseParser) System.out.println(DROP_DATABASE);
+        else if(parser instanceof AlterTableParser) System.out.println(ALTER_TABLE);
         List<List<String>> lists = parser.splitOriginSQLIntoSegment();
         assert lists != null;
         printLists(lists);

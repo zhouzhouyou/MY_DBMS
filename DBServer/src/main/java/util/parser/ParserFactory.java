@@ -25,6 +25,8 @@ public class ParserFactory {
         else if (contains(sql, "(create index|create unique index)(.+?)(on)"))
             return new CreateIndexParser(sql);
         else if (contains(sql, "(drop index)(.+)(on)([(])(.+?)([)])")) return new DropIndexParser(sql);
+        else if (contains(sql, "(alter table)(.+?)(add|drop column|add(\\s+)constraint|modify)"))
+            return new AlterTableParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;
