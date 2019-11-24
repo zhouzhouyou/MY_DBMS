@@ -99,7 +99,8 @@ public class Client implements Runnable {
         } else {
             System.out.println("3. create or drop database");
             System.out.println("4. do database operation.");
-            System.out.println("5. disconnect");
+            System.out.println("5. create or drop a user/(grant/revoke) user a permission");
+            System.out.println("6. disconnect");
         }
         while (!scanner.hasNextInt()) {
             scanner.nextLine();
@@ -145,7 +146,16 @@ public class Client implements Runnable {
                     System.out.println(result.code);
                 }
 
-            } else if (operationID == 5) {
+            }else if(operationID == 5){
+                System.out.println("Please input operating user statement.");
+                String sql = scanner.next();
+                Result result = getResult(sql);
+                if (result.code != Result.SUCCESS)
+                    System.out.println(result.data);
+                else
+                    System.out.println("Success to create a user");
+            }
+            else if (operationID == 6) {
                 Result result = getResult("disconnect");
                 System.out.println(result.code);
                 if (result.code == Result.SUCCESS)

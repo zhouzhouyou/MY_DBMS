@@ -138,8 +138,6 @@ public class RandomAccessFiles {
             }
         }
         raf.close();
-        //TODO: get all data from a column
-
         return result;
     }
 
@@ -158,13 +156,94 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
+    public void addColumnData(int dataLength, Object defaultData) {
+        try {
+            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
+            List<List<Object>> recordSet = select();
+            recordSet.forEach(list -> list.add(defaultData));
+            cleaner.write("");
+            cleaner.flush();
+            cleaner.close();
+
+            for (List<Object> list : recordSet) {
+                insert(list);
+            }
+            recordLength = collection.getTotalDataLength();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        String data = null;
+//        if (defaultData == null) {
+//            data = formatData("", dataLength);
+//        } else {
+//            if (defaultData instanceof String) {
+//                data = (String) defaultData;
+//            } else if (defaultData instanceof Integer) {
+//                String origin = String.valueOf(defaultData);
+//                data = formatData(origin, dataLength);
+//            } else if (defaultData instanceof Double) {
+//                String origin = String.valueOf(defaultData);
+//                data = formatData(origin, dataLength);
+//            } else if (defaultData instanceof Date) {
+//                long timeStamp = ((Date) defaultData).getTime() / 1000;
+//                data = String.valueOf(timeStamp);
+//            } else if (defaultData instanceof Boolean) {
+//                data = ((Boolean) defaultData) ? "1" : "0";
+//            }
+//        }
+    }
+
+    public void dropColumnData(int fieldOrder) {
+        try {
+            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
+            List<List<Object>> recordSet = select();
+            recordSet.forEach(list -> list.remove(fieldOrder));
+            cleaner.write("");
+            cleaner.flush();
+            cleaner.close();
+
+            for (List<Object> list : recordSet) {
+                insert(list);
+            }
+            recordLength = collection.getTotalDataLength();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void changeColumnData(int fieldOrder, int dataLength) {
+        try {
+            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
+            List<List<Object>> recordSet = select();
+            for (List<Object> list : recordSet) {
+                String data = (String) list.get(fieldOrder);
+                data = formatData(data, dataLength);
+                list.remove(fieldOrder);
+                list.add(fieldOrder, data);
+            }
+            cleaner.write("");
+            cleaner.flush();
+            cleaner.close();
+
+            for (List<Object> list : recordSet) {
+                insert(list);
+            }
+            recordLength = collection.getTotalDataLength();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void writeData(List<Object> list, RandomAccessFile raf) throws IOException {
         for (int i = 0; i < collection.list.size(); i++) {
             DefineBlock block = collection.list.get(i);
             Object recordItem = list.get(i);
             String data = null;
             if (recordItem == null) {
-                data = formatVarcharData("", block.getDataLength());
+                data = formatData("", block.getDataLength());
             } else {
                 switch (block.fieldType) {
                     case FieldTypes.BOOL:
@@ -173,14 +252,14 @@ public class RandomAccessFiles {
                     case FieldTypes.DOUBLE:
                     case FieldTypes.INTEGER:
                         String originDouble = String.valueOf(recordItem);
-                        data = formatVarcharData(originDouble, block.getDataLength());
+                        data = formatData(originDouble, block.getDataLength());
                         break;
                     case FieldTypes.DATETIME:
                         long timeStamp = ((Date) recordItem).getTime() / 1000;
                         data = String.valueOf(timeStamp);
                         break;
                     case FieldTypes.VARCHAR:
-                        data = formatVarcharData((String) recordItem, block.getDataLength());
+                        data = formatData((String) recordItem, block.getDataLength());
                         break;
                     default:
                         break;
@@ -267,7 +346,7 @@ public class RandomAccessFiles {
         oos.close();
     }
 
-    private String formatVarcharData(String origin, int length) {
+    private String formatData(String origin, int length) {
 
         if (origin == null) {
             origin = "";

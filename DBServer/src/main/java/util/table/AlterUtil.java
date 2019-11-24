@@ -7,6 +7,7 @@ import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import util.SQL;
 import util.file.BlockCollections;
+import util.file.RandomAccessFiles;
 import util.file.exception.IllegalNameException;
 import util.parser.parsers.AlterTableParser;
 import util.parser.parsers.CreateTableParser;
@@ -45,39 +46,63 @@ public enum AlterUtil {
 
     public Result alterTable(TableBlock tableBlock, AlterTableParser parser) throws IllegalNameException, IOException, ClassNotFoundException {
         Result result = null;
+        TableDefineFactory defineFactory;
+        TableConstraintFactory constraintFactory;
         CreateTableParser createTableParser = tableBlock.parser;
         List<DefineBlock> defineBlocks = (List<DefineBlock>) BlockCollections.deserialize(tableBlock.definePath);
         List<ConstraintBlock> constraintBlocks = (List<ConstraintBlock>) BlockCollections.deserialize(tableBlock.constraintPath);
 
         AlterTableParser.alterType operationType = parser.getAlterType();
         String operationContent = parser.getOperationContent();
-        String[] strings = operationContent.split(" ");
-        String name = strings[0];
-        switch (operationType) {
+        String[] operationPieces = operationContent.split(" ");
+        String name = operationPieces[0];
 
+
+        switch (operationType) {
             case ADD_COLUMN:
-                result = addDefineBlock(strings, defineBlocks);
-                TableDefineFactory defineFactory = tableBlock.getDefineFactory();
+                result = addDefineBlock(operationPieces, defineBlocks);
+                defineFactory = tableBlock.getDefineFactory();
                 defineBlocks.forEach(defineBlock -> defineFactory.add(defineBlock.fieldName, defineBlock));
                 defineFactory.saveInstance();
+                changeRecordAfterAddColumn(tableBlock, operationPieces);
                 break;
             case DROP_COLUMN:
-                result = deleteDefineBlock(strings, defineBlocks);
+                result = deleteDefineBlock(operationPieces, defineBlocks);
+                defineFactory = tableBlock.getDefineFactory();
+                defineBlocks.forEach(defineBlock -> defineFactory.add(defineBlock.fieldName, defineBlock));
+                defineFactory.saveInstance();
+                changeRecordAfterDropColumn(tableBlock, operationPieces);
                 break;
             case ADD_CONSTRAINT:
-                DefineBlock defineBlock = getModifyDefine(name, defineBlocks);
+                result = deleteConstraintBlock(operationContent, constraintBlocks);
+                constraintFactory = tableBlock.getConstraintFactory();
+                constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
+                constraintFactory.saveInstance();
                 break;
             case DROP_CONSTRAINT:
-                result = addConstraintBlock(operationContent, constraintBlocks, tableBlock.tableName);
-                TableConstraintFactory constraintFactory = tableBlock.getConstraintFactory();
+                result = addConstraintBlock(operationContent, constraintBlocks, tableBlock);
+                constraintFactory = tableBlock.getConstraintFactory();
                 constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
                 constraintFactory.saveInstance();
                 break;
             case MODIFY_COLUMN:
-                result = deleteConstraintBlock(operationContent, constraintBlocks);
+                DefineBlock DfBlock = getModifyDefine(name, defineBlocks);
+                defineFactory = tableBlock.getDefineFactory();
+                defineBlocks.forEach(defineBlock -> defineFactory.add(defineBlock.fieldName, defineBlock));
+                defineFactory.saveInstance();
+                changeRecordAfterModifyColumn(tableBlock, operationPieces);
                 break;
             case MODIFY_CONSTRAINT:
-                ConstraintBlock constraintBlock = getModifyConstraint(name, constraintBlocks);
+                ConstraintBlock ConBlock = getModifyConstraint(name, constraintBlocks);
+                if (checkRecordIfModifyConstraint(tableBlock, operationContent)) {
+                    result = ResultFactory.buildSuccessResult(null);
+                    constraintFactory = tableBlock.getConstraintFactory();
+                    constraintBlocks.forEach(constraintBlock -> constraintFactory.add(constraintBlock.constraintName, constraintBlock));
+                    constraintFactory.saveInstance();
+                } else
+                    result = ResultFactory.buildFailResult("The data can't fit your constraint.");
+                break;
+            default:
                 break;
         }
 
@@ -120,44 +145,91 @@ public enum AlterUtil {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    private Result addConstraintBlock(String content, List<ConstraintBlock> constraintBlocks, String tableName) {
+    private Result addConstraintBlock(String content, List<ConstraintBlock> constraintBlocks, TableBlock tableBlock) {
         String[] contents = content.split(" ");
-        String constraintName = contents[0];
         String fieldName = contents[1];
-        String cname = "sys_" + tableName + "_" + fieldName + "_";
-        if (content.contains(SQL.PRIMARY_KEY)) {
+        String cname = "sys_" + tableBlock.tableName + "_" + fieldName + "_";
+
+        if (content.contains(SQL.PRIMARY_KEY) && checkRecordIfAddConstraint(tableBlock, SQL.PRIMARY_KEY)) {
             constraintBlocks.add(new ConstraintBlock(cname + "pk", fieldName, PK, ""));
+            return ResultFactory.buildSuccessResult(null);
         }
-        if (content.contains(SQL.FOREIGN_KEY)) {
+        if (content.contains(SQL.FOREIGN_KEY) && checkRecordIfAddConstraint(tableBlock, SQL.FOREIGN_KEY)) {
             constraintBlocks.add(new ConstraintBlock(cname + "fk", fieldName, FK, ""));
+            return ResultFactory.buildSuccessResult(null);
         }
-        if (content.contains(SQL.CHECK)) {
+        if (content.contains(SQL.CHECK) && checkRecordIfAddConstraint(tableBlock, SQL.CHECK)) {
             String parameter = getCheck(content);
             constraintBlocks.add(new ConstraintBlock(cname + "check", fieldName, CHECK, parameter));
+            return ResultFactory.buildSuccessResult(null);
         }
-        if (content.contains(SQL.UNIQUE)) {
+        if (content.contains(SQL.UNIQUE) && checkRecordIfAddConstraint(tableBlock, SQL.CHECK)) {
             constraintBlocks.add(new ConstraintBlock(cname + "unique", fieldName, UNIQUE, ""));
+            return ResultFactory.buildSuccessResult(null);
         }
-        if (content.contains(SQL.NOT_NULL)) {
+        if (content.contains(SQL.NOT_NULL) && checkRecordIfAddConstraint(tableBlock, SQL.CHECK)) {
             constraintBlocks.add(new ConstraintBlock(cname + "not_null", fieldName, NOT_NULL, ""));
+            return ResultFactory.buildSuccessResult(null);
         }
-        if (content.contains(SQL.DEFAULT)) {
+        if (content.contains(SQL.DEFAULT) && checkRecordIfAddConstraint(tableBlock, SQL.DEFAULT)) {
             Result convertResult = getDefault(content, DEFAULT);
             if (convertResult.code != ResultFactory.SUCCESS) return convertResult;
             constraintBlocks.add(new ConstraintBlock(cname + "default", fieldName, DEFAULT, convertResult.data));
+            return ResultFactory.buildSuccessResult(null);
         }
 
-        return ResultFactory.buildSuccessResult(null);
+        return ResultFactory.buildFailResult("The data can't fit your constraint.");
+
+
     }
 
     private Result deleteDefineBlock(String[] contents, List<DefineBlock> defineBlocks) {
         String fieldName = contents[0];
-        defineBlocks.removeIf(defineBlock -> defineBlock.fieldName.equals(fieldName));
-        return ResultFactory.buildSuccessResult(null);
+        Iterator<DefineBlock> iterator = defineBlocks.iterator();
+        while (iterator.hasNext()) {
+            DefineBlock defineBlock = iterator.next();
+            if (defineBlock.fieldName.equals(fieldName)) {
+                iterator.remove();
+                return ResultFactory.buildSuccessResult(null);
+            }
+        }
+        return ResultFactory.buildFailResult("This column doesn't exist.");
     }
 
     private Result deleteConstraintBlock(String content, List<ConstraintBlock> constraintBlocks) {
-        return ResultFactory.buildSuccessResult(null);
+        String[] contents = content.split(" ");
+        String constraintName = contents[0];
+        Iterator<ConstraintBlock> iterator = constraintBlocks.iterator();
+        while (iterator.hasNext()) {
+            ConstraintBlock constraintBlock = iterator.next();
+            if (constraintBlock.constraintName.equals(constraintName)) {
+                iterator.remove();
+                return ResultFactory.buildSuccessResult(null);
+            }
+        }
+        return ResultFactory.buildFailResult("This constraint doesn't exist.");
+    }
+
+    private void changeRecordAfterAddColumn(TableBlock tableBlock, String[] contents) {
+        RandomAccessFiles raf = tableBlock.getRaf();
+    }
+
+    private void changeRecordAfterDropColumn(TableBlock tableBlock, String[] contents) {
+        RandomAccessFiles raf = tableBlock.getRaf();
+    }
+
+    private void changeRecordAfterModifyColumn(TableBlock tableBlock, String[] contents) {
+        RandomAccessFiles raf = tableBlock.getRaf();
+    }
+
+    private boolean checkRecordIfAddConstraint(TableBlock tableBlock, String content) {
+        RandomAccessFiles raf = tableBlock.getRaf();
+        return true;
+    }
+
+    private boolean checkRecordIfModifyConstraint(TableBlock tableBlock, String content) {
+        RandomAccessFiles raf = tableBlock.getRaf();
+        return true;
     }
 
     static Result getDefault(String s, int type) {
