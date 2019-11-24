@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import java.util.Set;
-import java.util.concurrent.locks.ReentrantLock;
+
 
 public class MessageStream {
     private TextArea outputArea;
@@ -24,13 +24,13 @@ public class MessageStream {
     }
 
     public synchronized void printResult(Result result, String sql) {
-        if (result.code != Result.SUCCESS) {
+        if (result.code != Result.SUCCESS && result.data != null) {
             outputArea.appendText(result.data.toString() + "\n");
         } else {
             if (sql.contains("select"))
                 handleSelectResult(result);
             else
-                outputArea.appendText("Operation Success" + "\n");
+                outputArea.appendText("Operation Success: " + sql + "\n");
         }
     }
 
