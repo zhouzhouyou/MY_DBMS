@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<AnchorPane prefHeight="396.0" prefWidth="631.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientWindow.controllers.ClientWindowController">
+    <GridPane layoutY="7.0" prefHeight="383.0" prefWidth="631.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+         <RowConstraints maxHeight="342.39999465942384" minHeight="10.0" prefHeight="42.39999999999998" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="342.39999465942384" minHeight="10.0" prefHeight="330.4" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="365.00000991821287" minHeight="10.0" prefHeight="41.60000534057616" vgrow="SOMETIMES" />
+        </rowConstraints>
+      <children>
+         <TextArea fx:id="outputArea" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
+         <TextArea fx:id="inputArea" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" />
+         <ButtonBar prefHeight="40.0" prefWidth="200.0">
+           <buttons>
+             <Button fx:id="connect" mnemonicParsing="false" onMouseClicked="#connectToServer" text="connect" />
+               <Button mnemonicParsing="false" onMouseClicked="#sendRequest" text="send" />
+           </buttons>
+         </ButtonBar>
+      </children>
+    </GridPane>
+</AnchorPane>
