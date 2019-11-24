@@ -5,6 +5,7 @@ import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
 import util.file.Block;
 import util.file.RandomAccessFiles;
+import util.file.exception.IllegalNameException;
 import util.parser.parsers.*;
 import util.result.Result;
 import util.table.*;
@@ -198,8 +199,8 @@ public class TableBlock extends Block {
         return DeleteUtil.delete(this, parser);
     }
 
-    public Result alterTable(AlterTableParser parser) {
-        return AlterUtil.alterTable(this, parser);
+    public Result alterTable(AlterTableParser parser) throws IllegalNameException, IOException, ClassNotFoundException {
+        return AlterUtil.INSTANCE.alterTable(this, parser);
     }
 
     public boolean hasField(String fieldName) {
