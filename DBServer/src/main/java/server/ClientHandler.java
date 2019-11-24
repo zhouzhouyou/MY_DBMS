@@ -73,7 +73,7 @@ public class ClientHandler implements Runnable {
 
         Permission permission = (Permission) child.getAnnotation(Permission.class);
         Result result = core.getGrant(username, permission.value());
-        if (result.code == ResultFactory.SUCCESS) {
+        if (result.data.equals(true)) {
             return handleParser(parser, databaseName);
         } else {
             return ResultFactory.buildUnauthorizedResult();
@@ -91,7 +91,16 @@ public class ClientHandler implements Runnable {
             return handleDropDatabase((DropDatabaseParser) parser);
         } else if (parser instanceof ChooseDatabaseParser) {
             return handleChooseDatabase((ChooseDatabaseParser) parser);
-        } else if (databaseName == null) {
+        } else if (parser instanceof GetDatabases) {
+            return handleGetDatabases();
+        } else if (parser instanceof GrantParser) {
+            return handleGrant((GrantParser )parser);
+        } else if (parser instanceof CreateUserParser) {
+            return handleCreateUser((CreateUserParser) parser);
+        } else if (parser instanceof DropUserParser) {
+            return handleDropUser((DropUserParser)parser);
+        }
+        else if (databaseName == null) {
             return ResultFactory.buildUnauthorizedResult("Missing Database Info");
         } else if (parser instanceof CreateTableParser) {
             return handleCreateTable((CreateTableParser) parser, databaseName);
@@ -112,6 +121,22 @@ public class ClientHandler implements Runnable {
         } else if (parser instanceof AlterTableParser)
             return handleAlterTable((AlterTableParser) parser,databaseName);
         return null;
+    }
+
+    private Result handleDropUser(DropUserParser parser) {
+        return core.dropUser(parser);
+    }
+
+    private Result handleCreateUser(CreateUserParser parser) {
+        return core.createUser(parser);
+    }
+
+    private Result handleGrant(GrantParser parser) {
+        return core.grant(parser, username);
+    }
+
+    private Result handleGetDatabases() {
+        return core.getDatabases();
     }
 
     private Result handleDeleteParser(DeleteParser parser, String databaseName) {

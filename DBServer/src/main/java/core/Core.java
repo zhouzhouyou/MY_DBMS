@@ -9,6 +9,8 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -212,5 +214,22 @@ public enum Core {
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult();
         }
+    }
+
+    public Result getDatabases() {
+        return ResultFactory.buildSuccessResult(databaseFactory.getDatabaseNames());
+    }
+
+    public Result grant(GrantParser parser, String source) {
+        return userFactory.grant(source, parser.getUserName(), parser.getGrant(), parser.isGrant());
+    }
+
+    public Result createUser(CreateUserParser parser) {
+        if (!parser.isValid()) return ResultFactory.buildFailResult(null);
+        return userFactory.createUser(parser.getUserName(), parser.getPassword());
+    }
+
+    public Result dropUser(DropUserParser parser) {
+        return userFactory.dropUser(parser.getUserName());
     }
 }

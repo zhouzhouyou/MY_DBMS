@@ -219,6 +219,10 @@ public class TableFactory {
     public Result alterTable(AlterTableParser parser) {
         String tableName = parser.getTableName();
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
-        return map.get(tableName).alterTable(parser);
+        try {
+            return map.get(tableName).alterTable(parser);
+        } catch (IllegalNameException | IOException | ClassNotFoundException e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
     }
 }

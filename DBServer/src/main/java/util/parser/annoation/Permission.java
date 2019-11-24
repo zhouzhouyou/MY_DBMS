@@ -8,10 +8,10 @@ import java.lang.annotation.*;
 public @interface Permission {
     String value();
 
-    String CREATE_TABLE = "createTable";
-    String CREATE_DATABASE = "createDatabase";
-    String DROP_TABLE = "dropTable";
-    String DROP_DATABASE = "dropDatabase";
+    String CREATE_TABLE = "createtable";
+    String CREATE_DATABASE = "createdatabase";
+    String DROP_TABLE = "droptable";
+    String DROP_DATABASE = "dropdatabase";
     String GRANT = "grant";
     String NORMAL = "normal";
 }

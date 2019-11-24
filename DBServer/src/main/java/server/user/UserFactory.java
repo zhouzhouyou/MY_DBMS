@@ -52,7 +52,20 @@ public enum UserFactory {
         UserBlock userBlock = new UserBlock(name, password);
         collection.add(userBlock);
         map.put(name, userBlock);
+        saveInstance();
         return ResultFactory.buildSuccessResult(name);
+    }
+
+    public Result dropUser(String name) {
+        try {
+            UserBlock userBlock = getUser(name);
+            collection.remove(userBlock);
+            map.values().removeIf(block -> block.equals(userBlock));
+            saveInstance();
+            return ResultFactory.buildSuccessResult(name);
+        } catch (Exception e) {
+            return ResultFactory.buildInvalidNameResult(name);
+        }
     }
 
     /**
@@ -87,6 +100,24 @@ public enum UserFactory {
             return ResultFactory.buildObjectNotExistsResult();
         } catch (Exception e) {
             return ResultFactory.buildFailResult(null);
+        }
+    }
+
+    /**
+     * Change grant({@code grantType}) of user({@code target}) by user({@code source}).
+     *
+     * @param source    the user wishes to change others' grant
+     * @param target    user to be changed
+     * @param grantType grant type to be changed
+     * @param grant     give grant or not
+     * @return result
+     */
+    public Result grant(String source, String target, String grantType, boolean grant) {
+        try {
+            UserBlock sourceBlock = getUser(source);
+            return grant(sourceBlock, target, grantType, grant);
+        } catch (Exception e) {
+            return ResultFactory.buildObjectNotExistsResult(source);
         }
     }
 

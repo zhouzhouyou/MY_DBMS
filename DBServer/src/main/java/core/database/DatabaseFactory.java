@@ -9,6 +9,8 @@ import util.result.ResultFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import static util.file.Path.DATABASE_PATH;
@@ -134,5 +136,9 @@ public enum DatabaseFactory {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public List<String> getDatabaseNames() {
+        return new LinkedList<>(map.keySet());
     }
 }

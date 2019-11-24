@@ -27,6 +27,10 @@ public class ParserFactory {
         else if (contains(sql, "(drop index)(.+)(on)([(])(.+?)([)])")) return new DropIndexParser(sql);
         else if (contains(sql, "(alter table)(.+?)(add|drop column|add(\\s+)constraint|modify)"))
             return new AlterTableParser(sql);
+        else if (contains(sql, ("(create user)(.+)"))) return new CreateUserParser(sql);
+        else if (contains(sql, "(drop user)(.+)")) return new DropUserParser(sql);
+        else if (contains(sql, "(get databases)")) return new GetDatabases(sql);
+        else if (contains(sql, ("(grant|revoke)(.+)"))) return new GrantParser(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;

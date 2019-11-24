@@ -1,6 +1,10 @@
 <component name="ProjectDictionaryState">
   <dictionary name="admin">
     <words>
+      <w>createdatabase</w>
+      <w>createtable</w>
+      <w>dropdatabase</w>
+      <w>droptable</w>
       <w>endofsql</w>
       <w>gson</w>
     </words>

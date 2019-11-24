@@ -33,7 +33,8 @@ class ParserFactoryTest {
             "create unique index a_index on student (sno desc)",
             "create unique index a_index on student (sno, age desc)",
             "alter table student add column course integer",
-            "alter table student drop column course"
+            "alter table student drop column course",
+            "grant yuri createDatabase"
     })
     public void testSQL(String sql) {
         Parser parser = ParserFactory.generateParser(sql);

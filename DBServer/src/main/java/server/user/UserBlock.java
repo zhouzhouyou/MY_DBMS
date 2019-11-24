@@ -5,10 +5,10 @@ import util.file.Block;
 public class UserBlock extends Block {
     public String name;
     public String password;
-    public boolean createTable = false;
-    public boolean dropTable = false;
-    public boolean createDatabase = false;
-    public boolean dropDatabase = false;
+    public boolean createtable = false;
+    public boolean droptable = false;
+    public boolean createdatabase = false;
+    public boolean dropdatabase = false;
     public boolean grant = false;
     public boolean normal = false;
 
@@ -16,10 +16,10 @@ public class UserBlock extends Block {
         this.name = name;
         this.password = password;
         if (name.equals("system")) {
-            createDatabase = true;
-            dropDatabase = true;
-            createTable = true;
-            dropTable = true;
+            createdatabase = true;
+            dropdatabase = true;
+            createtable = true;
+            droptable = true;
             grant = true;
             normal = true;
         }
