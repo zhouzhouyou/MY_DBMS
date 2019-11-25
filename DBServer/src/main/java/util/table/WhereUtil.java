@@ -136,11 +136,11 @@ public class WhereUtil {
 //        List<Integer> list2 = resultStack.pop();
 //
 //        if (top.equals(AND)) {
-//            List<Integer> result = new ArrayList<>();
+//            List<Integer> util.result = new ArrayList<>();
 //            for (int index : list1) {
-//                if (list2.contains(index)) result.add(index);
+//                if (list2.contains(index)) util.result.add(index);
 //            }
-//            resultStack.push(result);
+//            resultStack.push(util.result);
 //        } else if (top.equals(OR)){
 //            Set<Integer> set = new HashSet<>();
 //            set.addAll(list1);

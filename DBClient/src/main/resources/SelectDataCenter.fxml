@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Text?>
+
+<StackPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="274.0" prefWidth="487.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.ConnectServerController">
+   <children>
+      <AnchorPane prefHeight="274.0" prefWidth="440.0">
+         <children>
+            <Text layoutX="97.0" layoutY="110.0" strokeType="OUTSIDE" strokeWidth="0.0" text="服务器IP：" />
+            <Text layoutX="126.0" layoutY="173.0" strokeType="OUTSIDE" strokeWidth="0.0" text="端口：" />
+            <JFXTextField fx:id="serverIP" layoutX="208.0" layoutY="74.0" />
+            <JFXTextField fx:id="serverPort" layoutX="217.0" layoutY="137.0" />
+            <JFXButton buttonType="RAISED" layoutX="284.0" layoutY="209.0" onAction="#connect" style="-fx-background-color: red;" text="确定" textFill="WHITE" />
+            <JFXButton buttonType="RAISED" layoutX="351.0" layoutY="209.0" onAction="#reset" style="-fx-background-color: grey;" text="重置" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+   </children>
+</StackPane>

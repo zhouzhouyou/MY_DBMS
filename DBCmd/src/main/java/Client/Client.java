@@ -170,18 +170,18 @@ public class Client implements Runnable {
 //        while (true) {
 //            sql = scanner.next();
 //            sql = sql.trim();
-//            String result = "";
+//            String util.result = "";
 //            Result resultSet = null;
 //            if (sql.equals("") || sql.length() == 0) {
 //                System.out.println("Check Your Input.");
 //            } else if (sql.contains("connect") && !sql.contains("disconnect")) {
-//                resultSet = getResultSet(result);
+//                resultSet = getResultSet(util.result);
 //                if (resultSet.code == Result.SUCCESS) {
 //                    connected = true;
 //                    System.out.println("Success to connect.");
 //                } else System.out.println("Fail to connect.");
 //            } else if (connected) {
-//                resultSet = getResultSet(result);
+//                resultSet = getResultSet(util.result);
 //                if (sql.contains("disconnect") && resultSet.code == Result.SUCCESS) {
 //                    connected = false;
 //                    System.out.println("Disconnect.");

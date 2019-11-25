@@ -59,7 +59,7 @@ public class TableFactory {
      * @param indexPath      absolute path of the index information of this table
      * @param createTime     time this table was created
      * @param lastChangeTime time of the latest change of this table
-     * @return result
+     * @return util.result
      */
     @Deprecated
     public Result createTable(String tableName, int recordAmount, int fieldAmount, String definePath, String constraintPath, String recordPath, String indexPath, Date createTime, Date lastChangeTime) {

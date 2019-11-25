@@ -44,7 +44,7 @@ public enum UserFactory {
      *
      * @param name     username
      * @param password user's password (MD5)
-     * @return result
+     * @return util.result
      */
     public Result createUser(String name, String password) {
         if (!FileUtils.isValidFileName(name)) return ResultFactory.buildInvalidNameResult(name);
@@ -87,7 +87,7 @@ public enum UserFactory {
      * @param target    user to be changed
      * @param grantType grant type to be changed
      * @param grant     give grant or not
-     * @return result
+     * @return util.result
      */
     public Result grant(UserBlock source, String target, String grantType, boolean grant) {
         if (!source.grant) return ResultFactory.buildUnauthorizedResult();
@@ -110,7 +110,7 @@ public enum UserFactory {
      * @param target    user to be changed
      * @param grantType grant type to be changed
      * @param grant     give grant or not
-     * @return result
+     * @return util.result
      */
     public Result grant(String source, String target, String grantType, boolean grant) {
         try {
@@ -126,7 +126,7 @@ public enum UserFactory {
      *
      * @param userBlock user
      * @param grantType grant type
-     * @return result whether the user has this grant
+     * @return util.result whether the user has this grant
      */
     public Result getGrant(UserBlock userBlock, String grantType) {
         try {
@@ -142,7 +142,7 @@ public enum UserFactory {
      *
      * @param user      user
      * @param grantType grant type
-     * @return result whether the user has this grant
+     * @return util.result whether the user has this grant
      * @see #getGrant(UserBlock, String)
      */
     public Result getGrant(String user, String grantType) {
@@ -159,7 +159,7 @@ public enum UserFactory {
      *
      * @param user     username
      * @param password password
-     * @return result whether the connect is valid
+     * @return util.result whether the connect is valid
      */
     public Result connect(String user, String password) {
         try {

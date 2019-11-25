@@ -30,7 +30,7 @@ public class TestSelectHandle {
     }
 
     private static void handleSelectResult(Result result) {
-//        Map resultSet = (Map) result.data;
+//        Map resultSet = (Map) util.result.data;
 //
 //        Object[] dataLengthGetter = resultSet.values().toArray();
 //        List tempDataLengthGetter = (List) dataLengthGetter[0];

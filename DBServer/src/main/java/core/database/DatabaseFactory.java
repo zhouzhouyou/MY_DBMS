@@ -60,7 +60,7 @@ public enum DatabaseFactory {
      *
      * @param name 数据库名
      * @param type 数据库类型，参数为{@link #SYSTEM}或{@link #USER}
-     * @return result
+     * @return util.result
      */
     public Result createDatabase(String name, boolean type) {
         if (!FileUtils.isValidFileName(name)) return ResultFactory.buildInvalidNameResult(name);
@@ -114,7 +114,7 @@ public enum DatabaseFactory {
      * 删除数据库
      *
      * @param name 数据库名
-     * @return result
+     * @return util.result
      */
     public Result dropDatabase(String name) {
         if (!exists(name)) return ResultFactory.buildObjectNotExistsResult();

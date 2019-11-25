@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="135.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Text layoutX="209.0" layoutY="81.0" strokeType="OUTSIDE" strokeWidth="0.0" text="用户名或密码错误" wrappingWidth="182.0" AnchorPane.bottomAnchor="45.09619140625" AnchorPane.topAnchor="45.453125">
+            <font>
+                <Font size="35.0" />
+            </font>
+        </Text>
+    </children>
+</AnchorPane>

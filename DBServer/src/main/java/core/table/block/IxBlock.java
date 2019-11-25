@@ -17,6 +17,7 @@ import java.util.List;
  * 在本文档中出现的所有索引都指的是在trd文件中，该条数据是第几个。
  * </p>
  */
+@SuppressWarnings("unchecked")
 public class IxBlock extends Block {
     //如果你要声明一个不应该被序列化的属性，请加上transient关键字，例如: private transient int age;
     // TODO: 写一个可序列化的结构，让反序列化时也能知道每个Comparable中的数据
@@ -89,7 +90,7 @@ public class IxBlock extends Block {
         LeafNode leafNode = this.root.find_larger_than(key);
         int i = 0;
         for (i = 0; i < leafNode.number; i++) {
-            if (leafNode.keys.get(i) >= key) {
+            if (((Comparable)leafNode.keys.get(i)).compareTo(key) >= 0) {
                 break;
             }
         }
@@ -148,7 +149,7 @@ public class IxBlock extends Block {
 
 
             }
-            /**
+            /*
              * 关键字数量不足，这时候：
              * 1、看看左右节点有没有可以使用的，有的话，那么就借用并调整树形；
              * 2、没有的话就删除，合并然后递归调整树形。
@@ -166,7 +167,7 @@ public class IxBlock extends Block {
                     leftBrother = parentNode.childs.get(cNodePindex - 1);
 
                 }
-                /**
+                /*
                  * 有左侧节点并且左侧节点有足够的关键字，借用之。
                  * */
                 if (leftBrother != null && leftBrother.keys.size() > min) {
@@ -178,7 +179,7 @@ public class IxBlock extends Block {
                     return true;
 
                 }
-                /**
+                /*
                  * 有右侧节点并且右侧节点有足够的关键字，借用之。
                  * */
                 else if (rightBrother != null && rightBrother.keys.size() > min) {
@@ -191,12 +192,12 @@ public class IxBlock extends Block {
                     }
                     return true;
                 }
-                /**
+                /*
                  * 最麻烦的情况也是需要递归的情况出现了，左右都没有足够的关键字，只能合并了，搞不好
                  * b+树会层层合并，高度最后减-1。
                  * */
                 else {
-                    /**
+                    /*
                      * 跟左侧兄弟合并
                      * */
                     if (leftBrother != null) {
@@ -217,7 +218,7 @@ public class IxBlock extends Block {
 
 
                     }
-                    /**
+                    /*
                      * 跟右侧兄弟合并。
                      * */
                     else if (rightBrother != null) {
@@ -243,7 +244,7 @@ public class IxBlock extends Block {
 
         }
 
-        /**
+        /*
          * 其他情况不受理。
          * */
         else {
@@ -313,7 +314,7 @@ public class IxBlock extends Block {
             return;
         }
 
-        /**
+        /*
          * 假如右侧有空余关键字。
          * */
         else if (rightBrother != null && rightBrother.keys.size() > min) {
@@ -343,13 +344,12 @@ public class IxBlock extends Block {
                 }
                 parentNode.keys.remove(theCPindex);
                 parentNode.childs.remove(theCPindex);
-                /**
+                /*
                  * 合并完毕，递归到上一级再合并。
                  * */
                 recursion_combination(parentNode);
-                return;
             }
-            /**
+            /*
              * 假如有右边兄弟，那么与右边合并。
              * */
             else if (rightBrother != null) {
@@ -362,7 +362,7 @@ public class IxBlock extends Block {
                 }
                 parentNode.keys.remove(theCPindex + 1);
                 parentNode.childs.remove(theCPindex + 1);
-                /**
+                /*
                  * 合并完毕，递归。
                  * */
                 recursion_combination(parentNode);
@@ -398,7 +398,7 @@ public class IxBlock extends Block {
             return;
         }
         Node parentNode = currentNode.parent;
-        /**
+        /*
          * 假如是叶节点，那么就从这里开始。
          * */
         if (currentNode.getClass().equals(LeafNode.class)) {
@@ -465,8 +465,8 @@ public class IxBlock extends Block {
 
         //构造方法
         public Node() {
-            this.keys = new ArrayList<Object>();
-            this.childs = new ArrayList<Node>();
+            this.keys = new ArrayList<>();
+            this.childs = new ArrayList<>();
             this.number = 0;
             this.parent = null;
         }
@@ -535,7 +535,7 @@ public class IxBlock extends Block {
          * @param value
          * @param key
          */
-        @SuppressWarnings("unchecked")
+
         @Override
         Node insert(Comparable value, Comparable key) {
             int i = 0;
