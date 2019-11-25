@@ -95,7 +95,9 @@ public enum Core {
         try {
             DatabaseBlock block = databaseFactory.getDatabase(database);
             TableFactory factory = block.getFactory();
-            return factory.createTable(parser);
+            Result result = factory.createTable(parser);
+            block.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -122,7 +124,9 @@ public enum Core {
         try {
             DatabaseBlock block = databaseFactory.getDatabase(database);
             TableFactory factory = block.getFactory();
-            return factory.dropTable(tableName);
+            Result result = factory.dropTable(tableName);
+            block.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -139,7 +143,9 @@ public enum Core {
         try {
             DatabaseBlock block = databaseFactory.getDatabase(database);
             TableFactory factory = block.getFactory();
-            return factory.insert(parser);
+            Result result = factory.insert(parser);
+            block.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -168,7 +174,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.createIndex(parser);
+            Result result = factory.createIndex(parser);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -178,7 +186,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.select(parser);
+            Result result = factory.select(parser);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -188,7 +198,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.update(parser);
+            Result result = factory.update(parser);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -198,7 +210,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.delete(parser);
+            Result result = factory.delete(parser);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult(database);
         }
@@ -208,7 +222,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(database);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.alterTable(parser);
+            Result result = factory.alterTable(parser);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildObjectNotExistsResult();
         }
@@ -241,7 +257,9 @@ public enum Core {
         try {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
             TableFactory factory = databaseBlock.getFactory();
-            return factory.getTableDefine(tableName);
+            Result result = factory.getTableDefine(tableName);
+            databaseBlock.release();
+            return result;
         } catch (Exception e) {
             return ResultFactory.buildFailResult(e.toString());
         }

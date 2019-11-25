@@ -95,7 +95,10 @@ public class ClientHandler implements Runnable {
             return handleGetDatabases();
         } else if (parser instanceof GetTables) {
             return handleGetTables((GetTables) parser);
-        } else if (databaseName == null) {
+        }
+        else if (parser instanceof GetTableDefine) {
+            return handleGetTableDefine((GetTableDefine) parser, databaseName);
+        }else if (databaseName == null) {
             return ResultFactory.buildUnauthorizedResult("Missing Database Info");
         } else if (parser instanceof CreateTableParser) {
             return handleCreateTable((CreateTableParser) parser, databaseName);
@@ -121,8 +124,6 @@ public class ClientHandler implements Runnable {
             return handleCreateUser((CreateUserParser) parser);
         } else if (parser instanceof DropUserParser) {
             return handleDropUser((DropUserParser) parser);
-        } else if (parser instanceof GetTableDefine) {
-            return handleGetTableDefine((GetTableDefine) parser, databaseName);
         }
         return null;
     }
