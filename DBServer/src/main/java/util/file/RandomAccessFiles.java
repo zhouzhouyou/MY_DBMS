@@ -156,7 +156,7 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public void addColumnData(int dataLength, Object defaultData) {
+    public void addColumnData(Object defaultData,int originLength) {
         try {
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
             FileWriter cleaner = new FileWriter(new File(recordFilePath));
@@ -169,7 +169,7 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = collection.getTotalDataLength();
+            recordLength = recordLength + originLength;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -194,8 +194,9 @@ public class RandomAccessFiles {
 //        }
     }
 
-    public void dropColumnData(int fieldOrder) {
+    public void dropColumnData(int fieldOrder,int originLength) {
         try {
+            int dataLength = 0;
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
             FileWriter cleaner = new FileWriter(new File(recordFilePath));
             List<List<Object>> recordSet = select();
@@ -207,13 +208,13 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = collection.getTotalDataLength();
+            recordLength = recordLength - originLength;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void changeColumnData(int fieldOrder, int dataLength) {
+    public void changeColumnData(int fieldOrder, int dataLength,int originLength) {
         try {
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
             FileWriter cleaner = new FileWriter(new File(recordFilePath));
@@ -231,7 +232,7 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = collection.getTotalDataLength();
+            recordLength = recordLength + dataLength - originLength;
         } catch (IOException e) {
             e.printStackTrace();
         }
