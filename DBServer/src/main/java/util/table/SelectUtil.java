@@ -4,6 +4,7 @@ import core.table.block.DefineBlock;
 import core.table.block.TableBlock;
 import core.table.factory.TableFactory;
 import util.file.RandomAccessFiles;
+import util.pair.Pair;
 import util.parser.parsers.SelectParser;
 import util.result.Result;
 import util.result.ResultFactory;
@@ -31,6 +32,7 @@ public class SelectUtil {
 
         if (tableNames.size() == 1) return singleTableSelect();
 
+        //put all used fields in a map
         for (String tableName : tableNames) {
             if (!tableFactory.exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
             TableBlock tableBlock = tableFactory.getTable(tableName);
@@ -41,6 +43,7 @@ public class SelectUtil {
                 tableList.add(tableName);
                 fieldMap.put(fieldName, tableList);
             }
+            Map<String, List<Object>> map = Pair.buildAllPairList(tableBlock.getDefineFactory().getFieldNames(), tableBlock.getRaf().select());
             tableBlocks.put(tableName, tableFactory.getTable(tableName));
         }
 
@@ -53,6 +56,7 @@ public class SelectUtil {
                 String selectTableName = strings[0];
                 selectFieldName = strings[1];
                 tableBlock = tableBlocks.get(selectTableName);
+                if (tableBlock == null) return ResultFactory.buildObjectNotExistsResult(selectTableName);
             } else {
                 selectFieldName = fieldName;
                 List<String> tableList = fieldMap.get(selectFieldName);

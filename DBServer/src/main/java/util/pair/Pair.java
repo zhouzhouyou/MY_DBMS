@@ -2,10 +2,7 @@ package util.pair;
 
 import com.sun.corba.se.spi.ior.ObjectKey;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Pair<T, V> {
     private T t;
@@ -54,6 +51,27 @@ public class Pair<T, V> {
             list.add(pair);
         }
         return list;
+    }
+
+    public static Map<String, List<Object>> buildAllPairList(List<String> strings, List<List<Object>> objects) {
+        Map<String, List<Object>> map = new HashMap<>();
+        List<List<Object>> temp = new ArrayList<>();
+
+        for (int i = 0; i < strings.size(); i++) {
+            temp.add(new ArrayList<>());
+        }
+
+        for (List<Object> record : objects) {
+            for (int i = 0; i < record.size(); i++) {
+                temp.get(i).add(record.get(i));
+            }
+        }
+
+        for (int i = 0; i < strings.size(); i++) {
+            map.put(strings.get(i), temp.get(i));
+        }
+
+        return map;
     }
 
     public static Object getObject(List<Pair<String, Object>> record, String fieldName) {
