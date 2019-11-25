@@ -33,6 +33,7 @@ public class ParserFactory {
         else if (contains(sql, ("(grant|revoke)(.+)"))) return new GrantParser(sql);
         else if (contains(sql, "(get tables)(.+)")) return new GetTables(sql);
         else if (contains(sql, ("(get table_define)(.+)"))) return new GetTableDefine(sql);
+        else if (contains(sql, "(get table_constraint)(.+)")) return new GetTableConstraint(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;

@@ -13,9 +13,7 @@ import util.result.ResultFactory;
 import util.table.*;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 存储着一张表的信息
@@ -223,9 +221,11 @@ public class TableBlock extends Block {
             for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
                 if (!constraintBlock.fieldName.equals(defineBlock.fieldName)) continue;
                 stringBuilder.append(" ");
-                stringBuilder.append(constraintBlock.constraintType);
+                stringBuilder.append(constraintBlock.constraintType).append(" ");
+                if (constraintBlock.constraintType == FieldTypes.DEFAULT) stringBuilder.append(constraintBlock.param);
+                else stringBuilder.append(" ");
             }
-            //"field_type param(如果fieldType是varchar才有意义) constraint_type...(可能有多个
+            //"field_type param(如果fieldType是varchar才有意义) constraint_type default value...(可能有多个
             // public static final int PK = 0;
             //    public static final int FK = 1;
             //    public static final int CHECK = 2;
@@ -236,6 +236,14 @@ public class TableBlock extends Block {
             map.put(defineBlock.fieldName, stringBuilder.toString());
         }
         return ResultFactory.buildSuccessResult(map);
+    }
+
+    public Result getTableConstraint() {
+        List<List<Object>> lists = new LinkedList<>();
+        for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
+            lists.add(constraintBlock.getInfo());
+        }
+        return ResultFactory.buildSuccessResult(lists);
     }
 }
 

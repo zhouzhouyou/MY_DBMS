@@ -10,6 +10,7 @@ import util.table.CheckUtil;
 import util.table.FieldTypes;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -106,5 +107,14 @@ public class ConstraintBlock extends Block {
         if (pk == null) return ResultFactory.buildFailResult(SQL.NOT_NULL);
         if (pks.contains(pk)) return ResultFactory.buildObjectAlreadyExistsResult(SQL.UNIQUE);
         return ResultFactory.buildSuccessResult(null);
+    }
+
+    public List<Object> getInfo() {
+        List<Object> info = new LinkedList<>();
+        info.add(constraintName);
+        info.add(fieldName);
+        info.add(constraintType);
+        info.add(param);
+        return info;
     }
 }

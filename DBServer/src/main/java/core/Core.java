@@ -264,4 +264,16 @@ public enum Core {
             return ResultFactory.buildFailResult(e.toString());
         }
     }
+
+    public Result getTableConstraint(String tableName, String databaseName) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
+            TableFactory factory = databaseBlock.getFactory();
+            Result result = factory.getTableConstraint(tableName);
+            databaseBlock.release();
+            return result;
+        } catch (Exception e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
+    }
 }

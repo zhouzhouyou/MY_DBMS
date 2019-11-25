@@ -95,10 +95,14 @@ public class ClientHandler implements Runnable {
             return handleGetDatabases();
         } else if (parser instanceof GetTables) {
             return handleGetTables((GetTables) parser);
+        } else if (parser instanceof GrantParser) {
+            return handleGrant((GrantParser) parser);
+        } else if (parser instanceof CreateUserParser) {
+            return handleCreateUser((CreateUserParser) parser);
+        } else if (parser instanceof DropUserParser) {
+            return handleDropUser((DropUserParser) parser);
         }
-        else if (parser instanceof GetTableDefine) {
-            return handleGetTableDefine((GetTableDefine) parser, databaseName);
-        }else if (databaseName == null) {
+        else if (databaseName == null) {
             return ResultFactory.buildUnauthorizedResult("Missing Database Info");
         } else if (parser instanceof CreateTableParser) {
             return handleCreateTable((CreateTableParser) parser, databaseName);
@@ -118,14 +122,16 @@ public class ClientHandler implements Runnable {
             return handleDeleteParser((DeleteParser) parser, databaseName);
         } else if (parser instanceof AlterTableParser) {
             return handleAlterTable((AlterTableParser) parser, databaseName);
-        } else if (parser instanceof GrantParser) {
-            return handleGrant((GrantParser) parser);
-        } else if (parser instanceof CreateUserParser) {
-            return handleCreateUser((CreateUserParser) parser);
-        } else if (parser instanceof DropUserParser) {
-            return handleDropUser((DropUserParser) parser);
+        }  else if (parser instanceof GetTableDefine) {
+            return handleGetTableDefine((GetTableDefine) parser, databaseName);
+        } else if (parser instanceof GetTableConstraint) {
+            return handleTableConstraint((GetTableConstraint) parser, databaseName);
         }
         return null;
+    }
+
+    private Result handleTableConstraint(GetTableConstraint parser, String databaseName) {
+        return core.getTableConstraint(parser.getTableName(), databaseName);
     }
 
     private Result handleGetTableDefine(GetTableDefine parser, String databaseName) {
