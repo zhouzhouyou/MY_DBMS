@@ -93,12 +93,6 @@ public class ClientHandler implements Runnable {
             return handleChooseDatabase((ChooseDatabaseParser) parser);
         } else if (parser instanceof GetDatabases) {
             return handleGetDatabases();
-        } else if (parser instanceof GrantParser) {
-            return handleGrant((GrantParser )parser);
-        } else if (parser instanceof CreateUserParser) {
-            return handleCreateUser((CreateUserParser) parser);
-        } else if (parser instanceof DropUserParser) {
-            return handleDropUser((DropUserParser)parser);
         }
         else if (databaseName == null) {
             return ResultFactory.buildUnauthorizedResult("Missing Database Info");
@@ -118,9 +112,23 @@ public class ClientHandler implements Runnable {
             return handleUpdate((UpdateParser) parser, databaseName);
         } else if (parser instanceof DeleteParser) {
             return handleDeleteParser((DeleteParser) parser, databaseName);
-        } else if (parser instanceof AlterTableParser)
-            return handleAlterTable((AlterTableParser) parser,databaseName);
+        } else if (parser instanceof AlterTableParser) {
+            return handleAlterTable((AlterTableParser) parser, databaseName);
+        }
+        else if (parser instanceof GrantParser) {
+            return handleGrant((GrantParser )parser);
+        } else if (parser instanceof CreateUserParser) {
+            return handleCreateUser((CreateUserParser) parser);
+        } else if (parser instanceof DropUserParser) {
+            return handleDropUser((DropUserParser)parser);
+        } else if (parser instanceof GetTables) {
+            return handleGetTables((GetTables) parser);
+        }
         return null;
+    }
+
+    private Result handleGetTables(GetTables parser) {
+        return core.getTables(parser);
     }
 
     private Result handleDropUser(DropUserParser parser) {

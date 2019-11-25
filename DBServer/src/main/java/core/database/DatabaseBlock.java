@@ -4,6 +4,7 @@ package core.database;
 import core.table.factory.TableFactory;
 import util.file.Block;
 import util.file.FileUtils;
+import util.result.Result;
 
 import java.util.Date;
 
@@ -61,5 +62,9 @@ public class DatabaseBlock extends Block {
     public void delete() {
         FileUtils.delete("./data/" + name);
         factory = null;
+    }
+
+    public Result getTables() {
+        return getFactory().getTablesNames();
     }
 }

@@ -232,4 +232,10 @@ public enum Core {
     public Result dropUser(DropUserParser parser) {
         return userFactory.dropUser(parser.getUserName());
     }
+
+    public Result getTables(GetTables parser) {
+        String databaseName = parser.getDatabaseName();
+        if (!databaseFactory.exists(databaseName)) return ResultFactory.buildObjectNotExistsResult(databaseName);
+        return databaseFactory.getTables(databaseName);
+    }
 }

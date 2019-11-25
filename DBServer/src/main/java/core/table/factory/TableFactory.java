@@ -12,10 +12,7 @@ import util.result.ResultFactory;
 import util.table.SelectUtil;
 
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 对一个数据库下的Table进行操作的工厂
@@ -224,5 +221,11 @@ public class TableFactory {
         } catch (IllegalNameException | IOException | ClassNotFoundException e) {
             return ResultFactory.buildFailResult(e.toString());
         }
+    }
+
+    public Result getTablesNames() {
+        List<String> list = new LinkedList<>();
+        map.values().forEach(tableBlock -> list.add(tableBlock.tableName));
+        return ResultFactory.buildSuccessResult(list);
     }
 }

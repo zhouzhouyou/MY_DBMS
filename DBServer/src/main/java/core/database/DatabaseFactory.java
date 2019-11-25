@@ -141,4 +141,9 @@ public enum DatabaseFactory {
     public List<String> getDatabaseNames() {
         return new LinkedList<>(map.keySet());
     }
+
+    public Result getTables(String databaseName) {
+        DatabaseBlock databaseBlock = map.get(databaseName);
+        return databaseBlock.getTables();
+    }
 }
