@@ -63,7 +63,8 @@ public class SelectUtil {
                 if (tableList.size() > 1) return ResultFactory.buildFailResult(selectFieldName);
                 tableBlock = tableBlocks.get(tableList.get(0));
             }
-            if (!tableBlock.getDefineFactory().exists(selectFieldName)) return ResultFactory.buildObjectNotExistsResult(fieldName);
+            if (!tableBlock.getDefineFactory().exists(selectFieldName))
+                return ResultFactory.buildObjectNotExistsResult(fieldName);
         }
 
         return null;

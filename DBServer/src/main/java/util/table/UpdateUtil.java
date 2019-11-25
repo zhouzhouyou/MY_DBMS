@@ -23,7 +23,8 @@ public class UpdateUtil {
             DefineBlock defineBlock = defineCollection.getDefineBlock(fieldName);
             if (defineBlock == null) return ResultFactory.buildObjectNotExistsResult(fieldName);
             Object value = ConvertUtil.getConvertedObject(assign[1], defineBlock.fieldType);
-            if (value == null) return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(defineBlock.fieldType), assign[1]);
+            if (value == null)
+                return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(defineBlock.fieldType), assign[1]);
         }
         Result result = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
         if (result.code != ResultFactory.SUCCESS) return result;

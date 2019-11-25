@@ -8,10 +8,13 @@ import util.file.RandomAccessFiles;
 import util.file.exception.IllegalNameException;
 import util.parser.parsers.*;
 import util.result.Result;
+import util.result.ResultFactory;
 import util.table.*;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 存储着一张表的信息
@@ -205,6 +208,14 @@ public class TableBlock extends Block {
 
     public boolean hasField(String fieldName) {
         return getDefineFactory().getCollection().hasField(fieldName);
+    }
+
+    public Result getTableDefine() {
+        Map<String, String> map = new HashMap<>();
+        for (DefineBlock defineBlock : getDefineFactory().getCollection().list) {
+            map.put(defineBlock.fieldName, FieldTypes.getFieldType(defineBlock.fieldType));
+        }
+        return ResultFactory.buildSuccessResult(map);
     }
 }
 

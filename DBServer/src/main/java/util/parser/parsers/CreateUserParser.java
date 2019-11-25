@@ -15,7 +15,7 @@ public class CreateUserParser extends Parser {
     }
 
     public boolean isValid() {
-        if (splitOriginSQLIntoSegment().get(0).size()==0) return false;
+        if (splitOriginSQLIntoSegment().get(0).size() == 0) return false;
         return getStrings().length == 2;
     }
 

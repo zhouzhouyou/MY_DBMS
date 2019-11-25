@@ -156,7 +156,7 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public void addColumnData(Object defaultData,int originLength) {
+    public void addColumnData(Object defaultData, int originLength) {
         try {
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
             FileWriter cleaner = new FileWriter(new File(recordFilePath));
@@ -194,7 +194,7 @@ public class RandomAccessFiles {
 //        }
     }
 
-    public void dropColumnData(int fieldOrder,int originLength) {
+    public void dropColumnData(int fieldOrder, int originLength) {
         try {
             int dataLength = 0;
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
@@ -214,7 +214,7 @@ public class RandomAccessFiles {
         }
     }
 
-    public void changeColumnData(int fieldOrder, int dataLength,int originLength) {
+    public void changeColumnData(int fieldOrder, int dataLength, int originLength) {
         try {
             RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
             FileWriter cleaner = new FileWriter(new File(recordFilePath));

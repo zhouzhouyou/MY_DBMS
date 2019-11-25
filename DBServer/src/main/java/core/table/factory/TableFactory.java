@@ -228,4 +228,9 @@ public class TableFactory {
         map.values().forEach(tableBlock -> list.add(tableBlock.tableName));
         return ResultFactory.buildSuccessResult(list);
     }
+
+    public Result getTableDefine(String tableName) {
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).getTableDefine();
+    }
 }

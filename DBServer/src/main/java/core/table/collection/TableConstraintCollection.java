@@ -10,7 +10,6 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 表的所有约束

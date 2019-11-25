@@ -1,6 +1,5 @@
 package core.table.block;
 
-import com.sun.corba.se.spi.ior.ObjectKey;
 import util.SQL;
 import util.file.Block;
 import util.file.RandomAccessFiles;
@@ -12,7 +11,6 @@ import util.table.FieldTypes;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 存储着一条约束

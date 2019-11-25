@@ -11,6 +11,5 @@ class ConditionParserFactoryTest {
         Parser parser = ConditionParserFactory.grenadeConditionParser("'a' in (5, 6)");
         assert parser instanceof InCondition;
         System.out.println(((InCondition) parser).check("5").code);
-        ;
     }
 }

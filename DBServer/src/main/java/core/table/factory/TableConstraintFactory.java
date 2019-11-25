@@ -12,9 +12,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 import util.table.FieldTypes;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TableConstraintFactory extends TableComponentFactory<ConstraintBlock, TableConstraintCollection> {
     private TableDefineFactory defineFactory;

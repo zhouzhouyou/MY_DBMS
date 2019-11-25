@@ -1,23 +1,18 @@
 package util.table;
 
-import core.table.block.IxBlock;
 import core.table.block.TableBlock;
 import util.file.RandomAccessFiles;
 import util.pair.Pair;
-import util.parser.condition.ComparisionCondition;
-import util.parser.condition.ConditionParserFactory;
-import util.parser.condition.InCondition;
-import util.parser.parsers.Parser;
 import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
-import java.util.*;
-
-import static util.SQL.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class WhereUtil {
-//    private Stack<String> opStack;
+    //    private Stack<String> opStack;
 //    private Stack<List<Integer>> resultStack;
 //    private RandomAccessFiles raf;
 //    private TableBlock tableBlock;
@@ -176,7 +171,7 @@ public class WhereUtil {
         try {
             List<List<Object>> allData = raf.select();
             List<String> allFields = tableBlock.getDefineFactory().getFieldNames();
-            for (int i = 0;i < allData.size(); i++) {
+            for (int i = 0; i < allData.size(); i++) {
                 List<Object> record = allData.get(i);
                 Map<String, Object> recordMap = Pair.buildMap(allFields, record);
                 Result result = CheckUtil.check(recordMap, whereCondition);

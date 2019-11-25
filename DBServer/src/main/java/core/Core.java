@@ -9,8 +9,6 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -237,5 +235,15 @@ public enum Core {
         String databaseName = parser.getDatabaseName();
         if (!databaseFactory.exists(databaseName)) return ResultFactory.buildObjectNotExistsResult(databaseName);
         return databaseFactory.getTables(databaseName);
+    }
+
+    public Result getTableDefine(String tableName, String databaseName) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
+            TableFactory factory = databaseBlock.getFactory();
+            return factory.getTableDefine(tableName);
+        } catch (Exception e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
     }
 }

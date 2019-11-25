@@ -52,6 +52,7 @@ public class InsertUtil {
                 int index = block.getRaf().insert(toInsert);
                 result = block.getIndexFactory().insertRecord(toInsert, index);
                 if (result.code != ResultFactory.SUCCESS) block.getRaf().delete(index);
+                else block.getIndexFactory().insertRecord(toInsert, index);
                 return result;
             } catch (IOException e) {
                 return ResultFactory.buildFailResult(e.toString());
