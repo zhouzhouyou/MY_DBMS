@@ -1,5 +1,6 @@
 package core.table.block;
 
+import core.table.collection.TableDefineCollection;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
@@ -212,8 +213,27 @@ public class TableBlock extends Block {
 
     public Result getTableDefine() {
         Map<String, String> map = new HashMap<>();
+
         for (DefineBlock defineBlock : getDefineFactory().getCollection().list) {
-            map.put(defineBlock.fieldName, FieldTypes.getFieldType(defineBlock.fieldType));
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(FieldTypes.getFieldType(defineBlock.fieldType)).append(" ");
+            if (defineBlock.fieldType == FieldTypes.VARCHAR) stringBuilder.append(defineBlock.param);
+            else stringBuilder.append(0);
+
+            for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
+                if (!constraintBlock.fieldName.equals(defineBlock.fieldName)) continue;
+                stringBuilder.append(" ");
+                stringBuilder.append(constraintBlock.constraintType);
+            }
+            //"field_type param(如果fieldType是varchar才有意义) constraint_type...(可能有多个
+            // public static final int PK = 0;
+            //    public static final int FK = 1;
+            //    public static final int CHECK = 2;
+            //    public static final int UNIQUE = 3;
+            //    public static final int NOT_NULL = 4;
+            //    public static final int DEFAULT = 5;
+            //    public static final int IDENTITY = 6;)
+            map.put(defineBlock.fieldName, stringBuilder.toString());
         }
         return ResultFactory.buildSuccessResult(map);
     }

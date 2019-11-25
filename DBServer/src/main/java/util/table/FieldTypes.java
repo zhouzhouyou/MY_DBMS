@@ -17,6 +17,7 @@ public class FieldTypes {
     public static final int DEFAULT = 5;
     public static final int IDENTITY = 6;
 
+
     public static String getFieldType(int type) {
         switch (type) {
             case INTEGER:
