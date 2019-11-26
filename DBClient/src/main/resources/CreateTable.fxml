@@ -9,12 +9,12 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="660.0" prefWidth="551.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.CreateTableController">
    <children>
-      <Text layoutX="25.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="创建表" />
-      <JFXTextField fx:id="tableNameField" layoutX="25.0" layoutY="54.0" prefHeight="30.0" prefWidth="460.0" text="table_name" />
-      <JFXButton layoutX="399.0" layoutY="603.0" onAction="#create" text="确定" />
-      <JFXButton layoutX="460.0" layoutY="603.0" onAction="#cancel" text="取消" />
-      <JFXButton layoutX="460.0" layoutY="121.0" onAction="#add" text="增加" />
-      <JFXButton layoutX="460.0" layoutY="166.0" onAction="#remove" text="删除" />
-      <JFXListView fx:id="list" layoutX="25.0" layoutY="121.0" prefHeight="456.0" prefWidth="391.0" />
+      <Text layoutX="12.0" layoutY="38.0" strokeType="OUTSIDE" strokeWidth="0.0" text="创建表" />
+      <JFXTextField fx:id="tableNameField" layoutX="12.0" layoutY="54.0" prefHeight="30.0" prefWidth="518.0" text="table_name" />
+      <JFXButton layoutX="430.0" layoutY="603.0" onAction="#create" text="确定" />
+      <JFXButton layoutX="480.0" layoutY="603.0" onAction="#cancel" text="取消" />
+      <JFXButton layoutX="14.0" layoutY="581.0" onAction="#add" text="增加" />
+      <JFXButton layoutX="64.0" layoutY="581.0" onAction="#remove" text="删除" />
+      <JFXListView fx:id="list" layoutX="12.0" layoutY="121.0" prefHeight="456.0" prefWidth="518.0" />
    </children>
 </AnchorPane>

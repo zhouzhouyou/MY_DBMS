@@ -2,45 +2,47 @@
 
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-
-<fx:root prefHeight="173.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+<fx:root prefHeight="229.0" prefWidth="523.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox layoutX="33.0" layoutY="42.0" prefHeight="63.0" prefWidth="492.0">
+      <VBox layoutX="14.0" layoutY="14.0" prefHeight="200.0" prefWidth="492.0" spacing="50.0">
          <children>
-            <VBox prefHeight="90.0" prefWidth="133.0">
+            <GridPane prefHeight="124.0" prefWidth="492.0">
+              <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+              </rowConstraints>
                <children>
                   <Text strokeType="OUTSIDE" strokeWidth="0.0" text="域名" />
-                  <JFXTextField fx:id="fieldNameField" />
+                  <JFXTextField fx:id="fieldNameField" GridPane.columnIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="类型" GridPane.rowIndex="1" />
+                  <JFXTextField fx:id="typeField" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="默认值" GridPane.rowIndex="2" />
+                  <JFXTextField fx:id="defaultValueField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
-            </VBox>
-            <VBox prefHeight="187.0" prefWidth="153.0">
+            </GridPane>
+            <HBox prefHeight="53.0" prefWidth="492.0">
                <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="类型" />
-                  <JFXTextField fx:id="typeField" prefWidth="150.0" />
+                  <CheckBox fx:id="notNullBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="75.0" text="非空" />
+                  <CheckBox fx:id="uniqueBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="71.0" text="独特" />
+                  <CheckBox fx:id="pkBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="75.0" text="主键" />
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="check条件：" wrappingWidth="86.95703125" />
+                  <JFXTextField fx:id="checkField" />
                </children>
-            </VBox>
-            <VBox prefHeight="187.0" prefWidth="206.0">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="默认值" />
-                  <JFXTextField fx:id="defaultValueField" />
-               </children>
-            </VBox>
+            </HBox>
          </children>
-      </HBox>
-      <HBox layoutX="27.0" layoutY="116.0" prefHeight="41.0" prefWidth="564.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="116.0">
-         <children>
-            <CheckBox fx:id="notNullBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="109.0" text="非空" />
-            <CheckBox fx:id="uniqueBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="88.0" text="独特" />
-            <CheckBox fx:id="pkBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="86.0" text="主键" />
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="check条件：" wrappingWidth="86.95703125" />
-            <JFXTextField fx:id="checkField" />
-         </children>
-      </HBox>
+      </VBox>
    </children>
 </fx:root>
