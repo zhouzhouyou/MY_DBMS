@@ -1,9 +1,11 @@
 package core.table.block;
 
+import com.google.gson.Gson;
 import core.table.collection.TableDefineCollection;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
 import core.table.factory.TableIndexFactory;
+import util.entity.Define;
 import util.file.Block;
 import util.file.RandomAccessFiles;
 import util.file.exception.IllegalNameException;
@@ -14,6 +16,8 @@ import util.table.*;
 
 import java.io.IOException;
 import java.util.*;
+
+import static util.table.FieldTypes.*;
 
 /**
  * 存储着一张表的信息
@@ -210,32 +214,40 @@ public class TableBlock extends Block {
     }
 
     public Result getTableDefine() {
-        Map<String, String> map = new HashMap<>();
-
+        List<Map<String, String>> list = new LinkedList<>();
+        List<Define> defines = new LinkedList<>();
         for (DefineBlock defineBlock : getDefineFactory().getCollection().list) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(FieldTypes.getFieldType(defineBlock.fieldType)).append(" ");
-            if (defineBlock.fieldType == FieldTypes.VARCHAR) stringBuilder.append(defineBlock.param);
-            else stringBuilder.append(0);
-
+            Map<String, String> map = new HashMap<>();
+            String fieldName = defineBlock.fieldName;
+            String fieldType = FieldTypes.getFieldType(defineBlock.fieldType);
+            boolean pk = false;
+            boolean notNull = false;
+            boolean unique = false;
+            String check  = null;
+            Object defaultValue = null;
             for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
                 if (!constraintBlock.fieldName.equals(defineBlock.fieldName)) continue;
-                stringBuilder.append(" ");
-                stringBuilder.append(constraintBlock.constraintType).append(" ");
-                if (constraintBlock.constraintType == FieldTypes.DEFAULT) stringBuilder.append(constraintBlock.param);
-                else stringBuilder.append(" ");
+                switch (constraintBlock.constraintType) {
+                    case PK:
+                        pk = true;
+                        break;
+                    case NOT_NULL:
+                        notNull = true;
+                        break;
+                    case UNIQUE:
+                        unique = true;
+                        break;
+                    case CHECK:
+                        check = (String) constraintBlock.param;
+                        break;
+                    case DEFAULT:
+                        defaultValue = constraintBlock.param;
+                }
             }
-            //"field_type param(如果fieldType是varchar才有意义) constraint_type default value...(可能有多个
-            // public static final int PK = 0;
-            //    public static final int FK = 1;
-            //    public static final int CHECK = 2;
-            //    public static final int UNIQUE = 3;
-            //    public static final int NOT_NULL = 4;
-            //    public static final int DEFAULT = 5;
-            //    public static final int IDENTITY = 6;)
-            map.put(defineBlock.fieldName, stringBuilder.toString());
+            Define define = new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue);
+            defines.add(define);
         }
-        return ResultFactory.buildSuccessResult(map);
+        return ResultFactory.buildSuccessResult(defines);
     }
 
     public Result getTableConstraint() {
