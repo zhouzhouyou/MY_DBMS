@@ -10,6 +10,11 @@ public class Constant {
     public static final String LOGIN = "login";
     public static final String LOGIN_RES = "/login.fxml";
 
+    public static final String CREATE_TABLE = "createTable";
+    public static final String CREATE_TABLE_RES = "/CreateTable.fxml";
+
+    public static final String CREATE_TABLE_COLUMN_RES = "/CreateTableColumn.fxml";
+
     public static final String INVALID_DATA_RES = "/InvalidData.fxml";
     public static final String TIME_OUT_RES = "/TimeOut.fxml";
     public static final String NOT_MATCH = "/NotMatch.fxml";

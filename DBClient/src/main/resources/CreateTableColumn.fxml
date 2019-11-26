@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTextField?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+
+<fx:root prefHeight="173.0" prefWidth="600.0" type="AnchorPane" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <HBox layoutX="33.0" layoutY="42.0" prefHeight="63.0" prefWidth="492.0">
+         <children>
+            <VBox prefHeight="90.0" prefWidth="133.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="域名" />
+                  <JFXTextField fx:id="fieldNameField" />
+               </children>
+            </VBox>
+            <VBox prefHeight="187.0" prefWidth="153.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="类型" />
+                  <JFXTextField fx:id="typeField" prefWidth="150.0" />
+               </children>
+            </VBox>
+            <VBox prefHeight="187.0" prefWidth="206.0">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="默认值" />
+                  <JFXTextField fx:id="defaultValueField" />
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="27.0" layoutY="116.0" prefHeight="41.0" prefWidth="564.0" AnchorPane.leftAnchor="18.0" AnchorPane.rightAnchor="18.0" AnchorPane.topAnchor="116.0">
+         <children>
+            <CheckBox fx:id="notNullBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="109.0" text="非空" />
+            <CheckBox fx:id="uniqueBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="88.0" text="独特" />
+            <CheckBox fx:id="pkBtn" mnemonicParsing="false" prefHeight="21.0" prefWidth="86.0" text="主键" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="check条件：" wrappingWidth="86.95703125" />
+            <JFXTextField fx:id="checkField" />
+         </children>
+      </HBox>
+   </children>
+</fx:root>

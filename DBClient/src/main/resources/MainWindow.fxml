@@ -4,6 +4,9 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
@@ -12,33 +15,45 @@
 <BorderPane fx:id="pane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.MainWindowController">
     <top>
         <MenuBar prefHeight="15.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
-            <menus>
-                <Menu mnemonicParsing="false" text="数据中心">
-                    <items>
-                        <MenuItem mnemonicParsing="false" text="增加数据库" />
-                        <MenuItem mnemonicParsing="false" text="删除数据库" />
-                  <MenuItem mnemonicParsing="false" onAction="#closeDataCenter" text="关闭数据中心" />
-                    </items>
-                </Menu>
-            <Menu mnemonicParsing="false" text="帮助">
-              <items>
-                <MenuItem mnemonicParsing="false" text="关于" />
-              </items>
+            <Menu mnemonicParsing="false" text="数据中心">
+                <MenuItem mnemonicParsing="false" text="增加数据库" />
+                <MenuItem mnemonicParsing="false" text="删除数据库" />
+                <MenuItem mnemonicParsing="false" onAction="#closeDataCenter" text="关闭数据中心" />
             </Menu>
-            </menus>
+            <Menu mnemonicParsing="false" text="帮助">
+                <MenuItem mnemonicParsing="false" text="关于" />
+            </Menu>
         </MenuBar>
     </top>
-   <center>
-      <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-         <items>
+    <center>
+        <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" />
             <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
-               <items>
-                  <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" />
-                  <TextArea fx:id="cmd" prefHeight="200.0" prefWidth="200.0" />
-               </items>
+                <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                    <Tab text="表结构">
+                        <TableView fx:id="tableDefineView" prefHeight="200.0" prefWidth="200.0">
+                     <columns>
+                        <TableColumn prefWidth="75.0" text="名称" />
+                        <TableColumn prefWidth="75.0" text="类型" />
+                        <TableColumn prefWidth="75.0" text="主键" />
+                        <TableColumn prefWidth="75.0" text="唯一" />
+                        <TableColumn prefWidth="75.0" text="非空" />
+                        <TableColumn prefWidth="75.0" text="条件" />
+                        <TableColumn prefWidth="75.0" text="默认值" />
+                     </columns></TableView>
+                    </Tab>
+                    <Tab text="表数据">
+                        <TableView fx:id="tableDataView" prefHeight="200.0" prefWidth="200.0" />
+                    </Tab>
+                    <Tab text="表约束">
+                        <TableView fx:id="tableConstraintView" prefHeight="200.0" prefWidth="200.0" />
+                    </Tab>
+                    <Tab text="表索引">
+                        <TableView fx:id="tableIndexView" prefHeight="200.0" prefWidth="200.0"/>
+                    </Tab>
+                </TabPane>
+                <TextArea fx:id="cmd" prefHeight="200.0" prefWidth="200.0" />
             </SplitPane>
-         </items>
-      </SplitPane>
-   </center>
+        </SplitPane>
+    </center>
 </BorderPane>
