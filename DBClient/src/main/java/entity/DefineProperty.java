@@ -15,14 +15,6 @@ public class DefineProperty {
     private final SimpleStringProperty check;
     private final SimpleStringProperty defaultValue;
 
-    public static final int PK = 0;
-    public static final int FK = 1;
-    public static final int CHECK = 2;
-    public static final int UNIQUE = 3;
-    public static final int NOT_NULL = 4;
-    public static final int DEFAULT = 5;
-    public static final int IDENTITY = 6;
-
     public DefineProperty(String fieldName, String fieldType, String pk, String notNull, String unique, String check, String defaultValue) {
         this.fieldName = new SimpleStringProperty(fieldName);
         this.fieldType = new SimpleStringProperty(fieldType);
@@ -59,5 +51,61 @@ public class DefineProperty {
 
     public void setDefaultValue(String defaultValue) {
         this.defaultValue.set(defaultValue);
+    }
+
+    public String getFieldName() {
+        return fieldName.get();
+    }
+
+    public SimpleStringProperty fieldNameProperty() {
+        return fieldName;
+    }
+
+    public String getFieldType() {
+        return fieldType.get();
+    }
+
+    public SimpleStringProperty fieldTypeProperty() {
+        return fieldType;
+    }
+
+    public String getPk() {
+        return pk.get();
+    }
+
+    public SimpleStringProperty pkProperty() {
+        return pk;
+    }
+
+    public String getNotNull() {
+        return notNull.get();
+    }
+
+    public SimpleStringProperty notNullProperty() {
+        return notNull;
+    }
+
+    public String getUnique() {
+        return unique.get();
+    }
+
+    public SimpleStringProperty uniqueProperty() {
+        return unique;
+    }
+
+    public String getCheck() {
+        return check.get();
+    }
+
+    public SimpleStringProperty checkProperty() {
+        return check;
+    }
+
+    public String getDefaultValue() {
+        return defaultValue.get();
+    }
+
+    public SimpleStringProperty defaultValueProperty() {
+        return defaultValue;
     }
 }

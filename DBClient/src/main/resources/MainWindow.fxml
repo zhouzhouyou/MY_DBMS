@@ -37,13 +37,13 @@
                      <center>
                               <TableView fx:id="tableDefineView" prefHeight="200.0" prefWidth="200.0">
                            <columns>
-                              <TableColumn prefWidth="75.0" text="名称" />
-                              <TableColumn prefWidth="75.0" text="类型" />
-                              <TableColumn prefWidth="75.0" text="主键" />
-                              <TableColumn prefWidth="75.0" text="唯一" />
-                              <TableColumn prefWidth="75.0" text="非空" />
-                              <TableColumn prefWidth="75.0" text="条件" />
-                              <TableColumn prefWidth="75.0" text="默认值" />
+                              <TableColumn fx:id="defineFieldColumn" prefWidth="75.0" text="名称" />
+                              <TableColumn fx:id="defineTypeColumn" prefWidth="75.0" text="类型" />
+                              <TableColumn fx:id="definePkColumn" prefWidth="75.0" text="主键" />
+                              <TableColumn fx:id="defineUniqueColumn" prefWidth="75.0" text="唯一" />
+                              <TableColumn fx:id="defineNotNullColumn" prefWidth="75.0" text="非空" />
+                              <TableColumn fx:id="defineCheckColumn" prefWidth="75.0" text="条件" />
+                              <TableColumn fx:id="defineDefaultColumn" prefWidth="75.0" text="默认值" />
                            </columns>
                         </TableView>
                      </center>

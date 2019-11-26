@@ -44,6 +44,13 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableView tableDataView;
     public TableView tableConstraintView;
     public TableView tableIndexView;
+    public TableColumn<DefineProperty, String> defineFieldColumn;
+    public TableColumn<DefineProperty, String> defineTypeColumn;
+    public TableColumn<DefineProperty, String> definePkColumn;
+    public TableColumn<DefineProperty, String> defineUniqueColumn;
+    public TableColumn<DefineProperty, String> defineNotNullColumn;
+    public TableColumn<DefineProperty, String> defineCheckColumn;
+    public TableColumn<DefineProperty, String> defineDefaultColumn;
     private StageController stageController;
     private Client client;
 
@@ -67,18 +74,13 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     private void initDefineView() {
-        //tableDefineView.getColumns().clear();
-        ObservableList<TableColumn<DefineProperty, ?>> tableColumns = tableDefineView.getColumns();
-        tableColumns.get(0).setCellValueFactory(new PropertyValueFactory<>("FieldName"));
-        tableColumns.get(1).setCellValueFactory(new PropertyValueFactory<>("FieldType"));
-        tableColumns.get(2).setCellValueFactory(new PropertyValueFactory<>("Pk"));
-        tableColumns.get(3).setCellValueFactory(new PropertyValueFactory<>("Unique"));
-        tableColumns.get(4).setCellValueFactory(new PropertyValueFactory<>("NotNull"));
-        tableColumns.get(5).setCellValueFactory(new PropertyValueFactory<>("Check"));
-        tableColumns.get(6).setCellValueFactory(new PropertyValueFactory<>("DefaultValue"));
-        //TableColumn fieldNameColumn = new TableColumn("fieldType");
-        //fieldNameColumn.setCellValueFactory(new PropertyValueFactory<DefineProperty, String>("fieldType"));
-        //tableDefineView.getColumns().add(fieldNameColumn);
+        defineFieldColumn.setCellValueFactory(cellData -> cellData.getValue().fieldNameProperty());
+        defineTypeColumn.setCellValueFactory(cellData -> cellData.getValue().fieldTypeProperty());
+        definePkColumn.setCellValueFactory(cellData -> cellData.getValue().pkProperty());
+        defineUniqueColumn.setCellValueFactory(cellData -> cellData.getValue().uniqueProperty());
+        defineNotNullColumn.setCellValueFactory(cellData -> cellData.getValue().notNullProperty());
+        defineCheckColumn.setCellValueFactory(cellData -> cellData.getValue().checkProperty());
+        defineDefaultColumn.setCellValueFactory(cellData -> cellData.getValue().defaultValueProperty());
         tableDefineView.setItems(definePropertyObservableList);
 
     }
