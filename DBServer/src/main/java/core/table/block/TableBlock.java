@@ -214,16 +214,14 @@ public class TableBlock extends Block {
     }
 
     public Result getTableDefine() {
-        List<Map<String, String>> list = new LinkedList<>();
-        List<Define> defines = new LinkedList<>();
+        List<List<Object>> defines = new ArrayList<>();
         for (DefineBlock defineBlock : getDefineFactory().getCollection().list) {
-            Map<String, String> map = new HashMap<>();
             String fieldName = defineBlock.fieldName;
             String fieldType = FieldTypes.getFieldType(defineBlock.fieldType);
             boolean pk = false;
             boolean notNull = false;
             boolean unique = false;
-            String check  = null;
+            String check = null;
             Object defaultValue = null;
             for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
                 if (!constraintBlock.fieldName.equals(defineBlock.fieldName)) continue;
@@ -244,9 +242,18 @@ public class TableBlock extends Block {
                         defaultValue = constraintBlock.param;
                 }
             }
-            Define define = new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue);
-            defines.add(define);
+            List<Object> definePropertyList = new ArrayList<>();
+            definePropertyList.add(fieldName);
+            definePropertyList.add(fieldType);
+            definePropertyList.add(pk);
+            definePropertyList.add(notNull);
+            definePropertyList.add(unique);
+            definePropertyList.add(check);
+            definePropertyList.add(defaultValue);
+            //Define define = new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue);
+            defines.add(definePropertyList);
         }
+
         return ResultFactory.buildSuccessResult(defines);
     }
 

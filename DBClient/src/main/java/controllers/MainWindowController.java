@@ -32,10 +32,7 @@ import util.stage.ControlledStage;
 import util.stage.StageController;
 
 import java.net.URL;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static util.Constant.*;
 import static util.SQL.DATABASE;
@@ -70,15 +67,20 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     private void initDefineView() {
+        //tableDefineView.getColumns().clear();
         ObservableList<TableColumn<DefineProperty, ?>> tableColumns = tableDefineView.getColumns();
-        tableColumns.get(0).setCellValueFactory(new PropertyValueFactory<>("fieldName"));
-        tableColumns.get(1).setCellValueFactory(new PropertyValueFactory<>("fieldType"));
-        tableColumns.get(2).setCellValueFactory(new PropertyValueFactory<>("pk"));
-        tableColumns.get(3).setCellValueFactory(new PropertyValueFactory<>("unique"));
-        tableColumns.get(4).setCellValueFactory(new PropertyValueFactory<>("notNull"));
-        tableColumns.get(5).setCellValueFactory(new PropertyValueFactory<>("check"));
-        tableColumns.get(6).setCellValueFactory(new PropertyValueFactory<>("defaultValue"));
-        tableDataView.setItems(definePropertyObservableList);
+        tableColumns.get(0).setCellValueFactory(new PropertyValueFactory<>("FieldName"));
+        tableColumns.get(1).setCellValueFactory(new PropertyValueFactory<>("FieldType"));
+        tableColumns.get(2).setCellValueFactory(new PropertyValueFactory<>("Pk"));
+        tableColumns.get(3).setCellValueFactory(new PropertyValueFactory<>("Unique"));
+        tableColumns.get(4).setCellValueFactory(new PropertyValueFactory<>("NotNull"));
+        tableColumns.get(5).setCellValueFactory(new PropertyValueFactory<>("Check"));
+        tableColumns.get(6).setCellValueFactory(new PropertyValueFactory<>("DefaultValue"));
+        //TableColumn fieldNameColumn = new TableColumn("fieldType");
+        //fieldNameColumn.setCellValueFactory(new PropertyValueFactory<DefineProperty, String>("fieldType"));
+        //tableDefineView.getColumns().add(fieldNameColumn);
+        tableDefineView.setItems(definePropertyObservableList);
+
     }
 
     private void initTreeView() {
@@ -91,7 +93,7 @@ public class MainWindowController implements Initializable, ControlledStage {
                     TreeElement treeElement = treeView.getSelectionModel().getSelectedItem().getValue();
                     switch (treeElement.type) {
                         case TABLE:
-                            loadTable(treeElement.name,( (TableElement)treeElement).db);
+                            loadTable(treeElement.name, ((TableElement) treeElement).db);
                     }
                 }
             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
@@ -120,14 +122,27 @@ public class MainWindowController implements Initializable, ControlledStage {
     private void loadTable(String tableName, String db) {
         Result defineResult = client.getResult("get table_define " + tableName, db);
         if (defineResult.code == Result.SUCCESS) {
-            List<Define> define = (List<Define>) defineResult.data;
+            List<List<Object>> define = (List<List<Object>>) defineResult.data;
             loadDefine(define);
         }
     }
 
-    private void loadDefine(List<Define> data) {
+    private void loadDefine(List<List<Object>> data) {
         definePropertyObservableList.clear();
-        data.forEach(define -> definePropertyObservableList.add(define.defineProperty()));
+        List<Define> defineList = new ArrayList<>();
+        for (List<Object> list : data) {
+            String fieldName = (String) list.get(0);
+            String fieldType = (String) list.get(1);
+            Boolean pk = (Boolean) list.get(2);
+            Boolean notNull = (Boolean) list.get(3);
+            Boolean unique = (Boolean) list.get(4);
+            String check = (String) list.get(5);
+            Object defaultValue = list.get(6);
+            definePropertyObservableList.add(new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue).defineProperty());
+            defineList.add(new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue));
+        }
+//        defineList.forEach(define -> definePropertyObservableList.add(define.defineProperty()));
+
     }
 
     private void initDatabases() {

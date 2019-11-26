@@ -24,6 +24,6 @@ public class Define implements Serializable {
     }
 
     public DefineProperty defineProperty() {
-        return new DefineProperty(fieldName, fieldType, String.valueOf(pk), String.valueOf(notNull), String.valueOf(unique), check, defaultValue.toString());
+        return new DefineProperty(fieldName, fieldType, String.valueOf(pk), String.valueOf(notNull), String.valueOf(unique), check, defaultValue == null? "" : defaultValue.toString());
     }
 }

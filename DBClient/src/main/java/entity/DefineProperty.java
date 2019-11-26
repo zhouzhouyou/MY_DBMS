@@ -7,13 +7,13 @@ import util.SQL;
 
 
 public class DefineProperty {
-    public final SimpleStringProperty fieldName;
-    public final SimpleStringProperty fieldType;
-    public final SimpleStringProperty pk;
-    public final SimpleStringProperty notNull;
-    public final SimpleStringProperty unique;
-    public final SimpleStringProperty check;
-    public final SimpleStringProperty defaultValue;
+    private final SimpleStringProperty fieldName;
+    private final SimpleStringProperty fieldType;
+    private final SimpleStringProperty pk;
+    private final SimpleStringProperty notNull;
+    private final SimpleStringProperty unique;
+    private final SimpleStringProperty check;
+    private final SimpleStringProperty defaultValue;
 
     public static final int PK = 0;
     public static final int FK = 1;
@@ -31,5 +31,33 @@ public class DefineProperty {
         this.unique = new SimpleStringProperty(unique);
         this.check = new SimpleStringProperty(check);
         this.defaultValue = new SimpleStringProperty(defaultValue);
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName.set(fieldName);
+    }
+
+    public void setFieldType(String fieldType) {
+        this.fieldType.set(fieldType);
+    }
+
+    public void setPk(String pk) {
+        this.pk.set(pk);
+    }
+
+    public void setNotNull(String notNull) {
+        this.notNull.set(notNull);
+    }
+
+    public void setUnique(String unique) {
+        this.unique.set(unique);
+    }
+
+    public void setCheck(String check) {
+        this.check.set(check);
+    }
+
+    public void setDefaultValue(String defaultValue) {
+        this.defaultValue.set(defaultValue);
     }
 }
