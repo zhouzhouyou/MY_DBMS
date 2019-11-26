@@ -9,10 +9,7 @@ import component.menu.TableContextMenu;
 import component.treeElement.DatabaseElement;
 import component.treeElement.TableElement;
 import component.treeElement.TreeElement;
-import entity.ConstraintProperty;
-import entity.Define;
-import entity.DefineProperty;
-import entity.IndexProperty;
+import entity.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -43,6 +40,8 @@ import static util.SQL.DATABASE;
 public class MainWindowController implements Initializable, ControlledStage {
     public TableView<DefineProperty> tableDefineView;
     private final ObservableList<DefineProperty> definePropertyObservableList = FXCollections.observableArrayList();
+    private final ObservableList<ConstraintProperty> constraintPropertyObservableList = FXCollections.observableArrayList();
+    private final ObservableList<IndexProperty> indexPropertyObservableList = FXCollections.observableArrayList();
     public TableView tableDataView;
     public TableView tableConstraintView;
     public TableView tableIndexView;
@@ -57,10 +56,10 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableColumn<ConstraintProperty, String> constraintFieldColumn;
     public TableColumn<ConstraintProperty, String> constraintTypeColumn;
     public TableColumn<ConstraintProperty, String> constraintParamColumn;
-    public TableColumn<IndexProperty,String> indexNameColumn;
-    public TableColumn<IndexProperty,String> indexFieldColumn;
-    public TableColumn<IndexProperty,String> indexAscColumn;
-    public TableColumn<IndexProperty,String> indexUniqueColumn;
+    public TableColumn<IndexProperty, String> indexNameColumn;
+    public TableColumn<IndexProperty, String> indexFieldColumn;
+    public TableColumn<IndexProperty, String> indexAscColumn;
+    public TableColumn<IndexProperty, String> indexUniqueColumn;
 
     private StageController stageController;
     private Client client;
@@ -74,12 +73,15 @@ public class MainWindowController implements Initializable, ControlledStage {
     private RootContextMenu rootContextMenu;
 
     private Bundle bundle;
+    private Boolean asc;
 
     public void initialize(URL location, ResourceBundle resources) {
         client = ClientHolder.INSTANCE.getClient();
         bundle = Bundle.INSTANCE;
         tableDataView.setItems(definePropertyObservableList);
         initDefineView();
+        initConstraintView();
+        initIndexView();
         initTreeView();
         initDatabases();
     }
@@ -94,6 +96,22 @@ public class MainWindowController implements Initializable, ControlledStage {
         defineDefaultColumn.setCellValueFactory(cellData -> cellData.getValue().defaultValueProperty());
         tableDefineView.setItems(definePropertyObservableList);
 
+    }
+
+    private void initConstraintView() {
+        constraintNameColumn.setCellValueFactory(cellData -> cellData.getValue().constraintNameProperty());
+        constraintFieldColumn.setCellValueFactory(cellData -> cellData.getValue().fieldNameProperty());
+        constraintTypeColumn.setCellValueFactory(cellData -> cellData.getValue().constraintTypeProperty());
+        constraintParamColumn.setCellValueFactory(cellData -> cellData.getValue().constraintParamProperty());
+        tableConstraintView.setItems(constraintPropertyObservableList);
+    }
+
+    private void initIndexView() {
+        indexNameColumn.setCellValueFactory(cellData -> cellData.getValue().indexNameProperty());
+        indexFieldColumn.setCellValueFactory(cellData -> cellData.getValue().indexFieldProperty());
+        indexAscColumn.setCellValueFactory(cellData -> cellData.getValue().indexAscProperty());
+        indexUniqueColumn.setCellValueFactory(cellData -> cellData.getValue().indexUniqueProperty());
+        tableIndexView.setItems(indexPropertyObservableList);
     }
 
     private void initTreeView() {
@@ -138,11 +156,20 @@ public class MainWindowController implements Initializable, ControlledStage {
             List<List<Object>> define = (List<List<Object>>) defineResult.data;
             loadDefine(define);
         }
+        Result constraintResult = client.getResult("get table_constraint " + tableName, db);
+        if (constraintResult.code == Result.SUCCESS) {
+            List<List<Object>> constraint = (List<List<Object>>) constraintResult.data;
+            loadConstraint(constraint);
+        }
+        Result indexResult = client.getResult("get table_index " + tableName, db);
+        if (indexResult.code == Result.SUCCESS) {
+            List<List<Object>> index = (List<List<Object>>) indexResult.data;
+            loadIndex(index);
+        }
     }
 
     private void loadDefine(List<List<Object>> data) {
         definePropertyObservableList.clear();
-        List<Define> defineList = new ArrayList<>();
         for (List<Object> list : data) {
             String fieldName = (String) list.get(0);
             String fieldType = (String) list.get(1);
@@ -152,10 +179,32 @@ public class MainWindowController implements Initializable, ControlledStage {
             String check = (String) list.get(5);
             Object defaultValue = list.get(6);
             definePropertyObservableList.add(new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue).defineProperty());
-            defineList.add(new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue));
+            //defineList.add(new Define(fieldName, fieldType, pk, notNull, unique, check, defaultValue));
         }
 //        defineList.forEach(define -> definePropertyObservableList.add(define.defineProperty()));
 
+    }
+
+    private void loadConstraint(List<List<Object>> data) {
+        constraintPropertyObservableList.clear();
+        for (List<Object> list : data) {
+            String constraintName = (String) list.get(0);
+            String fieldName = (String) list.get(1);
+            Integer constraintType = (Integer) list.get(2);
+            Object param = list.get(3);
+            constraintPropertyObservableList.add(new Constraint(constraintName, fieldName, constraintType, param).constraintProperty());
+        }
+    }
+
+    private void loadIndex(List<List<Object>> data) {
+        indexPropertyObservableList.clear();
+        for (List<Object> list : data) {
+            String indexName = (String) list.get(0);
+            String field = (String) list.get(1);
+            Boolean asc = (Boolean) list.get(2);
+            Boolean unique = (Boolean) list.get(3);
+            indexPropertyObservableList.add(new Index(indexName, unique, asc, field).indexProperty());
+        }
     }
 
     private void initDatabases() {

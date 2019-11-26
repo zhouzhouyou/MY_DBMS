@@ -265,8 +265,12 @@ public class TableBlock extends Block {
         return ResultFactory.buildSuccessResult(lists);
     }
 
-    public Result getTableIndex(){
-        return null;
+    public Result getTableIndex() {
+        List<List<Object>> lists = new ArrayList<>();
+        for(IndexBlock indexBlock : getIndexFactory().getCollection().list){
+            lists.add(indexBlock.getInfo());
+        }
+        return ResultFactory.buildSuccessResult(lists);
     }
 }
 

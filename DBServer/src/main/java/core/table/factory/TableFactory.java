@@ -238,4 +238,9 @@ public class TableFactory {
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).getTableConstraint();
     }
+
+    public Result getTableIndex(String tableName) {
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).getTableIndex();
+    }
 }

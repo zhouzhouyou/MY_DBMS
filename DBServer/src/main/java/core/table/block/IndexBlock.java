@@ -8,6 +8,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -140,5 +141,14 @@ public class IndexBlock extends Block {
 
     public void deleteAll() {
         //ixBlock.deleteAll();
+    }
+
+    public List<Object> getInfo(){
+        List<Object> info = new ArrayList<>();
+        info.add(indexName);
+        info.add(field);
+        info.add(asc);
+        info.add(unique);
+        return info;
     }
 }

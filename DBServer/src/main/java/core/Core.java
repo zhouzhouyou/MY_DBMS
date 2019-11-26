@@ -276,4 +276,16 @@ public enum Core {
             return ResultFactory.buildFailResult(e.toString());
         }
     }
+
+    public Result getTableIndex(String tableName, String databaseName) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
+            TableFactory factory = databaseBlock.getFactory();
+            Result result = factory.getTableIndex(tableName);
+            databaseBlock.release();
+            return result;
+        } catch (Exception e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
+    }
 }

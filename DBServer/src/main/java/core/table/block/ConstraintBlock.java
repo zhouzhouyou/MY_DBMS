@@ -10,6 +10,7 @@ import util.table.CheckUtil;
 import util.table.FieldTypes;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class ConstraintBlock extends Block {
     }
 
     public List<Object> getInfo() {
-        List<Object> info = new LinkedList<>();
+        List<Object> info = new ArrayList<>();
         info.add(constraintName);
         info.add(fieldName);
         info.add(constraintType);

@@ -125,17 +125,23 @@ public class ClientHandler implements Runnable {
         }  else if (parser instanceof GetTableDefine) {
             return handleGetTableDefine((GetTableDefine) parser, databaseName);
         } else if (parser instanceof GetTableConstraint) {
-            return handleTableConstraint((GetTableConstraint) parser, databaseName);
+            return handleGetTableConstraint((GetTableConstraint) parser, databaseName);
+        }else if(parser instanceof GetTableIndex){
+            return handleGetTableIndex((GetTableIndex) parser,databaseName);
         }
         return null;
     }
 
-    private Result handleTableConstraint(GetTableConstraint parser, String databaseName) {
+    private Result handleGetTableConstraint(GetTableConstraint parser, String databaseName) {
         return core.getTableConstraint(parser.getTableName(), databaseName);
     }
 
     private Result handleGetTableDefine(GetTableDefine parser, String databaseName) {
         return core.getTableDefine(parser.getTableName(), databaseName);
+    }
+
+    private Result handleGetTableIndex(GetTableIndex parser,String databaseName){
+        return core.getTableIndex(parser.getTableName(),databaseName);
     }
 
     private Result handleGetTables(GetTables parser) {
