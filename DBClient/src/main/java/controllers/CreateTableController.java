@@ -50,6 +50,7 @@ public class CreateTableController implements ControlledStage, Initializable {
             //TODO:
         }
         stageController.setStage(MAIN_WINDOW, CREATE_TABLE);
+
     }
 
     public void cancel(ActionEvent actionEvent) {
