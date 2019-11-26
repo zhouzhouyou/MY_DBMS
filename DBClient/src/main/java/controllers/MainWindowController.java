@@ -1,5 +1,7 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.internal.LinkedTreeMap;
 import component.menu.AbstractContextMenu;
 import component.menu.DatabaseContextMenu;
 import component.menu.RootContextMenu;
@@ -7,11 +9,16 @@ import component.menu.TableContextMenu;
 import component.treeElement.DatabaseElement;
 import component.treeElement.TableElement;
 import component.treeElement.TreeElement;
+import entity.Define;
+import entity.DefineProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -25,6 +32,7 @@ import util.stage.ControlledStage;
 import util.stage.StageController;
 
 import java.net.URL;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -34,7 +42,8 @@ import static util.SQL.DATABASE;
 
 @SuppressWarnings("unchecked")
 public class MainWindowController implements Initializable, ControlledStage {
-    public TableView tableDefineView;
+    public TableView<DefineProperty> tableDefineView;
+    private final ObservableList<DefineProperty> definePropertyObservableList = FXCollections.observableArrayList();
     public TableView tableDataView;
     public TableView tableConstraintView;
     public TableView tableIndexView;
@@ -54,8 +63,22 @@ public class MainWindowController implements Initializable, ControlledStage {
     public void initialize(URL location, ResourceBundle resources) {
         client = ClientHolder.INSTANCE.getClient();
         bundle = Bundle.INSTANCE;
+        tableDataView.setItems(definePropertyObservableList);
+        initDefineView();
         initTreeView();
         initDatabases();
+    }
+
+    private void initDefineView() {
+        ObservableList<TableColumn<DefineProperty, ?>> tableColumns = tableDefineView.getColumns();
+        tableColumns.get(0).setCellValueFactory(new PropertyValueFactory<>("fieldName"));
+        tableColumns.get(1).setCellValueFactory(new PropertyValueFactory<>("fieldType"));
+        tableColumns.get(2).setCellValueFactory(new PropertyValueFactory<>("pk"));
+        tableColumns.get(3).setCellValueFactory(new PropertyValueFactory<>("unique"));
+        tableColumns.get(4).setCellValueFactory(new PropertyValueFactory<>("notNull"));
+        tableColumns.get(5).setCellValueFactory(new PropertyValueFactory<>("check"));
+        tableColumns.get(6).setCellValueFactory(new PropertyValueFactory<>("defaultValue"));
+        tableDataView.setItems(definePropertyObservableList);
     }
 
     private void initTreeView() {
@@ -68,7 +91,7 @@ public class MainWindowController implements Initializable, ControlledStage {
                     TreeElement treeElement = treeView.getSelectionModel().getSelectedItem().getValue();
                     switch (treeElement.type) {
                         case TABLE:
-                            loadTable(treeElement.name);
+                            loadTable(treeElement.name,( (TableElement)treeElement).db);
                     }
                 }
             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
@@ -94,13 +117,17 @@ public class MainWindowController implements Initializable, ControlledStage {
         });
     }
 
-    private void loadTable(String tableName) {
-        Result defineResult = client.getResult("get table_define " + tableName);
-        if (defineResult.code == Result.SUCCESS) loadDefine((String)defineResult.data);
+    private void loadTable(String tableName, String db) {
+        Result defineResult = client.getResult("get table_define " + tableName, db);
+        if (defineResult.code == Result.SUCCESS) {
+            List<Define> define = (List<Define>) defineResult.data;
+            loadDefine(define);
+        }
     }
 
-    private void loadDefine(String data) {
-
+    private void loadDefine(List<Define> data) {
+        definePropertyObservableList.clear();
+        data.forEach(define -> definePropertyObservableList.add(define.defineProperty()));
     }
 
     private void initDatabases() {

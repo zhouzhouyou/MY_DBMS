@@ -1,4 +1,4 @@
-package entity;
+package util.entity;
 
 import java.io.Serializable;
 
@@ -21,9 +21,5 @@ public class Define implements Serializable {
         this.unique = unique;
         this.check = check;
         this.defaultValue = defaultValue;
-    }
-
-    public DefineProperty defineProperty() {
-        return new DefineProperty(fieldName, fieldType, String.valueOf(pk), String.valueOf(notNull), String.valueOf(unique), check, defaultValue.toString());
     }
 }
