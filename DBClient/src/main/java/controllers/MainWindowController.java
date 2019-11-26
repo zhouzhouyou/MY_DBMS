@@ -51,6 +51,13 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableColumn<DefineProperty, String> defineNotNullColumn;
     public TableColumn<DefineProperty, String> defineCheckColumn;
     public TableColumn<DefineProperty, String> defineDefaultColumn;
+    public TableColumn constraintNameColumn;
+    public TableColumn constraintTypeColumn;
+    public TableColumn constraintParamColumn;
+    public TableColumn indexNameColumn;
+    public TableColumn indexFieldColumn;
+    public TableColumn indexAscColumn;
+    public TableColumn indexUniqueColumn;
     private StageController stageController;
     private Client client;
 

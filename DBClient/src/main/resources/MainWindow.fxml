@@ -37,13 +37,13 @@
                      <center>
                               <TableView fx:id="tableDefineView" prefHeight="200.0" prefWidth="200.0">
                            <columns>
-                              <TableColumn fx:id="defineFieldColumn" prefWidth="75.0" text="名称" />
-                              <TableColumn fx:id="defineTypeColumn" prefWidth="75.0" text="类型" />
-                              <TableColumn fx:id="definePkColumn" prefWidth="75.0" text="主键" />
-                              <TableColumn fx:id="defineUniqueColumn" prefWidth="75.0" text="唯一" />
-                              <TableColumn fx:id="defineNotNullColumn" prefWidth="75.0" text="非空" />
-                              <TableColumn fx:id="defineCheckColumn" prefWidth="75.0" text="条件" />
-                              <TableColumn fx:id="defineDefaultColumn" prefWidth="75.0" text="默认值" />
+                              <TableColumn prefWidth="75.0" text="名称" />
+                              <TableColumn prefWidth="75.0" text="类型" />
+                              <TableColumn prefWidth="75.0" text="主键" />
+                              <TableColumn prefWidth="75.0" text="唯一" />
+                              <TableColumn prefWidth="75.0" text="非空" />
+                              <TableColumn prefWidth="75.0" text="条件" />
+                              <TableColumn prefWidth="75.0" text="默认值" />
                            </columns>
                         </TableView>
                      </center>
@@ -77,9 +77,9 @@
                      <center>
                               <TableView fx:id="tableConstraintView" prefHeight="315.0" prefWidth="595.0">
                            <columns>
-                              <TableColumn prefWidth="95.0" text="约束名" />
-                              <TableColumn prefWidth="116.0" text="约束类型" />
-                              <TableColumn prefWidth="382.0" text="约束参数" />
+                              <TableColumn fx:id="constraintNameColumn" prefWidth="95.0" text="约束名" />
+                              <TableColumn fx:id="constraintTypeColumn" prefWidth="116.0" text="约束类型" />
+                              <TableColumn fx:id="constraintParamColumn" prefWidth="382.0" text="约束参数" />
                            </columns>
                         </TableView>
                      </center>
@@ -98,10 +98,10 @@
                      <center>
                               <TableView fx:id="tableIndexView" prefHeight="200.0" prefWidth="200.0">
                            <columns>
-                              <TableColumn prefWidth="124.0" text="索引名" />
-                              <TableColumn prefWidth="145.0" text="索引字段" />
-                              <TableColumn prefWidth="157.0" text="升序" />
-                              <TableColumn prefWidth="168.0" text="唯一" />
+                              <TableColumn fx:id="indexNameColumn" prefWidth="124.0" text="索引名" />
+                              <TableColumn fx:id="indexFieldColumn" prefWidth="145.0" text="索引字段" />
+                              <TableColumn fx:id="indexAscColumn" prefWidth="157.0" text="升序" />
+                              <TableColumn fx:id="indexUniqueColumn" prefWidth="168.0" text="唯一" />
                            </columns>
                         </TableView>
                      </center>
