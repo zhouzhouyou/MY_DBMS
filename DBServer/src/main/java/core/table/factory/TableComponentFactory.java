@@ -125,10 +125,18 @@ public abstract class TableComponentFactory<T extends Block, V extends TableComp
     }
 
     /**
+     * 更新组件的集合
+     */
+    public void setCollection(V collection) {
+        this.collection = collection;
+    }
+
+    /**
      * 获取组件的集合
      *
      * @return 组件的集合
      */
+
     public V getCollection() {
         return collection;
     }

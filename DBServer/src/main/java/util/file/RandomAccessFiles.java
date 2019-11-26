@@ -156,12 +156,13 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public void addColumnData(Object defaultData, int originLength) {
+    public void addColumnData(Object defaultData, TableDefineCollection collection) {
         try {
-            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             List<List<Object>> recordSet = select();
+            updateTableCollection(collection);
+            recordLength = collection.getTotalDataLength();
             recordSet.forEach(list -> list.add(defaultData));
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             cleaner.write("");
             cleaner.flush();
             cleaner.close();
@@ -169,7 +170,7 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = recordLength + originLength;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -194,13 +195,13 @@ public class RandomAccessFiles {
 //        }
     }
 
-    public void dropColumnData(int fieldOrder, int originLength) {
+    public void dropColumnData(int fieldOrder, TableDefineCollection collection) {
         try {
-            int dataLength = 0;
-            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             List<List<Object>> recordSet = select();
+            updateTableCollection(collection);
+            recordLength = collection.getTotalDataLength();
             recordSet.forEach(list -> list.remove(fieldOrder));
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             cleaner.write("");
             cleaner.flush();
             cleaner.close();
@@ -208,23 +209,23 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = recordLength - originLength;
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void changeColumnData(int fieldOrder, int dataLength, int originLength) {
+    public void changeColumnData(int fieldOrder, int dataLength, TableDefineCollection defineCollection) {
         try {
-            RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             List<List<Object>> recordSet = select();
+            updateTableCollection(defineCollection);
+            recordLength = collection.getTotalDataLength();
             for (List<Object> list : recordSet) {
                 String data = (String) list.get(fieldOrder);
                 data = formatData(data, dataLength);
                 list.remove(fieldOrder);
                 list.add(fieldOrder, data);
             }
+            FileWriter cleaner = new FileWriter(new File(recordFilePath));
             cleaner.write("");
             cleaner.flush();
             cleaner.close();
@@ -232,7 +233,7 @@ public class RandomAccessFiles {
             for (List<Object> list : recordSet) {
                 insert(list);
             }
-            recordLength = recordLength + dataLength - originLength;
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -366,5 +367,9 @@ public class RandomAccessFiles {
             return origin.substring(0, length);
         }
 
+    }
+
+    private void updateTableCollection(TableDefineCollection collection){
+        this.collection = collection;
     }
 }

@@ -125,7 +125,10 @@ public class Client implements Runnable {
                 System.out.println("Please input create/drop database statement.");
                 String sql = scanner.next();
                 Result result = getResult(sql);
-                System.out.println(result.code);
+                if (result.code != Result.SUCCESS)
+                    System.out.println(result.data);
+                else
+                    System.out.println(result.code);
             } else if (operationID == 4) {
                 if (currentDatabase != null) {
                     System.out.println("Do you want to change database? (y/n)");
@@ -142,11 +145,12 @@ public class Client implements Runnable {
                 Result result = getResult(sql, currentDatabase);
                 if (result.code == Result.SUCCESS && sql.contains("select")) {
                     handleSelectResult(result);
-                } else{
+                } else if (result.code != Result.SUCCESS) {
+                    System.out.println(result.data);
+                }else
                     System.out.println(result.code);
-                }
 
-            }else if(operationID == 5){
+            } else if (operationID == 5) {
                 System.out.println("Please input operating user statement.");
                 String sql = scanner.next();
                 Result result = getResult(sql);
@@ -154,8 +158,7 @@ public class Client implements Runnable {
                     System.out.println(result.data);
                 else
                     System.out.println("Success to create a user");
-            }
-            else if (operationID == 6) {
+            } else if (operationID == 6) {
                 Result result = getResult("disconnect");
                 System.out.println(result.code);
                 if (result.code == Result.SUCCESS)
