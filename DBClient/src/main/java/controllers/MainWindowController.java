@@ -190,9 +190,9 @@ public class MainWindowController implements Initializable, ControlledStage {
         for (List<Object> list : data) {
             String constraintName = (String) list.get(0);
             String fieldName = (String) list.get(1);
-            Integer constraintType = (Integer) list.get(2);
+            String constraintType = (String) list.get(2);
             Object param = list.get(3);
-            constraintPropertyObservableList.add(new Constraint(constraintName, fieldName, constraintType, param).constraintProperty());
+            constraintPropertyObservableList.add(new Constraint(constraintName, fieldName,constraintType, param).constraintProperty());
         }
     }
 

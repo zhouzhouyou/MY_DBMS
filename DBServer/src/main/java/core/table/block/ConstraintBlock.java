@@ -114,8 +114,30 @@ public class ConstraintBlock extends Block {
         List<Object> info = new ArrayList<>();
         info.add(constraintName);
         info.add(fieldName);
-        info.add(constraintType);
+        info.add(getType());
         info.add(param);
         return info;
+    }
+
+    private String getType(){
+
+        switch (constraintType){
+            case FieldTypes.PK:
+                return SQL.PRIMARY_KEY;
+            case FieldTypes.FK:
+                return SQL.FOREIGN_KEY;
+            case FieldTypes.CHECK:
+                return SQL.CHECK;
+            case FieldTypes.UNIQUE:
+                return SQL.UNIQUE;
+            case FieldTypes.NOT_NULL:
+                return SQL.NOT_NULL;
+            case FieldTypes.DEFAULT:
+                return SQL.DEFAULT;
+            case FieldTypes.IDENTITY:
+                return SQL.IDENTITY;
+            default:
+                return null;
+        }
     }
 }
