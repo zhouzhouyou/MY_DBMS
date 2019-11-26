@@ -31,7 +31,8 @@ public class SelectUtil {
         List<String> tableNames = parser.getTable();
 
         if (tableNames.size() == 1) return singleTableSelect();
-
+        if(!parser.hasWhereCondition()) return ResultFactory.buildFailResult("lack of where condition.");
+        Map<String, Map<String, List<Object>>> mapList = new HashMap<>();
         //put all used fields in a map
         for (String tableName : tableNames) {
             if (!tableFactory.exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
@@ -39,13 +40,36 @@ public class SelectUtil {
             for (DefineBlock defineBlock : tableBlock.getDefineFactory().getCollection().list) {
                 String fieldName = defineBlock.fieldName;
                 List<String> tableList = fieldMap.get(fieldName);
-                if (tableList == null) tableList = new LinkedList<>();
+                if (tableList == null) tableList = new ArrayList<>();
                 tableList.add(tableName);
                 fieldMap.put(fieldName, tableList);
             }
             Map<String, List<Object>> map = Pair.buildAllPairList(tableBlock.getDefineFactory().getFieldNames(), tableBlock.getRaf().select());
+            mapList.put(tableName, map);
             tableBlocks.put(tableName, tableFactory.getTable(tableName));
         }
+
+        for (String commonField : fieldMap.keySet()) {
+            for (TableBlock tableBlock : tableBlocks.values()) {
+                for (DefineBlock defineBlock : tableBlock.getDefineFactory().getCollection().list) {
+                    if (commonField.equals(defineBlock.fieldName)) {
+                        Map<String, List<Object>> map = mapList.get(tableBlock.tableName);
+                        List<Object> column = map.remove(commonField);
+                        map.put(tableBlock.tableName + "." + commonField, column);
+                    }
+                }
+            }
+        }
+
+        Map<String, List<Object>> totalResultSet = new HashMap<>();
+
+        for (Map<String, List<Object>> map : mapList.values()) {
+            for (String fieldName : map.keySet()) {
+                totalResultSet.put(fieldName, map.get(fieldName));
+            }
+        }
+
+        Map<String, List<Object>> selectedResultSet = new HashMap<>();
 
         List<String> fieldNames = parser.getSelectItem();
         for (String fieldName : fieldNames) {
@@ -65,9 +89,11 @@ public class SelectUtil {
             }
             if (!tableBlock.getDefineFactory().exists(selectFieldName))
                 return ResultFactory.buildObjectNotExistsResult(fieldName);
+            selectedResultSet.put(fieldName, totalResultSet.get(fieldName));
         }
 
-        return null;
+
+        return ResultFactory.buildSuccessResult(null);
     }
 
     private Result singleTableSelect() throws Exception {
