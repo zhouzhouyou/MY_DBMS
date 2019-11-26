@@ -78,6 +78,7 @@
                               <TableView fx:id="tableConstraintView" prefHeight="315.0" prefWidth="595.0">
                            <columns>
                               <TableColumn fx:id="constraintNameColumn" prefWidth="95.0" text="约束名" />
+                               <TableColumn fx:id="constraintFieldColumn" prefWidth="95.0" text="域名"/>
                               <TableColumn fx:id="constraintTypeColumn" prefWidth="116.0" text="约束类型" />
                               <TableColumn fx:id="constraintParamColumn" prefWidth="382.0" text="约束参数" />
                            </columns>

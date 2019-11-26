@@ -7,11 +7,13 @@ public class ConstraintProperty {
     private StringProperty constraintName;
     private StringProperty constraintType;
     private StringProperty constraintParam;
+    private StringProperty fieldName;
 
-    public ConstraintProperty(String constraintName, String constraintType, String constraintParam) {
+    public ConstraintProperty(String constraintName, String constraintType, String constraintParam,String fieldName) {
         this.constraintName = new SimpleStringProperty(constraintName);
         this.constraintType = new SimpleStringProperty(constraintType);
         this.constraintParam = new SimpleStringProperty(constraintParam);
+        this.fieldName = new SimpleStringProperty(fieldName);
     }
 
     public String getConstraintName() {
@@ -44,6 +46,18 @@ public class ConstraintProperty {
 
     public StringProperty constraintParamProperty() {
         return constraintParam;
+    }
+
+    public String getFieldName() {
+        return fieldName.get();
+    }
+
+    public StringProperty fieldNameProperty() {
+        return fieldName;
+    }
+
+    public void setFieldName(String fieldName) {
+        this.fieldName.set(fieldName);
     }
 
     public void setConstraintParam(String constraintParam) {

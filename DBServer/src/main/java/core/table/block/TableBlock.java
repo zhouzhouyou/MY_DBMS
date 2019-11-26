@@ -258,11 +258,15 @@ public class TableBlock extends Block {
     }
 
     public Result getTableConstraint() {
-        List<List<Object>> lists = new LinkedList<>();
+        List<List<Object>> lists = new ArrayList<>();
         for (ConstraintBlock constraintBlock : getConstraintFactory().getCollection().list) {
             lists.add(constraintBlock.getInfo());
         }
         return ResultFactory.buildSuccessResult(lists);
+    }
+
+    public Result getTableIndex(){
+        return null;
     }
 }
 
