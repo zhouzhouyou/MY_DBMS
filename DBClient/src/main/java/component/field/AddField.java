@@ -1,6 +1,7 @@
 package component.field;
 
 import com.jfoenix.controls.JFXTextField;
+import controllers.MainWindowController;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.AnchorPane;
@@ -25,6 +26,20 @@ public class AddField extends AnchorPane implements Initializable, ControlledSta
     private String tableName;
     private Bundle bundle;
     private StageController stageController;
+    MainWindowController controller;
+
+    public AddField(MainWindowController controller) {
+        this.controller = controller;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ADD_FIELD_RES));
+        loader.setRoot(this);
+        loader.setController(this);
+
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void setStageController(StageController stageController) {
@@ -38,19 +53,6 @@ public class AddField extends AnchorPane implements Initializable, ControlledSta
         tableName = bundle.getString(TABLE);
     }
 
-
-    public AddField() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(ADD_FIELD_RES));
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public void confirm() {
         String fieldName = fieldNameField.getText();
         String type = typeField.getText();
@@ -59,10 +61,13 @@ public class AddField extends AnchorPane implements Initializable, ControlledSta
         if (result.code != Result.SUCCESS) {
             //TODO:
         }
-        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
+        controller.splitPane.getItems().remove(1);
+        controller.updateDatabases();
+//        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
     }
 
     public void cancel() {
-        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
+//        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
+        controller.splitPane.getItems().remove(1);
     }
 }

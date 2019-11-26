@@ -1,7 +1,7 @@
 package controllers;
 
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
+import component.constraint.AddConstraint;
+import component.field.AddField;
 import component.menu.AbstractContextMenu;
 import component.menu.DatabaseContextMenu;
 import component.menu.RootContextMenu;
@@ -10,6 +10,7 @@ import component.treeElement.DatabaseElement;
 import component.treeElement.TableElement;
 import component.treeElement.TreeElement;
 import entity.*;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
@@ -29,12 +29,14 @@ import util.client.ClientHolder;
 import util.result.Result;
 import util.stage.ControlledStage;
 import util.stage.StageController;
+import util.table.TableHelper;
 
 import java.net.URL;
 import java.util.*;
 
 import static util.Constant.*;
 import static util.SQL.DATABASE;
+import static util.SQL.TABLE;
 
 @SuppressWarnings("unchecked")
 public class MainWindowController implements Initializable, ControlledStage {
@@ -60,20 +62,21 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableColumn<IndexProperty, String> indexFieldColumn;
     public TableColumn<IndexProperty, String> indexAscColumn;
     public TableColumn<IndexProperty, String> indexUniqueColumn;
+    public SplitPane splitPane;
 
     private StageController stageController;
     private Client client;
 
     public BorderPane pane;
     public TreeView<TreeElement> treeView;
-    public TextArea cmd;
-
-    private DatabaseContextMenu databaseContextMenu;
-    private TableContextMenu contextMenu;
-    private RootContextMenu rootContextMenu;
 
     private Bundle bundle;
-    private Boolean asc;
+
+    private String databaseName;
+    private String tableName;
+
+    public MainWindowController() {
+    }
 
     public void initialize(URL location, ResourceBundle resources) {
         client = ClientHolder.INSTANCE.getClient();
@@ -118,13 +121,16 @@ public class MainWindowController implements Initializable, ControlledStage {
         treeView.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
             Node node = event.getPickResult().getIntersectedNode();
 
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 1) {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 System.out.println("single click");
                 if (node instanceof Text || node instanceof TreeCell && ((TreeCell) node).getText() != null) {
                     TreeElement treeElement = treeView.getSelectionModel().getSelectedItem().getValue();
-                    switch (treeElement.type) {
-                        case TABLE:
-                            loadTable(treeElement.name, ((TableElement) treeElement).db);
+                    tableName = treeElement.name;
+                    databaseName = ((TableElement) treeElement).db;
+                    bundle.put(DATABASE, databaseName);
+                    bundle.put(TABLE, tableName);
+                    if (treeElement.type == TreeElement.Type.TABLE) {
+                        loadTable(tableName, databaseName);
                     }
                 }
             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {
@@ -150,7 +156,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         });
     }
 
-    private void loadTable(String tableName, String db) {
+    public void loadTable(String tableName, String db) {
         Result defineResult = client.getResult("get table_define " + tableName, db);
         if (defineResult.code == Result.SUCCESS) {
             List<List<Object>> define = (List<List<Object>>) defineResult.data;
@@ -166,6 +172,17 @@ public class MainWindowController implements Initializable, ControlledStage {
             List<List<Object>> index = (List<List<Object>>) indexResult.data;
             loadIndex(index);
         }
+        Result selectResult = client.getResult("select * from " + tableName, db);
+        if (selectResult.code == Result.SUCCESS) {
+            Map<String, List<Object>> recordMap = (Map<String, List<Object>>) selectResult.data;
+            loadData(recordMap);
+        }
+    }
+
+    private void loadData(Map<String, List<Object>> recordMap) {
+        List<String> columns = TableHelper.getColumns(recordMap);
+        List<List<String>> rowValue = TableHelper.getColumnCells(recordMap);
+
     }
 
     private void loadDefine(List<List<Object>> data) {
@@ -190,7 +207,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         for (List<Object> list : data) {
             String constraintName = (String) list.get(0);
             String fieldName = (String) list.get(1);
-            String constraintType = (String) list.get(2);
+            String constraintType = String.valueOf(list.get(2));
             Object param = list.get(3);
             constraintPropertyObservableList.add(new Constraint(constraintName, fieldName,constraintType, param).constraintProperty());
         }
@@ -208,6 +225,7 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     private void initDatabases() {
+        treeView.getSelectionModel().clearSelection();
         Result result = client.getResult("get databases");
         if (result.code != Result.SUCCESS) {
             //TODO:
@@ -252,39 +270,103 @@ public class MainWindowController implements Initializable, ControlledStage {
 
     public void createTable(String databaseName) {
         bundle.put(DATABASE, databaseName);
-        stageController.loadStage(CREATE_TABLE, CREATE_TABLE_RES);
-        stageController.setStage(CREATE_TABLE, MAIN_WINDOW);
+        CreateTableController createTableController = new CreateTableController(this);
+        splitPane.getItems().add(createTableController);
+//        stageController.loadStage(CREATE_TABLE, CREATE_TABLE_RES);
+//        stageController.setStage(CREATE_TABLE);
     }
 
     public void deleteDB(String databaseName) {
-
+        Result result = client.getResult("drop database " + databaseName);
+        if (result.code != Result.SUCCESS) {
+            //TODO:
+        }
+        treeView.getRoot().getChildren().removeIf(a -> a.getValue().name.equals(databaseName) && a.getValue().type.equals(TreeElement.Type.DB));
     }
 
     public void openTable(String databaseName, String tableName) {
+        this.databaseName = databaseName;
+        this.tableName = tableName;
+        loadTable(tableName, databaseName);
     }
 
     public void deleteTable(String databaseName, String tableName) {
-
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("确认信息");
+        alert.setHeaderText(null);
+        alert.setContentText("确认要删除表吗!");
+        Optional<ButtonType> result=alert.showAndWait();
+        if (result.isPresent() && result.get().equals(ButtonType.OK)) {
+            Result dropTable = client.getResult("drop table " + tableName, databaseName);
+            updateDatabases();
+        }
     }
 
     public void addDB() {
+        TextInputDialog dialog = new TextInputDialog("newDataBase");
+        dialog.setTitle("创建库");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入库名");
+
+        Optional<String> result = dialog.showAndWait();
+
+        if (result.isPresent()){
+            String dbName=result.get();
+            Result addDB = client.getResult("create database " + dbName);
+            if (addDB.code == Result.SUCCESS) {
+                treeView.getRoot().getChildren().add(new TreeItem<>(new DatabaseElement(dbName)));
+            }
+        }
     }
 
     public void addColumn(ActionEvent actionEvent) {
+        splitPane.getItems().add(new AddField(this));
+//        stageController.loadStage(ADD_FIELD, ADD_FIELD_RES);
+//        stageController.setStage(ADD_FIELD, MAIN_WINDOW);
     }
 
-    public void deleteColumn(ActionEvent actionEvent) {
+    public void deleteColumn() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("删除列");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入列名");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String columnName = result.get();
+            Result dropColumn = client.getResult("alter table " + tableName + " drop column " + columnName, databaseName);
+            loadTable(tableName, databaseName);
+        }
     }
 
-    public void deleteRecord(ActionEvent actionEvent) {
+    public void deleteRecord() {
     }
 
-    public void selectRecord(ActionEvent actionEvent) {
+    public void selectRecord() {
+
     }
 
-    public void addConstraint(ActionEvent actionEvent) {
+    public void addConstraint() {
+        splitPane.getItems().add(new AddConstraint(this));
+//        stageController.loadStage(ADD_CONSTRAINT, ADD_CONSTRAINT_RES);
+//        stageController.setStage(ADD_CONSTRAINT, MAIN_WINDOW);
     }
 
-    public void deleteConstraint(ActionEvent actionEvent) {
+    public void deleteConstraint() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("删除索引");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入索引名");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String constraintName = result.get();
+            Result dropColumn = client.getResult("alter table " + tableName + " drop constraint " + constraintName, databaseName);
+            loadTable(tableName, databaseName);
+        }
+    }
+
+    public void updateDatabases() {
+        Platform.runLater(this::initDatabases);
     }
 }

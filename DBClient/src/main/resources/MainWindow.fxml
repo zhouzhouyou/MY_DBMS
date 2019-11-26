@@ -9,7 +9,6 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -30,20 +29,20 @@
     <center>
         <SplitPane dividerPositions="0.5" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
             <TreeView fx:id="treeView" prefHeight="200.0" prefWidth="200.0" />
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+            <SplitPane fx:id="splitPane" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                 <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                     <Tab text="表结构">
                   <BorderPane>
                      <center>
                               <TableView fx:id="tableDefineView" prefHeight="200.0" prefWidth="200.0">
                            <columns>
-                              <TableColumn fx:id="defineFieldColumn"  prefWidth="75.0" text="名称" />
-                              <TableColumn fx:id="defineTypeColumn"  prefWidth="75.0" text="类型" />
-                              <TableColumn fx:id="definePkColumn"  prefWidth="75.0" text="主键" />
-                              <TableColumn fx:id="defineUniqueColumn"  prefWidth="75.0" text="唯一" />
-                              <TableColumn fx:id="defineNotNullColumn"  prefWidth="75.0" text="非空" />
-                              <TableColumn fx:id="defineCheckColumn"  prefWidth="75.0" text="条件" />
-                              <TableColumn fx:id="defineDefaultColumn"  prefWidth="75.0" text="默认值" />
+                              <TableColumn fx:id="defineFieldColumn" prefWidth="75.0" text="名称" />
+                              <TableColumn fx:id="defineTypeColumn" prefWidth="75.0" text="类型" />
+                              <TableColumn fx:id="definePkColumn" prefWidth="75.0" text="主键" />
+                              <TableColumn fx:id="defineUniqueColumn" prefWidth="75.0" text="唯一" />
+                              <TableColumn fx:id="defineNotNullColumn" prefWidth="75.0" text="非空" />
+                              <TableColumn fx:id="defineCheckColumn" prefWidth="75.0" text="条件" />
+                              <TableColumn fx:id="defineDefaultColumn" prefWidth="75.0" text="默认值" />
                            </columns>
                         </TableView>
                      </center>
@@ -77,9 +76,9 @@
                      <center>
                               <TableView fx:id="tableConstraintView" prefHeight="315.0" prefWidth="595.0">
                            <columns>
-                              <TableColumn fx:id="constraintNameColumn" prefWidth="95.0" text="约束名" />
-                               <TableColumn fx:id="constraintFieldColumn" prefWidth="95.0" text="域名"/>
-                              <TableColumn fx:id="constraintTypeColumn" prefWidth="116.0" text="约束类型" />
+                              <TableColumn fx:id="constraintNameColumn" prefWidth="82.0" text="约束名" />
+                               <TableColumn fx:id="constraintFieldColumn" prefWidth="82.0" text="约束域"/>
+                              <TableColumn fx:id="constraintTypeColumn" prefWidth="129.0" text="约束类型" />
                               <TableColumn fx:id="constraintParamColumn" prefWidth="382.0" text="约束参数" />
                            </columns>
                         </TableView>
@@ -117,7 +116,6 @@
                   </BorderPane>
                     </Tab>
                 </TabPane>
-                <TextArea fx:id="cmd" prefHeight="287.0" prefWidth="595.0" />
             </SplitPane>
         </SplitPane>
     </center>

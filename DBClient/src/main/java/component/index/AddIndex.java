@@ -1,7 +1,6 @@
 package component.index;
 
 import com.jfoenix.controls.JFXTextField;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
@@ -11,11 +10,11 @@ import util.result.Result;
 import util.stage.ControlledStage;
 import util.stage.StageController;
 
-import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static util.Constant.*;
+import static util.Constant.ADD_INDEX;
+import static util.Constant.MAIN_WINDOW;
 import static util.SQL.DATABASE;
 import static util.SQL.TABLE;
 
@@ -42,18 +41,6 @@ public class AddIndex extends AnchorPane implements Initializable, ControlledSta
     @Override
     public void setStageController(StageController stageController) {
         this.stageController = stageController;
-    }
-
-    public AddIndex() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource(ADD_INDEX_RES));
-        loader.setRoot(this);
-        loader.setController(this);
-
-        try {
-            loader.load();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public void confirm() {
