@@ -2,11 +2,14 @@ package util.table;
 
 import core.table.block.ConstraintBlock;
 import core.table.block.DefineBlock;
+import core.table.block.IndexBlock;
 import core.table.block.TableBlock;
 import core.table.collection.TableConstraintCollection;
 import core.table.collection.TableDefineCollection;
+import core.table.collection.TableIndexCollection;
 import core.table.factory.TableConstraintFactory;
 import core.table.factory.TableDefineFactory;
+import core.table.factory.TableIndexFactory;
 import util.SQL;
 import util.file.BlockCollections;
 import util.file.RandomAccessFiles;
@@ -29,6 +32,7 @@ public enum AlterUtil {
 
     private TableDefineCollection defineCollection;
     private TableConstraintCollection constraintCollection;
+    private TableIndexCollection indexCollection;
     private String operationContent;
     private String[] operationPieces;
     private TableBlock tableBlock;
@@ -57,6 +61,7 @@ public enum AlterUtil {
         Result result = null;
         defineCollection = (TableDefineCollection) BlockCollections.deserialize(tableBlock.definePath);
         constraintCollection = (TableConstraintCollection) BlockCollections.deserialize(tableBlock.constraintPath);
+        indexCollection = tableBlock.getIndexFactory().getCollection();
 
         raf = tableBlock.getRaf();
         AlterTableParser.alterType operationType = parser.getAlterType();
@@ -264,11 +269,33 @@ public enum AlterUtil {
 
     private Result deleteDefine() {
         String fieldName = operationPieces[0];
-        Iterator<DefineBlock> iterator = defineCollection.list.iterator();
-        while (iterator.hasNext()) {
-            DefineBlock defineBlock = iterator.next();
+
+        Iterator<DefineBlock> defineBlockIterator = defineCollection.list.iterator();
+        Iterator<ConstraintBlock> constraintBlockIterator = constraintCollection.list.iterator();
+        Iterator<IndexBlock> indexBlockIterator = indexCollection.list.iterator();
+        while(indexBlockIterator.hasNext()){
+            IndexBlock indexBlock = indexBlockIterator.next();
+            if(indexBlock.field.equals(fieldName)){
+                indexBlockIterator.remove();
+                TableIndexFactory indexFactory = tableBlock.getIndexFactory();
+                indexFactory.saveInstance();
+            }
+        }
+
+        while (constraintBlockIterator.hasNext()){
+            ConstraintBlock constraintBlock = constraintBlockIterator.next();
+            if(constraintBlock.fieldName.equals(fieldName)){
+                constraintBlockIterator.remove();
+                TableConstraintFactory constraintFactory = tableBlock.getConstraintFactory();
+                constraintFactory.setCollection(constraintCollection);
+                constraintFactory.saveInstance();
+            }
+        }
+
+        while (defineBlockIterator.hasNext()) {
+            DefineBlock defineBlock = defineBlockIterator.next();
             if (defineBlock.fieldName.equals(fieldName)) {
-                iterator.remove();
+                defineBlockIterator.remove();
                 TableDefineFactory defineFactory = tableBlock.getDefineFactory();
                 //defineCollection.list.forEach(defBlock -> defineFactory.add(defBlock.fieldName, defineBlock));
                 defineFactory.setCollection(defineCollection);
