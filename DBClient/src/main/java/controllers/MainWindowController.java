@@ -207,4 +207,22 @@ public class MainWindowController implements Initializable, ControlledStage {
 
     public void addDB() {
     }
+
+    public void addColumn(ActionEvent actionEvent) {
+    }
+
+    public void deleteColumn(ActionEvent actionEvent) {
+    }
+
+    public void deleteRecord(ActionEvent actionEvent) {
+    }
+
+    public void selectRecord(ActionEvent actionEvent) {
+    }
+
+    public void addConstraint(ActionEvent actionEvent) {
+    }
+
+    public void deleteConstraint(ActionEvent actionEvent) {
+    }
 }
