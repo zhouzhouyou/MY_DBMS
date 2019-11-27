@@ -34,10 +34,6 @@ public class DeleteUtil {
     }
 
     private static Result deleteAll(TableBlock tableBlock) {
-        try {
-            return tableBlock.getRaf().delete();
-        } catch (FileNotFoundException e) {
-            return ResultFactory.buildFailResult(e.toString());
-        }
+        return tableBlock.getRaf().delete();
     }
 }

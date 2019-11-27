@@ -51,6 +51,21 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
+    public List<List<Object>> selectUpdate() throws IOException {
+        List<List<Object>> resultSet = new ArrayList<>();
+        RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        if(raf.length() == 0){
+            return resultSet;
+        }
+        for (int i = 0; i < raf.length() / recordLength; i++) {
+            List<Object> result = new ArrayList<>();
+            readData(result, raf);
+            resultSet.add(result);
+        }
+        raf.close();
+        return resultSet;
+    }
+
 
     public List<List<Object>> select() throws IOException {
         List<List<Object>> resultSet = new ArrayList<>();
@@ -61,6 +76,8 @@ public class RandomAccessFiles {
         for (int i = 0; i < raf.length() / recordLength; i++) {
             List<Object> result = new ArrayList<>();
             readData(result, raf);
+            if(emptyFilePointers.contains(i))
+                continue;
             resultSet.add(result);
         }
         raf.close();

@@ -30,7 +30,7 @@ public class UpdateUtil {
                 return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(defineBlock.fieldType), assign[1]);
             updateData.add(value.data);
         }
-        Result result = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
+        Result result = WhereUtil.getWhereForUpdate(tableBlock, parser.getWhereCondition());
         if (result.code != ResultFactory.SUCCESS) return result;
         List<Integer> toUpdate = (List<Integer>) result.data;
         RandomAccessFiles raf = tableBlock.getRaf();

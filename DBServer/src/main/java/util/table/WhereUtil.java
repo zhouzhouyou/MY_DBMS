@@ -183,4 +183,23 @@ public class WhereUtil {
             return ResultFactory.buildFailResult(e.toString());
         }
     }
+
+    public static Result getWhereForUpdate(TableBlock tableBlock, String whereCondition){
+        List<Integer> indexes = new ArrayList<>();
+        RandomAccessFiles raf = tableBlock.getRaf();
+        try {
+            List<List<Object>> allData = raf.selectUpdate();
+            List<String> allFields = tableBlock.getDefineFactory().getFieldNames();
+            for (int i = 0; i < allData.size(); i++) {
+                List<Object> record = allData.get(i);
+                Map<String, Object> recordMap = Pair.buildMap(allFields, record);
+                Result result = CheckUtil.check(recordMap, whereCondition);
+                if (result.code == ResultFactory.NOT_FOUND) return result;
+                else if (result.code == ResultFactory.SUCCESS) indexes.add(i);
+            }
+            return ResultFactory.buildSuccessResult(indexes);
+        } catch (IOException e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
+    }
 }
