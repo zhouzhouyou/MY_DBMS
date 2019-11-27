@@ -41,9 +41,10 @@ public class RandomAccessFiles {
 
     public Result update(int recordNumber, List<Object> list) throws IOException {
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-        if (recordNumber > raf.length() / recordLength)
+        if (recordNumber > raf.length() / recordLength - 1)
             return ResultFactory.buildObjectNotExistsResult();
-        raf.seek((recordNumber - 1) * recordLength);
+        raf.seek(recordNumber * recordLength);
+        delete(recordNumber);
         writeData(list, raf);
         raf.close();
         updateEmptyFilePointers();
@@ -56,6 +57,8 @@ public class RandomAccessFiles {
         for (int i = 0; i < raf.length() / recordLength; i++) {
             List<Object> result = new ArrayList<>();
             readData(result, raf);
+            if(emptyFilePointers.contains(i))
+                continue;
             resultSet.add(result);
         }
         raf.close();
@@ -67,7 +70,7 @@ public class RandomAccessFiles {
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         for (int recordNumber : recordNumbers) {
             List<Object> result = new ArrayList<>();
-            raf.seek((recordNumber - 1) * recordLength);
+            raf.seek(recordNumber * recordLength);
             readData(result, raf);
             resultSet.add(result);
         }
@@ -78,7 +81,7 @@ public class RandomAccessFiles {
     public List<Object> select(int recordNumber) throws IOException {
         List<Object> result = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
-        raf.seek((recordNumber - 1) * recordLength);
+        raf.seek(recordNumber * recordLength);
         readData(result, raf);
         raf.close();
         return result;
@@ -146,7 +149,7 @@ public class RandomAccessFiles {
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
         if (recordNumber > raf.length() / recordLength)
             return ResultFactory.buildObjectNotExistsResult();
-        raf.seek((recordNumber - 1) * recordLength);
+        raf.seek(recordNumber * recordLength);
         emptyFilePointers.add(recordNumber);
         Collections.sort(emptyFilePointers);
         char[] tempContent = new char[recordLength];
@@ -154,6 +157,26 @@ public class RandomAccessFiles {
         raf.close();
         updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
+    }
+
+    public Result delete(){
+        File recordFile = new File(recordFilePath);
+        File emptyLineFile = new File(emptyFilePointersPath);
+        try {
+            FileWriter recordCleaner = new FileWriter(recordFile);
+            FileWriter emptyCleaner = new FileWriter(emptyLineFile);
+            recordCleaner.write("");
+            emptyCleaner.write("");
+            recordCleaner.flush();
+            emptyCleaner.flush();
+            recordCleaner.close();
+            emptyCleaner.close();
+        } catch (IOException e) {
+            return ResultFactory.buildFailResult("Delete fail.");
+        }
+
+        return ResultFactory.buildSuccessResult("Delete success");
+
     }
 
     public void addColumnData(Object defaultData, TableDefineCollection collection) {
@@ -369,7 +392,7 @@ public class RandomAccessFiles {
 
     }
 
-    private void updateTableCollection(TableDefineCollection collection){
+    private void updateTableCollection(TableDefineCollection collection) {
         this.collection = collection;
     }
 }

@@ -3,6 +3,7 @@ package util.table;
 import core.table.block.DefineBlock;
 import core.table.block.TableBlock;
 import core.table.factory.TableFactory;
+import javafx.beans.binding.ObjectExpression;
 import util.file.RandomAccessFiles;
 import util.pair.Pair;
 import util.parser.parsers.SelectParser;
@@ -31,7 +32,7 @@ public class SelectUtil {
         List<String> tableNames = parser.getTable();
 
         if (tableNames.size() == 1) return singleTableSelect();
-        if(!parser.hasWhereCondition()) return ResultFactory.buildFailResult("lack of where condition.");
+        if (!parser.hasWhereCondition()) return ResultFactory.buildFailResult("lack of where condition.");
         Map<String, Map<String, List<Object>>> mapList = new HashMap<>();
         //put all used fields in a map
         for (String tableName : tableNames) {
@@ -61,15 +62,6 @@ public class SelectUtil {
             }
         }
 
-        Map<String, List<Object>> totalResultSet = new HashMap<>();
-
-        for (Map<String, List<Object>> map : mapList.values()) {
-            for (String fieldName : map.keySet()) {
-                totalResultSet.put(fieldName, map.get(fieldName));
-            }
-        }
-
-        Map<String, List<Object>> selectedResultSet = new HashMap<>();
 
         List<String> fieldNames = parser.getSelectItem();
         for (String fieldName : fieldNames) {
@@ -89,7 +81,6 @@ public class SelectUtil {
             }
             if (!tableBlock.getDefineFactory().exists(selectFieldName))
                 return ResultFactory.buildObjectNotExistsResult(fieldName);
-            selectedResultSet.put(fieldName, totalResultSet.get(fieldName));
         }
 
 
@@ -130,5 +121,22 @@ public class SelectUtil {
             columns.put(fieldName, list);
         });
         return ResultFactory.buildSuccessResult(columns);
+    }
+
+    private List<Map<String, Object>> getCartesian(Map<String, Map<String, List<Object>>> mapList) {
+        List<Map<String, Object>> cartesian = new ArrayList<>();
+        String tableName1 = (String) mapList.keySet().toArray()[0];
+        Map<String, List<Object>> map1 = mapList.get(tableName1);
+        String tableName2 = (String) mapList.keySet().toArray()[1];
+        Map<String, List<Object>> map2 = mapList.get(tableName2);
+
+        List<Map<String, Object>> firstRecords = new ArrayList<>();
+        for (String field1 : map1.keySet()) {
+           Map<String, Object> record = new HashMap<>();
+
+        }
+
+
+        return cartesian;
     }
 }

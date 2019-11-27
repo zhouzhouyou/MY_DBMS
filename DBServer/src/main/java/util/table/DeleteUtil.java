@@ -33,6 +33,6 @@ public class DeleteUtil {
     }
 
     private static Result deleteAll(TableBlock tableBlock) {
-        return tableBlock.getIndexFactory().deleteAll();
+        return tableBlock.getRaf().delete();
     }
 }
