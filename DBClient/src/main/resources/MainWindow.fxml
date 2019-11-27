@@ -66,6 +66,7 @@
                            <children>
                               <JFXButton onAction="#deleteRecord" text="删除" />
                               <JFXButton onAction="#selectRecord" text="查询" />
+                               <JFXButton onAction="#insertRecord" text="插入" />
                            </children>
                         </HBox>
                      </top>

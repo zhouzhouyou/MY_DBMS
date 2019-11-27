@@ -61,13 +61,13 @@ public class AddField extends AnchorPane implements Initializable, ControlledSta
         if (result.code != Result.SUCCESS) {
             //TODO:
         }
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
         controller.updateDatabases();
 //        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
     }
 
     public void cancel() {
 //        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
     }
 }

@@ -66,13 +66,13 @@ public class AddConstraint extends AnchorPane implements Initializable, Controll
             //TODO:
         }
 //        stageController.setStage(MAIN_WINDOW, ADD_CONSTRAINT);
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
         controller.loadTable(tableName, databaseName);
     }
 
     public void cancel() {
 //        stageController.setStage(MAIN_WINDOW, ADD_CONSTRAINT);
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
     }
 
     @Override

@@ -6,11 +6,14 @@ import component.menu.AbstractContextMenu;
 import component.menu.DatabaseContextMenu;
 import component.menu.RootContextMenu;
 import component.menu.TableContextMenu;
+import component.record.AddRecord;
 import component.treeElement.DatabaseElement;
 import component.treeElement.TableElement;
 import component.treeElement.TreeElement;
 import entity.*;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -23,6 +26,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import util.Bundle;
 import util.client.Client;
 import util.client.ClientHolder;
@@ -34,7 +38,6 @@ import util.table.TableHelper;
 import java.net.URL;
 import java.util.*;
 
-import static util.Constant.*;
 import static util.SQL.DATABASE;
 import static util.SQL.TABLE;
 
@@ -44,9 +47,10 @@ public class MainWindowController implements Initializable, ControlledStage {
     private final ObservableList<DefineProperty> definePropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<ConstraintProperty> constraintPropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<IndexProperty> indexPropertyObservableList = FXCollections.observableArrayList();
+    private ObservableList<ObservableList> data;
     public TableView tableDataView;
-    public TableView tableConstraintView;
-    public TableView tableIndexView;
+    public TableView<ConstraintProperty> tableConstraintView;
+    public TableView<IndexProperty> tableIndexView;
     public TableColumn<DefineProperty, String> defineFieldColumn;
     public TableColumn<DefineProperty, String> defineTypeColumn;
     public TableColumn<DefineProperty, String> definePkColumn;
@@ -72,8 +76,8 @@ public class MainWindowController implements Initializable, ControlledStage {
 
     private Bundle bundle;
 
-    private String databaseName;
-    private String tableName;
+    public String databaseName;
+    public String tableName;
 
     public MainWindowController() {
     }
@@ -81,7 +85,6 @@ public class MainWindowController implements Initializable, ControlledStage {
     public void initialize(URL location, ResourceBundle resources) {
         client = ClientHolder.INSTANCE.getClient();
         bundle = Bundle.INSTANCE;
-        tableDataView.setItems(definePropertyObservableList);
         initDefineView();
         initConstraintView();
         initIndexView();
@@ -180,8 +183,27 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     private void loadData(Map<String, List<Object>> recordMap) {
+        tableDataView.getColumns().clear();
         List<String> columns = TableHelper.getColumns(recordMap);
         List<List<String>> rowValue = TableHelper.getColumnCells(recordMap);
+        data = FXCollections.observableArrayList();
+        for (int i = 0; i < columns.size(); i++) {
+            final int j = i;
+            String row = columns.get(i);
+            TableColumn col = new TableColumn(row);
+            col.setCellValueFactory((Callback<TableColumn.CellDataFeatures<ObservableList, String>, ObservableValue>) param -> new SimpleStringProperty(param.getValue().get(j).toString()));
+            tableDataView.getColumns().addAll(col);
+        }
+
+        for (List<String> strings : rowValue) {
+            ObservableList<String> row = FXCollections.observableArrayList();
+            for (int j = 0; j < columns.size(); j++) {
+                row.add(strings.get(j));
+            }
+            data.add(row);
+        }
+
+        tableDataView.setItems(data);
 
     }
 
@@ -259,7 +281,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         return (Stage) pane.getScene().getWindow();
     }
 
-    public void closeDataCenter(ActionEvent actionEvent) {
+    public void closeDataCenter() {
         getStage().close();
     }
 
@@ -271,6 +293,7 @@ public class MainWindowController implements Initializable, ControlledStage {
     public void createTable(String databaseName) {
         bundle.put(DATABASE, databaseName);
         CreateTableController createTableController = new CreateTableController(this);
+        clearSplitPane();
         splitPane.getItems().add(createTableController);
 //        stageController.loadStage(CREATE_TABLE, CREATE_TABLE_RES);
 //        stageController.setStage(CREATE_TABLE);
@@ -319,7 +342,8 @@ public class MainWindowController implements Initializable, ControlledStage {
         }
     }
 
-    public void addColumn(ActionEvent actionEvent) {
+    public void addColumn() {
+        clearSplitPane();
         splitPane.getItems().add(new AddField(this));
 //        stageController.loadStage(ADD_FIELD, ADD_FIELD_RES);
 //        stageController.setStage(ADD_FIELD, MAIN_WINDOW);
@@ -340,6 +364,17 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     public void deleteRecord() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("删除行");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入where条件（例如age = 5 and grade < 60）");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String where = result.get();
+            Result deleteRecord = client.getResult("delete from " + tableName + " where " + where, databaseName);
+            loadTable(tableName, databaseName);
+        }
     }
 
     public void selectRecord() {
@@ -347,6 +382,7 @@ public class MainWindowController implements Initializable, ControlledStage {
     }
 
     public void addConstraint() {
+        clearSplitPane();
         splitPane.getItems().add(new AddConstraint(this));
 //        stageController.loadStage(ADD_CONSTRAINT, ADD_CONSTRAINT_RES);
 //        stageController.setStage(ADD_CONSTRAINT, MAIN_WINDOW);
@@ -368,5 +404,21 @@ public class MainWindowController implements Initializable, ControlledStage {
 
     public void updateDatabases() {
         Platform.runLater(this::initDatabases);
+    }
+
+    public void clearSplitPane() {
+        if (splitPane.getItems().size() > 1) {
+            splitPane.getItems().remove(1);
+        }
+    }
+
+    public void insertRecord() {
+        clearSplitPane();
+        ObservableList<TableColumn> list = tableDataView.getColumns();
+        List<String> temp = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            temp.add(list.get(i).getText());
+        }
+        splitPane.getItems().add(new AddRecord(this, temp));
     }
 }

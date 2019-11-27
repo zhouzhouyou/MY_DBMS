@@ -27,6 +27,9 @@ public class Constant {
     public static final String ADD_DATABASE = "addDatabase";
     public static final String ADD_DATABASE_RES = "/AddDatabase.fxml";
 
+    public static final String ADD_RECORD = "addRecord";
+    public static final String ADD_RECORD_RES = "/AddRecord.fxml";
+
     public static final String INVALID_DATA_RES = "/InvalidData.fxml";
     public static final String TIME_OUT_RES = "/TimeOut.fxml";
     public static final String NOT_MATCH = "/NotMatch.fxml";
