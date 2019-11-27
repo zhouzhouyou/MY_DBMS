@@ -130,9 +130,16 @@ public class SelectUtil {
         String tableName2 = (String) mapList.keySet().toArray()[1];
         Map<String, List<Object>> map2 = mapList.get(tableName2);
 
+
         List<Map<String, Object>> firstRecords = new ArrayList<>();
         for (String field1 : map1.keySet()) {
-           Map<String, Object> record = new HashMap<>();
+            Map<String, Object> record = new HashMap<>();
+            record.put(field1, map1.get(field1));
+            firstRecords.add(record);
+        }
+
+
+        for (int i = 0; i < map2.values().size(); i++) {
 
         }
 
