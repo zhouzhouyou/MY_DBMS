@@ -385,6 +385,11 @@ public class RandomAccessFiles {
             updateEmptyFilePointers();
             return;
         }
+        if(file.length() == 0){
+            emptyFilePointers = new ArrayList<>();
+            return;
+        }
+
         FileInputStream fis = new FileInputStream(file);
         ObjectInputStream ois = new ObjectInputStream(fis);
         emptyFilePointers = (List<Integer>) ois.readObject();
