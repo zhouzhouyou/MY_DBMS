@@ -19,7 +19,7 @@ public class DeleteUtil {
         }
 //        WhereUtil whereUtil = new WhereUtil(tableBlock, parser.getWhereCondition());
 //        List<Integer> toDelete = whereUtil.getWhere();
-        Result result = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
+        Result result = WhereUtil.getWhereForOther(tableBlock, parser.getWhereCondition());
         if (result.code != ResultFactory.SUCCESS) return result;
         List<Integer> toDelete = (List<Integer>) result.data;
         RandomAccessFiles raf = tableBlock.getRaf();

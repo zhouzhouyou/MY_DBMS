@@ -184,7 +184,7 @@ public class WhereUtil {
         }
     }
 
-    public static Result getWhereForUpdate(TableBlock tableBlock, String whereCondition){
+    public static Result getWhereForOther(TableBlock tableBlock, String whereCondition){
         List<Integer> indexes = new ArrayList<>();
         RandomAccessFiles raf = tableBlock.getRaf();
         try {
