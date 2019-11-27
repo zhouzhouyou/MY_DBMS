@@ -192,6 +192,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         }
 
         for (List<String> strings : rowValue) {
+            if (strings == null) continue;
             ObservableList<String> row = FXCollections.observableArrayList();
             for (int j = 0; j < columns.size(); j++) {
                 row.add(strings.get(j));

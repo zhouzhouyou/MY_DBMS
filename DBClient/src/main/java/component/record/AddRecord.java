@@ -64,14 +64,23 @@ public class AddRecord extends AnchorPane implements Initializable {
     public void confirm() {
         StringBuilder sb = new StringBuilder();
         sb.append("insert into ").append(controller.tableName).append(" (");
-        for (int i = 0; i < columns.size() - 1; i++) {
-            sb.append(columns.get(i)).append(",");
+        List<String> cols = new ArrayList<>();
+        List<String> values = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            JFXTextField field = list.get(i);
+            if (field.getText().length() != 0) {
+                cols.add(columns.get(i));
+                values.add(field.getText());
+            }
         }
-        sb.append(columns.get(columns.size()-1)).append(") values (");
-        for (int i = 0; i < list.size() - 1; i++) {
-            sb.append(list.get(i).getText()).append(",");
+        for (int i = 0; i < cols.size() - 1; i++) {
+            sb.append(cols.get(i)).append(",");
         }
-        sb.append(list.get(list.size()-1).getText()).append(")");
+        sb.append(cols.get(cols.size()-1)).append(") values (");
+        for (int i = 0; i < values.size() - 1; i++) {
+            sb.append(values.get(i)).append(",");
+        }
+        sb.append(values.get(values.size()-1)).append(")");
         Result result = ClientHolder.INSTANCE.getClient().getResult(sb.toString(), controller.databaseName);
         controller.clearSplitPane();
         if (result.code != Result.SUCCESS) {

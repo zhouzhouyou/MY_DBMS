@@ -68,7 +68,9 @@ public class ConvertUtil {
                 convert = getDate(string);
                 break;
         }
-        if (convert == null) return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(type), string);
+        if (convert == null) {
+            if (!string.equals("null")) return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(type), string);
+        }
         return ResultFactory.buildSuccessResult(convert);
     }
 

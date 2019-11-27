@@ -22,6 +22,7 @@ public class TableHelper {
             it = recordMap.keySet().iterator();
             while(it.hasNext()){
                 List<Object> tempList = recordMap.get(it.next());
+                if (tempList == null) tempList = new ArrayList<>();
                 list.add(tempList.get(i) == null ? null : tempList.get(i).toString());
             }
             lists.add(list);
