@@ -36,7 +36,7 @@ public class CreateTableColumn extends AnchorPane {
         StringBuilder sb = new StringBuilder();
         sb.append(fieldNameField.getText());
         sb.append(" ").append(typeField.getText());
-        if (defaultValueField.getText().trim().length() != 0) sb.append(" ").append(defaultValueField.getText());
+        if (defaultValueField.getText().trim().length() != 0) sb.append(" default ").append(defaultValueField.getText());
         if (pkBtn.isSelected()) sb.append(" ").append(SQL.PRIMARY_KEY);
         if (uniqueBtn.isSelected()) sb.append(" ").append(SQL.UNIQUE);
         if (notNullBtn.isSelected()) sb.append(" ").append(SQL.NOT_NULL);
