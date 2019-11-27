@@ -67,13 +67,13 @@ public class CreateTableController extends AnchorPane implements ControlledStage
         }
 //        stageController.setStage(MAIN_WINDOW, CREATE_TABLE);
 //        ((MainWindowController)stageController.getController(MAIN_WINDOW_RES)).updateDatabases();
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
         controller.updateDatabases();
     }
 
     public void cancel(ActionEvent actionEvent) {
 //        stageController.setStage(MAIN_WINDOW, CREATE_TABLE);
-        controller.splitPane.getItems().remove(1);
+        controller.clearSplitPane();
     }
 
     public void add(ActionEvent actionEvent) {

@@ -1,6 +1,8 @@
 package component.index;
 
 import com.jfoenix.controls.JFXTextField;
+import controllers.MainWindowController;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.AnchorPane;
@@ -10,37 +12,43 @@ import util.result.Result;
 import util.stage.ControlledStage;
 import util.stage.StageController;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import static util.Constant.ADD_INDEX;
-import static util.Constant.MAIN_WINDOW;
+import static util.Constant.*;
 import static util.SQL.DATABASE;
 import static util.SQL.TABLE;
 
-public class AddIndex extends AnchorPane implements Initializable, ControlledStage {
+public class AddIndex extends AnchorPane implements Initializable {
     public JFXTextField nameField;
     public JFXTextField fieldField;
     public CheckBox ascField;
     public CheckBox uniqueField;
 
-    private StageController stageController;
-
+    private MainWindowController controller;
     private String databaseName;
     private String tableName;
-    private Bundle bundle;
 
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-        bundle = Bundle.INSTANCE;
-        databaseName = bundle.getString(DATABASE);
-        tableName = bundle.getString(TABLE);
-        ascField.setSelected(true);
+    public AddIndex(MainWindowController controller) {
+        this.controller = controller;
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(ADD_INDEX_RES));
+        loader.setRoot(this);
+        loader.setController(this);
+
+        try {
+            loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public void setStageController(StageController stageController) {
-        this.stageController = stageController;
+    public void initialize(URL location, ResourceBundle resources) {
+        Bundle bundle = Bundle.INSTANCE;
+        databaseName = bundle.getString(DATABASE);
+        tableName = bundle.getString(TABLE);
+        ascField.setSelected(true);
     }
 
     public void confirm() {
@@ -51,13 +59,15 @@ public class AddIndex extends AnchorPane implements Initializable, ControlledSta
         if (uniqueField.isSelected()) temp += " unique";
         String sql = String.format("create index %s on %s (%s)%s", name, tableName, field, temp);
         Result result = ClientHolder.INSTANCE.getClient().getResult(sql, databaseName);
+        controller.clearSplitPane();
         if (result.code != Result.SUCCESS) {
-            //TODO:
+            controller.showAlert(result);
+            return;
         }
-        stageController.setStage(MAIN_WINDOW, ADD_INDEX);
+        controller.loadTable(tableName, databaseName);
     }
 
     public void cancel() {
-        stageController.setStage(MAIN_WINDOW, ADD_INDEX);
+        controller.clearSplitPane();
     }
 }

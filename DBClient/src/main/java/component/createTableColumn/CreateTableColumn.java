@@ -4,7 +4,6 @@ package component.createTableColumn;
 import com.jfoenix.controls.JFXTextField;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
 import javafx.scene.layout.AnchorPane;
 import util.SQL;
 
