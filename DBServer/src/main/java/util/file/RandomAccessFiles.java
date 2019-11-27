@@ -171,7 +171,7 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public Result delete() throws FileNotFoundException {
+    public Result delete()  {
         File recordFile = new File(recordFilePath);
         File emptyLineFile = new File(emptyFilePointersPath);
         try {
