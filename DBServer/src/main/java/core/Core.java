@@ -147,7 +147,7 @@ public enum Core {
             block.release();
             return result;
         } catch (Exception e) {
-            return ResultFactory.buildObjectNotExistsResult(database);
+            return ResultFactory.buildFailResult(e.toString());
         }
 
     }
@@ -214,7 +214,7 @@ public enum Core {
             databaseBlock.release();
             return result;
         } catch (Exception e) {
-            return ResultFactory.buildObjectNotExistsResult(database);
+            return ResultFactory.buildFailResult(e.toString());
         }
     }
 

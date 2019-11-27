@@ -6,6 +6,7 @@ import util.parser.parsers.DeleteParser;
 import util.result.Result;
 import util.result.ResultFactory;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,6 +34,10 @@ public class DeleteUtil {
     }
 
     private static Result deleteAll(TableBlock tableBlock) {
-        return tableBlock.getRaf().delete();
+        try {
+            return tableBlock.getRaf().delete();
+        } catch (FileNotFoundException e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
     }
 }
