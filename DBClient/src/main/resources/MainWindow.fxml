@@ -17,13 +17,20 @@
     <top>
         <MenuBar prefHeight="15.0" prefWidth="1200.0" BorderPane.alignment="CENTER">
             <Menu mnemonicParsing="false" text="数据中心">
-                <MenuItem mnemonicParsing="false" text="增加数据库" />
-                <MenuItem mnemonicParsing="false" text="删除数据库" />
+                <MenuItem mnemonicParsing="false" onAction="#addDB" text="增加数据库" />
+            <MenuItem mnemonicParsing="false" onAction="#grantControl" text="权限控制" />
                 <MenuItem mnemonicParsing="false" onAction="#closeDataCenter" text="关闭数据中心" />
             </Menu>
             <Menu mnemonicParsing="false" text="帮助">
                 <MenuItem mnemonicParsing="false" text="关于" />
             </Menu>
+         <Menu mnemonicParsing="false" text="用户">
+           <items>
+               <MenuItem mnemonicParsing="false" onAction="#deleteUser" text="删除用户" />
+               <MenuItem mnemonicParsing="false" onAction="#addUser" text="增加用户" />
+               <MenuItem mnemonicParsing="false" onAction="#changeUser" text="更换用户" />
+           </items>
+         </Menu>
         </MenuBar>
     </top>
     <center>
@@ -68,6 +75,7 @@
                               <JFXButton onAction="#deleteRecord" text="删除" />
                               <JFXButton onAction="#selectRecord" text="查询" />
                                <JFXButton onAction="#insertRecord" text="插入" />
+                              <JFXButton onAction="#updateRecord" text="更新" />
                            </children>
                         </HBox>
                      </top>

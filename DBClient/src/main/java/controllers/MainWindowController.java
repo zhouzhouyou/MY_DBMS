@@ -17,6 +17,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -44,10 +45,10 @@ import static util.SQL.TABLE;
 
 @SuppressWarnings("unchecked")
 public class MainWindowController implements Initializable, ControlledStage {
-    public TableView<DefineProperty> tableDefineView;
     private final ObservableList<DefineProperty> definePropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<ConstraintProperty> constraintPropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<IndexProperty> indexPropertyObservableList = FXCollections.observableArrayList();
+    public TableView<DefineProperty> tableDefineView;
     public TableView tableDataView;
     public TableView<ConstraintProperty> tableConstraintView;
     public TableView<IndexProperty> tableIndexView;
@@ -67,16 +68,12 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableColumn<IndexProperty, String> indexAscColumn;
     public TableColumn<IndexProperty, String> indexUniqueColumn;
     public SplitPane splitPane;
-
-    private Client client;
-
     public BorderPane pane;
     public TreeView<TreeElement> treeView;
-
-    private Bundle bundle;
-
     public String databaseName;
     public String tableName;
+    private Client client;
+    private Bundle bundle;
 
     public MainWindowController() {
     }
@@ -230,7 +227,7 @@ public class MainWindowController implements Initializable, ControlledStage {
             String fieldName = (String) list.get(1);
             String constraintType = String.valueOf(list.get(2));
             Object param = list.get(3);
-            constraintPropertyObservableList.add(new Constraint(constraintName, fieldName,constraintType, param).constraintProperty());
+            constraintPropertyObservableList.add(new Constraint(constraintName, fieldName, constraintType, param).constraintProperty());
         }
     }
 
@@ -302,10 +299,9 @@ public class MainWindowController implements Initializable, ControlledStage {
     public void deleteDB(String databaseName) {
         Result result = client.getResult("drop database " + databaseName);
         if (result.code != Result.SUCCESS) {
-            showAlert(result);
-            return;
-        }
-        treeView.getRoot().getChildren().removeIf(a -> a.getValue().name.equals(databaseName) && a.getValue().type.equals(TreeElement.Type.DB));
+            Platform.runLater(() -> showAlert(result));
+        } else
+            treeView.getRoot().getChildren().removeIf(a -> a.getValue().name.equals(databaseName) && a.getValue().type.equals(TreeElement.Type.DB));
     }
 
     public void openTable(String databaseName, String tableName) {
@@ -319,7 +315,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         alert.setTitle("确认信息");
         alert.setHeaderText(null);
         alert.setContentText("确认要删除表吗!");
-        Optional<ButtonType> result=alert.showAndWait();
+        Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
             Result dropTable = client.getResult("drop table " + tableName, databaseName);
             if (dropTable.code != Result.SUCCESS) {
@@ -338,8 +334,8 @@ public class MainWindowController implements Initializable, ControlledStage {
 
         Optional<String> result = dialog.showAndWait();
 
-        if (result.isPresent()){
-            String dbName=result.get();
+        if (result.isPresent()) {
+            String dbName = result.get();
             Result addDB = client.getResult("create database " + dbName);
             if (addDB.code == Result.SUCCESS) {
                 treeView.getRoot().getChildren().add(new TreeItem<>(new DatabaseElement(dbName)));
@@ -368,9 +364,8 @@ public class MainWindowController implements Initializable, ControlledStage {
             Result dropColumn = client.getResult("alter table " + tableName + " drop column " + columnName, databaseName);
             if (dropColumn.code != Result.SUCCESS) {
                 showAlert(dropColumn);
-                return;
-            }
-            loadTable(tableName, databaseName);
+            } else
+                loadTable(tableName, databaseName);
         }
     }
 
@@ -386,14 +381,29 @@ public class MainWindowController implements Initializable, ControlledStage {
             Result deleteRecord = client.getResult("delete from " + tableName + " where " + where, databaseName);
             if (deleteRecord.code != Result.SUCCESS) {
                 showAlert(deleteRecord);
-                return;
-            }
-            loadTable(tableName, databaseName);
+            } else
+                loadTable(tableName, databaseName);
         }
     }
 
     public void selectRecord() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("查询");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入查询语句");
 
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String select = result.get();
+            Result selectResult = client.getResult(select, databaseName);
+            if (selectResult.code != Result.SUCCESS) {
+                showAlert(selectResult);
+            } else {
+                Map<String, List<Object>> recordMap = (Map<String, List<Object>>) selectResult.data;
+                loadData(recordMap);
+            }
+
+        }
     }
 
     public void addConstraint() {
@@ -415,9 +425,8 @@ public class MainWindowController implements Initializable, ControlledStage {
             Result dropColumn = client.getResult("alter table " + tableName + " drop constraint " + constraintName, databaseName);
             if (dropColumn.code != Result.SUCCESS) {
                 showAlert(dropColumn);
-                return;
-            }
-            loadTable(tableName, databaseName);
+            } else
+                loadTable(tableName, databaseName);
         }
     }
 
@@ -495,5 +504,124 @@ public class MainWindowController implements Initializable, ControlledStage {
         if (deleteIndex.code != Result.SUCCESS) {
             showAlert(deleteIndex);
         } else loadTable(tableName, databaseName);
+    }
+
+    public void deleteUser() {
+        TextInputDialog getUserName = new TextInputDialog();
+        getUserName.setTitle("增加用户");
+        getUserName.setHeaderText(null);
+        getUserName.setContentText("请输入用户名");
+        String userName = null;
+        Optional<String> result = getUserName.showAndWait();
+        if (result.isPresent()) {
+            userName = result.get();
+        }
+        String sql = String.format("drop user %s", userName);
+        Result dropUser = client.getResult(sql);
+        if (dropUser.code != Result.SUCCESS) showAlert(dropUser);
+    }
+
+    public void addUser() {
+        TextInputDialog getUserName = new TextInputDialog();
+        getUserName.setTitle("增加用户");
+        getUserName.setHeaderText(null);
+        getUserName.setContentText("请输入用户名");
+        String userName = null;
+        Optional<String> result = getUserName.showAndWait();
+        if (result.isPresent()) {
+            userName = result.get();
+        }
+        TextInputDialog getPassword = new TextInputDialog();
+        getPassword.setTitle("设置密码");
+        getPassword.setHeaderText(null);
+        getPassword.setContentText("请输入密码");
+        String password = null;
+        result = getPassword.showAndWait();
+        if (result.isPresent()) {
+            password = result.get();
+        }
+        String sql = String.format("create user %s %s", userName, password);
+        Result createUser = client.getResult(sql);
+        if (createUser.code != Result.SUCCESS) {
+            showAlert(createUser);
+        }
+    }
+
+    public void grantControl() {
+        String grant = "";
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("权限控制");
+        alert.setContentText("是否为赋予权限");
+
+        Optional result = alert.showAndWait();
+        if (result.isPresent()) {
+            grant = result.get() == ButtonType.OK ? "grant" : "revoke";
+        }
+
+        String userName = "";
+        TextInputDialog getUserName = new TextInputDialog();
+        getUserName.setTitle("选择用户");
+        getUserName.setHeaderText(null);
+        getUserName.setContentText("请输入用户名");
+        Optional<String> getUN = getUserName.showAndWait();
+        if (getUN.isPresent()) {
+            userName = getUN.get();
+        }
+
+        String grantValue = "";
+        TextInputDialog getGrantValue = new TextInputDialog();
+        getGrantValue.setTitle("输入权限");
+        getGrantValue.setHeaderText(null);
+        getGrantValue.setContentText("请输入权限");
+        Optional<String> getGV = getGrantValue.showAndWait();
+        if (getGV.isPresent()) {
+            grantValue = getGV.get();
+        }
+
+        String sql = String.format("%s %s %s", grant, userName, grantValue);
+        Result grantResult = client.getResult(sql);
+        if (grantResult.code != Result.SUCCESS) showAlert(grantResult);
+    }
+
+    public void changeUser() {
+        TextInputDialog getUserName = new TextInputDialog();
+        getUserName.setTitle("用户");
+        getUserName.setHeaderText(null);
+        getUserName.setContentText("请输入用户名");
+        String userName = null;
+        Optional<String> result = getUserName.showAndWait();
+        if (result.isPresent()) {
+            userName = result.get();
+        }
+        TextInputDialog getPassword = new TextInputDialog();
+        getPassword.setTitle("密码");
+        getPassword.setHeaderText(null);
+        getPassword.setContentText("请输入密码");
+        String password = null;
+        result = getPassword.showAndWait();
+        if (result.isPresent()) {
+            password = result.get();
+        }
+        String sql = String.format("connect %s %s", userName, password);
+        Result connect = client.getResult(sql);
+        if (connect.code != Result.SUCCESS) showAlert(connect);
+    }
+
+    public void updateRecord() {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("更新");
+        dialog.setHeaderText(null);
+        dialog.setContentText("请输入更新语句");
+
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            String select = result.get();
+            Result updateResult = client.getResult(select, databaseName);
+            if (updateResult.code != Result.SUCCESS) {
+                showAlert(updateResult);
+            } else {
+                loadTable(tableName, databaseName);
+            }
+        }
     }
 }
