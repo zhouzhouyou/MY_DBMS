@@ -9,6 +9,7 @@ import util.result.Result;
 import util.result.ResultFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpdateUtil {
@@ -16,29 +17,42 @@ public class UpdateUtil {
     public static Result update(TableBlock tableBlock, UpdateParser parser) {
         List<String> updateInfo = parser.getUpdateInfo();
         TableDefineCollection defineCollection = tableBlock.getDefineFactory().getCollection();
-
+        List<String> updateField = new ArrayList<>();
+        List<Object> updateData = new ArrayList<>();
         for (String string : updateInfo) {
             String[] assign = string.split("=");
-            String fieldName = assign[0];
+            String fieldName = assign[0].trim();
             DefineBlock defineBlock = defineCollection.getDefineBlock(fieldName);
             if (defineBlock == null) return ResultFactory.buildObjectNotExistsResult(fieldName);
-            Object value = ConvertUtil.getConvertedObject(assign[1], defineBlock.fieldType);
+            updateField.add(fieldName);
+            Result value = ConvertUtil.getConvertedObject(assign[1].trim(), defineBlock.fieldType);
             if (value == null)
                 return ResultFactory.buildInvalidValueConvertResult(FieldTypes.getFieldType(defineBlock.fieldType), assign[1]);
+            updateData.add(value.data);
         }
         Result result = WhereUtil.getWhere(tableBlock, parser.getWhereCondition());
         if (result.code != ResultFactory.SUCCESS) return result;
         List<Integer> toUpdate = (List<Integer>) result.data;
         RandomAccessFiles raf = tableBlock.getRaf();
 
+
         for (int index : toUpdate) {
             try {
                 List<Object> record = raf.select(index);
-
+                for (DefineBlock defineList : defineCollection.list) {
+                    for (int i = 0; i < updateField.size(); i++) {
+                        if (defineList.fieldName.equals(updateField.get(i)))
+                            record.set(defineList.fieldOrder, updateData.get(i));
+                    }
+//                    if (updateField.get(defineBlock.fieldOrder) != null) {
+//                        record.set(defineBlock.fieldOrder, updateData.get(defineBlock.fieldOrder));
+//                    }
+                }
+                raf.update(index, record);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return null;
+        return ResultFactory.buildSuccessResult("Update Success");
     }
 }
