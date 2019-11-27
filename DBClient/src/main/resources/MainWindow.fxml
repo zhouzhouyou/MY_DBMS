@@ -51,6 +51,7 @@
                            <children>
                               <JFXButton onAction="#addColumn" text="新增" />
                               <JFXButton onAction="#deleteColumn" text="删除" />
+                              <JFXButton onAction="#modifyField" text="修改" />
                            </children>
                         </HBox>
                      </top>
@@ -78,7 +79,7 @@
                               <TableView fx:id="tableConstraintView" prefHeight="315.0" prefWidth="595.0">
                            <columns>
                               <TableColumn fx:id="constraintNameColumn" prefWidth="82.0" text="约束名" />
-                               <TableColumn fx:id="constraintFieldColumn" prefWidth="82.0" text="约束域"/>
+                               <TableColumn fx:id="constraintFieldColumn" prefWidth="82.0" text="约束域" />
                               <TableColumn fx:id="constraintTypeColumn" prefWidth="129.0" text="约束类型" />
                               <TableColumn fx:id="constraintParamColumn" prefWidth="382.0" text="约束参数" />
                            </columns>
@@ -109,8 +110,8 @@
                      <top>
                         <HBox prefHeight="41.0" prefWidth="595.0" BorderPane.alignment="CENTER">
                            <children>
-                              <JFXButton text="新增" />
-                              <JFXButton text="删除" />
+                              <JFXButton onAction="#addIndex" text="新增" />
+                              <JFXButton onAction="#deleteIndex" text="删除" />
                            </children>
                         </HBox>
                      </top>

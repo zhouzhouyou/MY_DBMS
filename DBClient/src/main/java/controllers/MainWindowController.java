@@ -2,6 +2,7 @@ package controllers;
 
 import component.constraint.AddConstraint;
 import component.field.AddField;
+import component.index.AddIndex;
 import component.menu.AbstractContextMenu;
 import component.menu.DatabaseContextMenu;
 import component.menu.RootContextMenu;
@@ -16,7 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -31,6 +31,7 @@ import util.Bundle;
 import util.client.Client;
 import util.client.ClientHolder;
 import util.result.Result;
+import util.result.ResultFactory;
 import util.stage.ControlledStage;
 import util.stage.StageController;
 import util.table.TableHelper;
@@ -47,7 +48,6 @@ public class MainWindowController implements Initializable, ControlledStage {
     private final ObservableList<DefineProperty> definePropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<ConstraintProperty> constraintPropertyObservableList = FXCollections.observableArrayList();
     private final ObservableList<IndexProperty> indexPropertyObservableList = FXCollections.observableArrayList();
-    private ObservableList<ObservableList> data;
     public TableView tableDataView;
     public TableView<ConstraintProperty> tableConstraintView;
     public TableView<IndexProperty> tableIndexView;
@@ -68,7 +68,6 @@ public class MainWindowController implements Initializable, ControlledStage {
     public TableColumn<IndexProperty, String> indexUniqueColumn;
     public SplitPane splitPane;
 
-    private StageController stageController;
     private Client client;
 
     public BorderPane pane;
@@ -186,7 +185,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         tableDataView.getColumns().clear();
         List<String> columns = TableHelper.getColumns(recordMap);
         List<List<String>> rowValue = TableHelper.getColumnCells(recordMap);
-        data = FXCollections.observableArrayList();
+        ObservableList<ObservableList> data = FXCollections.observableArrayList();
         for (int i = 0; i < columns.size(); i++) {
             final int j = i;
             String row = columns.get(i);
@@ -250,7 +249,8 @@ public class MainWindowController implements Initializable, ControlledStage {
         treeView.getSelectionModel().clearSelection();
         Result result = client.getResult("get databases");
         if (result.code != Result.SUCCESS) {
-            //TODO:
+            showAlert(result);
+            return;
         }
 
         List<String> databaseNames = (List<String>) result.data;
@@ -267,7 +267,8 @@ public class MainWindowController implements Initializable, ControlledStage {
             String dbName = databaseElement.name;
             Result getTableNameResult = client.getResult(String.format("get tables %s", dbName));
             if (getTableNameResult.code != Result.SUCCESS) {
-                //TODO:
+                showAlert(getTableNameResult);
+                return;
             }
             ((List<String>) getTableNameResult.data).forEach(s -> tableElements.add(new TableElement(s, dbName)));
         }
@@ -287,7 +288,6 @@ public class MainWindowController implements Initializable, ControlledStage {
 
     @Override
     public void setStageController(StageController stageController) {
-        this.stageController = stageController;
     }
 
     public void createTable(String databaseName) {
@@ -302,7 +302,8 @@ public class MainWindowController implements Initializable, ControlledStage {
     public void deleteDB(String databaseName) {
         Result result = client.getResult("drop database " + databaseName);
         if (result.code != Result.SUCCESS) {
-            //TODO:
+            showAlert(result);
+            return;
         }
         treeView.getRoot().getChildren().removeIf(a -> a.getValue().name.equals(databaseName) && a.getValue().type.equals(TreeElement.Type.DB));
     }
@@ -321,6 +322,10 @@ public class MainWindowController implements Initializable, ControlledStage {
         Optional<ButtonType> result=alert.showAndWait();
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
             Result dropTable = client.getResult("drop table " + tableName, databaseName);
+            if (dropTable.code != Result.SUCCESS) {
+                showAlert(dropTable);
+                return;
+            }
             updateDatabases();
         }
     }
@@ -338,6 +343,8 @@ public class MainWindowController implements Initializable, ControlledStage {
             Result addDB = client.getResult("create database " + dbName);
             if (addDB.code == Result.SUCCESS) {
                 treeView.getRoot().getChildren().add(new TreeItem<>(new DatabaseElement(dbName)));
+            } else {
+                showAlert(addDB);
             }
         }
     }
@@ -359,6 +366,10 @@ public class MainWindowController implements Initializable, ControlledStage {
         if (result.isPresent()) {
             String columnName = result.get();
             Result dropColumn = client.getResult("alter table " + tableName + " drop column " + columnName, databaseName);
+            if (dropColumn.code != Result.SUCCESS) {
+                showAlert(dropColumn);
+                return;
+            }
             loadTable(tableName, databaseName);
         }
     }
@@ -373,6 +384,10 @@ public class MainWindowController implements Initializable, ControlledStage {
         if (result.isPresent()) {
             String where = result.get();
             Result deleteRecord = client.getResult("delete from " + tableName + " where " + where, databaseName);
+            if (deleteRecord.code != Result.SUCCESS) {
+                showAlert(deleteRecord);
+                return;
+            }
             loadTable(tableName, databaseName);
         }
     }
@@ -398,6 +413,10 @@ public class MainWindowController implements Initializable, ControlledStage {
         if (result.isPresent()) {
             String constraintName = result.get();
             Result dropColumn = client.getResult("alter table " + tableName + " drop constraint " + constraintName, databaseName);
+            if (dropColumn.code != Result.SUCCESS) {
+                showAlert(dropColumn);
+                return;
+            }
             loadTable(tableName, databaseName);
         }
     }
@@ -416,9 +435,65 @@ public class MainWindowController implements Initializable, ControlledStage {
         clearSplitPane();
         ObservableList<TableColumn> list = tableDataView.getColumns();
         List<String> temp = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            temp.add(list.get(i).getText());
+        for (TableColumn tableColumn : list) {
+            temp.add(tableColumn.getText());
         }
         splitPane.getItems().add(new AddRecord(this, temp));
+    }
+
+    public void modifyField() {
+        TextInputDialog getFieldName = new TextInputDialog();
+        getFieldName.setTitle("修改域类型（仅限varchar）");
+        getFieldName.setHeaderText(null);
+        getFieldName.setContentText("请输入域名");
+        String fieldName = null;
+        Optional<String> result = getFieldName.showAndWait();
+        if (result.isPresent()) {
+            fieldName = result.get();
+        }
+        TextInputDialog getFieldType = new TextInputDialog();
+        getFieldType.setTitle("修改域类型（仅限varchar）");
+        getFieldType.setHeaderText(null);
+        getFieldType.setContentText("请输入新类型");
+        result = getFieldType.showAndWait();
+        if (result.isPresent()) {
+            String fieldType = result.get();
+            String sql = String.format("alter table %s modify column %s %s", tableName, fieldName, fieldType);
+            Result modifyColumn = client.getResult(sql, databaseName);
+            if (modifyColumn.code != Result.SUCCESS) {
+                showAlert(modifyColumn);
+            } else {
+                loadTable(tableName, databaseName);
+            }
+        }
+    }
+
+    public void showAlert(Result result) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle(ResultFactory.getInfo(result.code));
+        alert.setContentText(result.data.toString());
+        alert.showAndWait();
+    }
+
+    public void addIndex() {
+        clearSplitPane();
+        splitPane.getItems().add(new AddIndex(this));
+    }
+
+    public void deleteIndex() {
+        TextInputDialog getFieldName = new TextInputDialog();
+        getFieldName.setTitle("删除索引");
+        getFieldName.setHeaderText(null);
+        getFieldName.setContentText("请输入索引名");
+        String indexName = null;
+        Optional<String> result = getFieldName.showAndWait();
+        if (result.isPresent()) {
+            indexName = result.get();
+        }
+        String sql = String.format("drop index %s on (%s)", indexName, tableName);
+        Result deleteIndex = client.getResult(sql, databaseName);
+        if (deleteIndex.code != Result.SUCCESS) {
+            showAlert(deleteIndex);
+        } else loadTable(tableName, databaseName);
     }
 }

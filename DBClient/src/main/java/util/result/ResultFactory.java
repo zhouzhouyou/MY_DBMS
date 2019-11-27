@@ -7,6 +7,23 @@ public class ResultFactory {
     public static final int NOT_FOUND = 404;
     public static final int CONFLICT = 409;
 
+    public static String getInfo(int code) {
+        switch (code) {
+            case SUCCESS:
+                return "Success";
+            case BAD_REQUEST:
+                return "Bad Request";
+            case NOT_FOUND:
+                return "Not Found";
+            case UNAUTHORIZED:
+                return "unauthorized";
+            case CONFLICT:
+                return "conflict";
+            default:
+                return "";
+        }
+    }
+
 
     public static Result buildFailResult(Object data) {
         return new Result(BAD_REQUEST, data);

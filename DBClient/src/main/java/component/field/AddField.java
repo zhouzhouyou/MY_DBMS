@@ -58,10 +58,12 @@ public class AddField extends AnchorPane implements Initializable, ControlledSta
         String type = typeField.getText();
         String sql = String.format("alter table %s add column %s %s", tableName, fieldName, type);
         Result result = ClientHolder.INSTANCE.getClient().getResult(sql, databaseName);
-        if (result.code != Result.SUCCESS) {
-            //TODO:
-        }
         controller.clearSplitPane();
+        if (result.code != Result.SUCCESS) {
+            controller.showAlert(result);
+            return;
+        }
+
         controller.updateDatabases();
 //        stageController.setStage(MAIN_WINDOW, ADD_FIELD);
     }

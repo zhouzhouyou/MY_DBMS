@@ -218,6 +218,7 @@ public class TableBlock extends Block {
         for (DefineBlock defineBlock : getDefineFactory().getCollection().list) {
             String fieldName = defineBlock.fieldName;
             String fieldType = FieldTypes.getFieldType(defineBlock.fieldType);
+            if (defineBlock.fieldType == VARCHAR) fieldType += "(" + defineBlock.param + ")";
             boolean pk = false;
             boolean notNull = false;
             boolean unique = false;

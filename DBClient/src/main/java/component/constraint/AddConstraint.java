@@ -62,16 +62,15 @@ public class AddConstraint extends AnchorPane implements Initializable, Controll
         if (type.equals(SQL.DEFAULT)) temp += " " + paramField.getText();
         String sql = String.format("alter table %s add constraint %s %s", tableName, name, temp);
         Result result = ClientHolder.INSTANCE.getClient().getResult(sql, databaseName);
-        if (result.code != Result.SUCCESS) {
-            //TODO:
-        }
-//        stageController.setStage(MAIN_WINDOW, ADD_CONSTRAINT);
         controller.clearSplitPane();
+        if (result.code != Result.SUCCESS) {
+            controller.showAlert(result);
+            return;
+        }
         controller.loadTable(tableName, databaseName);
     }
 
     public void cancel() {
-//        stageController.setStage(MAIN_WINDOW, ADD_CONSTRAINT);
         controller.clearSplitPane();
     }
 

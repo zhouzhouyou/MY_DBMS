@@ -7,13 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import util.client.ClientHolder;
 import util.result.Result;
-
 
 import java.io.IOException;
 import java.net.URL;
@@ -76,6 +74,9 @@ public class AddRecord extends AnchorPane implements Initializable {
         sb.append(list.get(list.size()-1).getText()).append(")");
         Result result = ClientHolder.INSTANCE.getClient().getResult(sb.toString(), controller.databaseName);
         controller.clearSplitPane();
+        if (result.code != Result.SUCCESS) {
+            controller.showAlert(result);
+        }
         controller.loadTable(controller.tableName, controller.databaseName);
     }
 

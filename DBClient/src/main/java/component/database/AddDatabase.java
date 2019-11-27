@@ -34,7 +34,7 @@ public class AddDatabase implements ControlledStage, Initializable {
     public void confirm() {
         Result result = ClientHolder.INSTANCE.getClient().getResult("create database " + databaseNameField.getText());
         if (result.code != Result.SUCCESS) {
-            //TODO:
+
         }
         bundle.put(DATABASE, databaseNameField.getText());
 
