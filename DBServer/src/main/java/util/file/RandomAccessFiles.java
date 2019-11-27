@@ -55,6 +55,9 @@ public class RandomAccessFiles {
     public List<List<Object>> select() throws IOException {
         List<List<Object>> resultSet = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        if(raf.length() == 0){
+            return resultSet;
+        }
         for (int i = 0; i < raf.length() / recordLength; i++) {
             List<Object> result = new ArrayList<>();
             readData(result, raf);
@@ -67,6 +70,9 @@ public class RandomAccessFiles {
     public List<List<Object>> select(List<Integer> recordNumbers) throws IOException {
         List<List<Object>> resultSet = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        if(raf.length() == 0){
+            return resultSet;
+        }
         for (int recordNumber : recordNumbers) {
             List<Object> result = new ArrayList<>();
             raf.seek(recordNumber * recordLength);
@@ -80,6 +86,9 @@ public class RandomAccessFiles {
     public List<Object> select(int recordNumber) throws IOException {
         List<Object> result = new ArrayList<>();
         RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        if(raf.length() == 0){
+            return result;
+        }
         raf.seek(recordNumber * recordLength);
         readData(result, raf);
         raf.close();
@@ -98,6 +107,10 @@ public class RandomAccessFiles {
         RandomAccessFile raf;
 
         raf = new RandomAccessFile(recordFilePath, "rw");
+
+        if(raf.length() == 0){
+            return result;
+        }
         Pair<DefineBlock, Integer> pair = collection.getPreInfo(fieldName);
         if (pair.getFirst() == null) return null;
 
@@ -158,7 +171,7 @@ public class RandomAccessFiles {
         return ResultFactory.buildSuccessResult(null);
     }
 
-    public Result delete() {
+    public Result delete() throws FileNotFoundException {
         File recordFile = new File(recordFilePath);
         File emptyLineFile = new File(emptyFilePointersPath);
         try {
