@@ -34,6 +34,7 @@ public class ParserFactory {
         else if (contains(sql, "(get tables)(.+)")) return new GetTables(sql);
         else if (contains(sql, ("(get table_define)(.+)"))) return new GetTableDefine(sql);
         else if (contains(sql, "(get table_constraint)(.+)")) return new GetTableConstraint(sql);
+        else if (contains(sql,"(get table_index)(.+?)(ENDOFSQL)")) return new GetTableIndex(sql);
         //TODO: alter table {table name} (add column|modify column|drop column)
         //TODO: select
         return null;
