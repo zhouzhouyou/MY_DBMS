@@ -211,7 +211,7 @@ public class RandomAccessFiles {
 
     public void addColumnData(Object defaultData, TableDefineCollection collection) {
         try {
-            List<List<Object>> recordSet = select();
+            List<List<Object>> recordSet = selectUpdate();
             updateTableCollection(collection);
             recordLength = collection.getTotalDataLength();
             recordSet.forEach(list -> list.add(defaultData));
@@ -250,7 +250,7 @@ public class RandomAccessFiles {
 
     public void dropColumnData(int fieldOrder, TableDefineCollection collection) {
         try {
-            List<List<Object>> recordSet = select();
+            List<List<Object>> recordSet = selectUpdate();
             updateTableCollection(collection);
             recordLength = collection.getTotalDataLength();
             recordSet.forEach(list -> list.remove(fieldOrder));
@@ -269,7 +269,7 @@ public class RandomAccessFiles {
 
     public void changeColumnData(int fieldOrder, int dataLength, TableDefineCollection defineCollection) {
         try {
-            List<List<Object>> recordSet = select();
+            List<List<Object>> recordSet = selectUpdate();
             updateTableCollection(defineCollection);
             recordLength = collection.getTotalDataLength();
             for (List<Object> list : recordSet) {
