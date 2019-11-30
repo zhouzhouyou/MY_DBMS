@@ -46,6 +46,7 @@ public class RandomAccessFiles {
         raf.seek(recordNumber * recordLength);
         delete(recordNumber);
         writeData(list, raf);
+        emptyFilePointers.remove(recordNumber);
         raf.close();
         updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
