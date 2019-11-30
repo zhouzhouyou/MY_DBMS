@@ -100,11 +100,11 @@ public enum CreateUtil {
         Matcher matcher = pattern.matcher(s);
         matcher.find();
         String result = matcher.group(2);
-        return ConvertUtil.getConvertedObject(result, type);
+        return ConvertUtil.getConvertedObject(result.split(" ")[0], type);
     }
 
     static String getCheck(String s) {
-        String reg = "(check[(])(.+)([)])";
+        String reg = "(check\\s+[(])(.+)([)])";
         Pattern pattern = Pattern.compile(reg);
         Matcher matcher = pattern.matcher(s);
         matcher.find();

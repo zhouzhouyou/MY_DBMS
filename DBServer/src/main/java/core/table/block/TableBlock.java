@@ -66,7 +66,7 @@ public class TableBlock extends Block {
     /**
      * 表文件夹路径，例如{@code ./data/database_name/table_name/}
      */
-    public transient String directoryPath;
+    public String directoryPath;
     /**
      * 建表的SQL
      */

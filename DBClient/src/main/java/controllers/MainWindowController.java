@@ -124,12 +124,14 @@ public class MainWindowController implements Initializable, ControlledStage {
                 System.out.println("single click");
                 if (node instanceof Text || node instanceof TreeCell && ((TreeCell) node).getText() != null) {
                     TreeElement treeElement = treeView.getSelectionModel().getSelectedItem().getValue();
-                    tableName = treeElement.name;
-                    databaseName = ((TableElement) treeElement).db;
-                    bundle.put(DATABASE, databaseName);
-                    bundle.put(TABLE, tableName);
-                    if (treeElement.type == TreeElement.Type.TABLE) {
-                        loadTable(tableName, databaseName);
+                    if (treeElement instanceof TableElement) {
+                        tableName = treeElement.name;
+                        databaseName = ((TableElement) treeElement).db;
+                        bundle.put(DATABASE, databaseName);
+                        bundle.put(TABLE, tableName);
+                        if (treeElement.type == TreeElement.Type.TABLE) {
+                            loadTable(tableName, databaseName);
+                        }
                     }
                 }
             } else if (event.getButton() == MouseButton.SECONDARY && event.getClickCount() == 1) {

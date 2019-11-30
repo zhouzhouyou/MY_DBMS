@@ -40,7 +40,7 @@ public class CreateTableColumn extends AnchorPane {
         if (pkBtn.isSelected()) sb.append(" ").append(SQL.PRIMARY_KEY);
         if (uniqueBtn.isSelected()) sb.append(" ").append(SQL.UNIQUE);
         if (notNullBtn.isSelected()) sb.append(" ").append(SQL.NOT_NULL);
-        if (checkField.getText().trim().length() != 0) sb.append(" check (").append(defaultValueField.getText()).append(")");
+        if (checkField.getText().trim().length() != 0) sb.append(" check (").append(checkField.getText()).append(")");
         return sb.toString();
     }
 }
