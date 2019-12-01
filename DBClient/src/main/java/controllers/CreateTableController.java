@@ -63,7 +63,7 @@ public class CreateTableController extends AnchorPane implements ControlledStage
         Bundle.INSTANCE.put(SQL.CREATE_TABLE, sb.toString());
         Result result =ClientHolder.INSTANCE.getClient().getResult(sb.toString(), databaseName);
         if (result.code != Result.SUCCESS) {
-            //TODO:
+            controller.showAlert(result);
         }
 //        stageController.setStage(MAIN_WINDOW, CREATE_TABLE);
 //        ((MainWindowController)stageController.getController(MAIN_WINDOW_RES)).updateDatabases();

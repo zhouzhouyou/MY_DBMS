@@ -92,6 +92,7 @@ public class SelectUtil {
         TableBlock tableBlock = tableFactory.getTable(tableName);
         RandomAccessFiles raf = tableBlock.getRaf();
         List<List<Object>> allData = raf.select();
+        tableBlock.release();
         List<String> allFieldNames = tableBlock.getDefineFactory().getFieldNames();
         List<String> fieldNames = parser.getSelectItem();
         if (fieldNames.get(0).equals("*")) fieldNames = allFieldNames;

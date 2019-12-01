@@ -25,7 +25,6 @@ public class AddRecord extends AnchorPane implements Initializable {
     private List<String> columns;
     private MainWindowController controller;
     public JFXListView view;
-    private GridPane grid;
     private List<JFXTextField> list = new ArrayList<>();
     public AddRecord(MainWindowController controller, List<String> columns) {
         this.columns = columns;
@@ -43,7 +42,7 @@ public class AddRecord extends AnchorPane implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        grid = new GridPane();
+        GridPane grid = new GridPane();
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
@@ -62,26 +61,37 @@ public class AddRecord extends AnchorPane implements Initializable {
     }
 
     public void confirm() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("insert into ").append(controller.tableName).append(" (");
-        List<String> cols = new ArrayList<>();
-        List<String> values = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            JFXTextField field = list.get(i);
-            if (field.getText().length() != 0) {
-                cols.add(columns.get(i));
-                values.add(field.getText());
-            }
+        StringBuilder fieldSB = new StringBuilder();
+        StringBuilder valueSB = new StringBuilder();
+        fieldSB.append("insert into ").append(controller.tableName).append(" (");
+        for (int i = 0; i < columns.size() - 1; i++) {
+            fieldSB.append(columns.get(i)).append(",");
+            String value = list.get(i).getText();
+            if (value == null || value.length() == 0) valueSB.append("null,");
+            else valueSB.append(value).append(",");
         }
-        for (int i = 0; i < cols.size() - 1; i++) {
-            sb.append(cols.get(i)).append(",");
-        }
-        sb.append(cols.get(cols.size()-1)).append(") values (");
-        for (int i = 0; i < values.size() - 1; i++) {
-            sb.append(values.get(i)).append(",");
-        }
-        sb.append(values.get(values.size()-1)).append(")");
-        Result result = ClientHolder.INSTANCE.getClient().getResult(sb.toString(), controller.databaseName);
+        String value = list.get(list.size()-1).getText();
+        valueSB.append((value == null || value.length() == 0) ? "null" : value);
+        fieldSB.append(columns.get(columns.size()-1)).append(") values (").append(valueSB).append(")");
+
+//        List<String> cols = new ArrayList<>();
+//        List<String> values = new ArrayList<>();
+//        for (int i = 0; i < list.size(); i++) {
+//            JFXTextField field = list.get(i);
+//            if (field.getText().length() != 0) {
+//                cols.add(columns.get(i));
+//                values.add(field.getText());
+//            }
+//        }
+//        for (int i = 0; i < cols.size() - 1; i++) {
+//            sb.append(cols.get(i)).append(",");
+//        }
+//        sb.append(cols.get(cols.size()-1)).append(") values (");
+//        for (int i = 0; i < values.size() - 1; i++) {
+//            sb.append(values.get(i)).append(",");
+//        }
+//        sb.append(values.get(values.size()-1)).append(")");
+        Result result = ClientHolder.INSTANCE.getClient().getResult(fieldSB.toString(), controller.databaseName);
         controller.clearSplitPane();
         if (result.code != Result.SUCCESS) {
             controller.showAlert(result);
