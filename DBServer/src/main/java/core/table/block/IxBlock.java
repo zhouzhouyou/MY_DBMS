@@ -17,7 +17,7 @@ import java.util.List;
  * 在本文档中出现的所有索引都指的是在trd文件中，该条数据是第几个。
  * </p>
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class IxBlock extends Block {
     //如果你要声明一个不应该被序列化的属性，请加上transient关键字，例如: private transient int age;
     // TODO: 写一个可序列化的结构，让反序列化时也能知道每个Comparable中的数据
@@ -88,7 +88,7 @@ public class IxBlock extends Block {
     public List<Integer> find_lager_than(Comparable key) {
         List<Integer> result = new ArrayList<>();
         LeafNode leafNode = this.root.find_larger_than(key);
-        int i = 0;
+        int i;
         for (i = 0; i < leafNode.number; i++) {
             if (((Comparable)leafNode.keys.get(i)).compareTo(key) >= 0) {
                 break;
@@ -138,7 +138,7 @@ public class IxBlock extends Block {
 
                 }
 
-                /**
+                /*
                  * 否则，直接删除。
                  * */
                 else {
@@ -206,9 +206,7 @@ public class IxBlock extends Block {
                             firstOneDelete(null, cNode, 0);
                         }
 
-                        for (int i = 0; i < cNode.keys.size(); i++) {
-                            leftBrother.keys.add(cNode.keys.get(i));
-                        }
+                        leftBrother.keys.addAll(cNode.keys);
                         ((LeafNode) leftBrother).right = ((LeafNode) cNode).right;
 
                         parentNode.keys.remove(cNodePindex);
@@ -738,7 +736,7 @@ public class IxBlock extends Block {
 
         public LeafNode() {
             super();
-            this.values = new ArrayList<Object>();
+            this.values = new ArrayList<>();
             this.left = null;
             this.right = null;
         }
@@ -756,11 +754,11 @@ public class IxBlock extends Block {
 
 //            System.out.println("284叶子节点查找");
 
-            Integer left = 0;
-            Integer right = this.number;
-            List<Integer> list = new ArrayList<Integer>();
+            int left = 0;
+            int right = this.number;
+            List<Integer> list = new ArrayList<>();
 
-            Integer middle = (left + right) / 2;
+            int middle = (left + right) / 2;
 
             while (left < right) {
                 Comparable middleKey = (Comparable) this.keys.get(middle);
@@ -769,7 +767,7 @@ public class IxBlock extends Block {
                     list.add((Integer) this.values.get(middle));
                     if (unique) return list;
                     else {
-                        Integer p = middle + 1;
+                        int p = middle + 1;
                         while (this.keys.get(p) == key) {
                             list.add((Integer) this.values.get(p));
                             p = middle + 1;
@@ -791,11 +789,11 @@ public class IxBlock extends Block {
 
 //            System.out.println("284叶子节点查找");
 
-            Integer left = 0;
-            Integer right = this.number;
+            int left = 0;
+            int right = this.number;
 
 
-            Integer middle = (left + right) / 2;
+            int middle = (left + right) / 2;
 
             while (left < right) {
                 Comparable middleKey = (Comparable) this.keys.get(middle);
@@ -965,7 +963,7 @@ public class IxBlock extends Block {
      */
     public List<Integer> get(Comparable key, boolean equal) {
         //TODO: 返回某个具体值相等或不等的索引的集合
-        if (equal == true) {
+        if (equal) {
             List<Integer> result = this.find(key);
 
             return result;
@@ -988,12 +986,15 @@ public class IxBlock extends Block {
         List<Integer> tem = this.find_lager_than(maxKey);
         if (!exclusive) tem.remove(0);
         List<Integer> all = this.find_overall();
-        for (int m = 0; m < all.size(); m++) {
+        for (Integer value : all) {
             int label = 1;
-            for (int n = 0; n < tem.size(); n++) {
-                if (all.get(m) == tem.get(n)) label = 0;
+            for (Integer integer : tem) {
+                if (value.equals(integer)) {
+                    label = 0;
+                    break;
+                }
             }
-            if (label == 1) result.add(all.get(m));
+            if (label == 1) result.add(value);
         }
 
         return result;
@@ -1026,9 +1027,9 @@ public class IxBlock extends Block {
     public List<Integer> in(List<Comparable> list) {
         //TODO: 存在于list中的值的索引的集合
         List<Integer> result = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            List<Integer> tem = this.find(list.get(i));
-            for (int j = 0; j < tem.size(); j++) result.add(tem.get(j));
+        for (Comparable comparable : list) {
+            List<Integer> tem = this.find(comparable);
+            result.addAll(tem);
         }
 
         return result;
@@ -1049,20 +1050,20 @@ public class IxBlock extends Block {
         List<Integer> result = new ArrayList<>();
         List<Integer> all = this.find_overall();
 
-        for (int i = 0; i < list.size(); i++) {
-            List<Integer> tem = new ArrayList<>();
-            tem = this.find(list.get(i));
-            for (int j = 0; j < tem.size(); j++) {
-                in.add(tem.get(j));
-            }
+        for (Comparable comparable : list) {
+            List<Integer> tem = this.find(comparable);
+            in.addAll(tem);
         }
 
-        for (int m = 0; m < all.size(); m++) {
+        for (Integer integer : all) {
             int label = 1;
-            for (int n = 0; n < in.size(); n++) {
-                if (all.get(m) == in.get(n)) label = 0;
+            for (Integer value : in) {
+                if (integer.equals(value)) {
+                    label = 0;
+                    break;
+                }
             }
-            if (label == 1) result.add(all.get(m));
+            if (label == 1) result.add(integer);
         }
         return result;
     }
@@ -1076,7 +1077,7 @@ public class IxBlock extends Block {
      */
     public boolean insert(Comparable comparable, int index) {
         //TODO: 插入一条数据进入索引
-        if (unique == false) {
+        if (!unique) {
             this.insert(comparable, index);
         } else {
             List<Integer> check = this.find(index);
@@ -1114,8 +1115,8 @@ public class IxBlock extends Block {
      */
     public boolean delete(List<Integer> index) {
         //TODO: 删除一组索引
-        for (int i = 0; i < index.size(); i++) {
-            this.delete(index.get(i));
+        for (Integer integer : index) {
+            this.delete(integer);
         }
         return false;
     }
