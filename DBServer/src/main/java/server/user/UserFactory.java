@@ -99,7 +99,7 @@ public enum UserFactory {
         } catch (NoSuchFieldException e) {
             return ResultFactory.buildObjectNotExistsResult();
         } catch (Exception e) {
-            return ResultFactory.buildFailResult(null);
+            return ResultFactory.buildFailResult(e.toString());
         }
     }
 

@@ -239,7 +239,7 @@ public enum Core {
     }
 
     public Result createUser(CreateUserParser parser) {
-        if (!parser.isValid()) return ResultFactory.buildFailResult(null);
+        if (!parser.isValid()) return ResultFactory.buildFailResult("invalid");
         return userFactory.createUser(parser.getUserName(), parser.getPassword());
     }
 

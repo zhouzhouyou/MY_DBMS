@@ -79,13 +79,13 @@ public class IndexBlock extends Block {
         //把现有的所有数据插入IxBlock
         boolean result = ixBlock.insert(comparableList);
         if (result) return ResultFactory.buildSuccessResult(null);
-        else return ResultFactory.buildFailResult(null);
+        else return ResultFactory.buildFailResult("fail to insert into b+ tree");
     }
 
     public Result delete() {
         //TODO: 删除当前索引
         if (FileUtils.delete(indexFilePath)) return ResultFactory.buildSuccessResult(null);
-        return ResultFactory.buildFailResult(null);
+        return ResultFactory.buildFailResult("fail to delete");
     }
 
     /**
@@ -136,7 +136,7 @@ public class IndexBlock extends Block {
     public Result deleteRecord(List<Integer> indexes) {
         boolean result = ixBlock.delete(indexes);
         if (result) return ResultFactory.buildSuccessResult(null);
-        return ResultFactory.buildFailResult(null);
+        return ResultFactory.buildFailResult("fail to delete from b+ tree");
     }
 
     public void deleteAll() {

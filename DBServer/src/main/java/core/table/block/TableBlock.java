@@ -193,8 +193,7 @@ public class TableBlock extends Block {
      * @return 创建索引结果
      */
     public Result createIndex(CreateIndexParser parser) {
-        Result result = getIndexFactory().createIndex(parser);
-        return result;
+        return getIndexFactory().createIndex(parser);
     }
 
     public Result update(UpdateParser parser) {

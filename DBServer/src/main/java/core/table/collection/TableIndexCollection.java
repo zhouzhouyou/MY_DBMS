@@ -71,7 +71,7 @@ public class TableIndexCollection extends TableComponentCollection<IndexBlock> {
     }
 
     public Result deleteAll() {
-        list.forEach(indexBlock -> indexBlock.deleteAll());
+        list.forEach(IndexBlock::deleteAll);
         return null;
     }
 
