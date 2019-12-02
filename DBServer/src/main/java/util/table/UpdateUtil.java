@@ -48,7 +48,8 @@ public class UpdateUtil {
 //                        record.set(defineBlock.fieldOrder, updateData.get(defineBlock.fieldOrder));
 //                    }
                 }
-                raf.update(index, record);
+                Result checkResult =  tableBlock.getConstraintFactory().check(record);
+                if (checkResult.code == ResultFactory.SUCCESS) raf.update(index, record);
             } catch (IOException e) {
                 e.printStackTrace();
             }
