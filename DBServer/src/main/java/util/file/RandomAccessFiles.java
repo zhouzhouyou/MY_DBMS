@@ -44,9 +44,9 @@ public class RandomAccessFiles {
         if (recordNumber > raf.length() / recordLength - 1)
             return ResultFactory.buildObjectNotExistsResult();
         raf.seek(recordNumber * recordLength);
-        delete(recordNumber);
+        deleteForUpdate(recordNumber);
         writeData(list, raf);
-        emptyFilePointers.remove(recordNumber);
+        //emptyFilePointers.remove(recordNumber);
         raf.close();
         updateEmptyFilePointers();
         return ResultFactory.buildSuccessResult(null);
@@ -172,6 +172,17 @@ public class RandomAccessFiles {
         }
         raf.close();
         return result;
+    }
+
+    private void deleteForUpdate(int recordNumber) throws IOException {
+        RandomAccessFile raf = new RandomAccessFile(recordFilePath, "rw");
+        raf.seek(recordNumber * recordLength);
+        //emptyFilePointers.add(recordNumber);
+        Collections.sort(emptyFilePointers);
+        char[] tempContent = new char[recordLength];
+        raf.writeBytes(new String(tempContent));
+        raf.close();
+        //updateEmptyFilePointers();
     }
 
 
