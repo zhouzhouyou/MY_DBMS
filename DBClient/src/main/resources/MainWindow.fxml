@@ -98,6 +98,7 @@
                            <children>
                               <JFXButton onAction="#addConstraint" text="新增" />
                               <JFXButton onAction="#deleteConstraint" text="删除" />
+                              <JFXButton onAction="#modifyConstraint" text="修改" />
                            </children>
                         </HBox>
                      </top>

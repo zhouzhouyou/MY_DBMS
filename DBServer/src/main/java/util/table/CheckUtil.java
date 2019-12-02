@@ -77,13 +77,17 @@ public class CheckUtil {
      * @return 对应变量或常量的值
      */
     private static String getValue(String name, Map<String, Object> recordMap) {
+        if (name.equals("null")) return null;
         if (name.startsWith("'")) {
             if (name.endsWith("'")) return ConvertUtil.getString(name);
             return null;
         } else {
             if (name.endsWith("'")) return null;
-            Object o = recordMap.get(name);
-            return o == null ? name : String.valueOf(o);
+            if (recordMap.containsKey(name)) {
+                Object o = recordMap.get(name);
+                return o == null ? null : String.valueOf(o);
+            }
+            return name;
         }
     }
 
@@ -99,9 +103,12 @@ public class CheckUtil {
         String rightValue = parser.getRightValue();
         String left = getValue(leftValue, recordMap);
         String right = getValue(rightValue, recordMap);
-
-        if (left == null || right == null)
-            return ResultFactory.buildObjectNotExistsResult(leftValue + " " + rightValue);
+        if (left == null && right == null) {
+            if (recordMap.containsKey(leftValue)) return parser.check("null", "null");
+            else return ResultFactory.buildObjectNotExistsResult(leftValue + " " + rightValue);
+        }
+        if (left == null) left = "null";
+        if (right == null) right = "null";
         return parser.check(left, right);
     }
 

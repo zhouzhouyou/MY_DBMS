@@ -17,7 +17,6 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.geometry.Side;
 import javafx.scene.Node;
@@ -198,7 +197,7 @@ public class MainWindowController implements Initializable, ControlledStage {
             ObservableList<String> row = FXCollections.observableArrayList();
             for (int j = 0; j < columns.size(); j++) {
                 String element = strings.get(j);
-                if(element == null)
+                if (element == null)
                     row.add("null");
                 else
                     row.add(element);
@@ -629,6 +628,37 @@ public class MainWindowController implements Initializable, ControlledStage {
             } else {
                 loadTable(tableName, databaseName);
             }
+        }
+    }
+
+    public void modifyConstraint() {
+        String constraintName = null;
+        String constraintValue = null;
+
+        TextInputDialog getConstraintName = new TextInputDialog();
+        getConstraintName.setTitle("修改约束（只能修改default和check）");
+        getConstraintName.setHeaderText(null);
+        getConstraintName.setContentText("请输入约束名");
+
+        Optional<String> constraintNameResult = getConstraintName.showAndWait();
+        if (constraintNameResult.isPresent()) {
+            constraintName = constraintNameResult.get();
+        }
+
+        TextInputDialog getConstraintValue = new TextInputDialog();
+        getConstraintValue.setTitle("修改约束");
+        getConstraintValue.setContentText("请输入约束信息，类似'check (age < 10)'或者'default 18'");
+
+        Optional<String> constraintValueResult = getConstraintValue.showAndWait();
+        if (constraintValueResult.isPresent()) {
+            constraintValue = constraintValueResult.get();
+        }
+
+        if (constraintName != null && constraintValue != null) {
+            String sql = String.format("alter table %s modify constraint %s %s", tableName, constraintName, constraintValue);
+            Result result = client.getResult(sql, databaseName);
+            if (result.code != Result.SUCCESS) showAlert(result);
+            else loadTable(tableName, databaseName);
         }
     }
 }

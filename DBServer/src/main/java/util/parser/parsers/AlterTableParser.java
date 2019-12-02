@@ -66,8 +66,9 @@ public class AlterTableParser extends Parser {
     }
 
     public String getOperationContent() {
-        String[] strings = originSQL.split(" ");
-        return originSQL.substring(originSQL.indexOf(strings[5]));
+        return splitOriginSQLIntoSegment().get(1).get(0);
+//        String[] strings = originSQL.split(" ");
+//        return originSQL.substring(originSQL.indexOf(strings[5]));
     }
 
 }
