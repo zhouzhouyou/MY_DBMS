@@ -46,7 +46,7 @@ public class IxBlock extends Block {
 
     //插入
     @SuppressWarnings("null")
-    public boolean insert(Comparable value, Comparable key) {
+    public boolean insert_into(Comparable value, Comparable key) {
         if (key == null)
             return false;
         Node t = this.root.insert(value, key);
@@ -224,7 +224,7 @@ public class IxBlock extends Block {
                         if (indexLoc == 0) {
                             firstOneDelete(null, cNode, 0);
                         }
-                        for (int i = 0; i < rightBrother.keys.size(); i++) cNode.keys.add(rightBrother.keys.get(i));
+                        cNode.keys.addAll(rightBrother.keys);
 
                         ((LeafNode) cNode).right = ((LeafNode) rightBrother).right;
 
@@ -334,7 +334,7 @@ public class IxBlock extends Block {
              * 假如左侧兄弟有，那么与左边兄弟合并。
              * */
             if (leftBrother != null) {
-                for (int i = 0; i < currentNode.keys.size(); i++) leftBrother.keys.add(currentNode.keys.get(i));
+                leftBrother.keys.addAll(currentNode.keys);
 
                 for (Node tmpNode : currentNode.childs) {
                     tmpNode.parent = leftBrother;
@@ -751,8 +751,7 @@ public class IxBlock extends Block {
         List<Integer> find(Comparable key) {
             if (this.number <= 0)
                 return null;
-
-//            System.out.println("284叶子节点查找");
+            //            System.out.println("284叶子节点查找");
 
             int left = 0;
             int right = this.number;
@@ -904,14 +903,29 @@ public class IxBlock extends Block {
                 oldKey = null;
             }
             //复制，建成右半部分
-            System.arraycopy(tempKeys, middle, tempNode.keys, 0, tempNode.number);
-            System.arraycopy(tempValues, middle, tempNode.values, 0, tempNode.number);
+            int v = middle;
+            for(int r = 0; r < tempNode.number; r++) {
+
+                tempNode.keys.set(r, tempKeys[v]);
+                tempNode.values.set(r, tempKeys[v]);
+                v++;
+            }
+            //System.arraycopy(tempKeys, middle, tempNode.keys, 0, tempNode.number);
+            //System.arraycopy(tempValues, middle, tempNode.values, 0, tempNode.number);
 
             //让原有叶子节点作为拆分的左半部分
             this.number = middle;
 
-            System.arraycopy(tempKeys, 0, this.keys, 0, middle);
-            System.arraycopy(tempValues, 0, this.values, 0, middle);
+            int v_1 = 0;
+            for(int r = 0; r < middle; r++) {
+
+                tempNode.keys.set(r, tempKeys[v_1]);
+                tempNode.values.set(r, tempKeys[v_1]);
+                v_1++;
+            }
+
+            //System.arraycopy(tempKeys, 0, this.keys, 0, middle);
+            //System.arraycopy(tempValues, 0, this.values, 0, middle);
 
             this.right = tempNode;
             tempNode.left = this;
@@ -1078,11 +1092,11 @@ public class IxBlock extends Block {
     public boolean insert(Comparable comparable, int index) {
         //TODO: 插入一条数据进入索引
         if (!unique) {
-            this.insert(comparable, index);
+            this.insert_into(index, comparable);
         } else {
             List<Integer> check = this.find(index);
             if (check == null || check.size() == 0) {
-                this.insert(comparable, index);
+                this.insert_into(index, comparable);
             } else {
                 return false;
             }
@@ -1100,7 +1114,7 @@ public class IxBlock extends Block {
         //TODO: 插入所有数据进入索引，这发生事后建立索引的情况下。
 
         for (int i = 0; i < list.size(); i++) {
-            boolean k = this.insert(i, list.get(i));
+            boolean k = this.insert(list.get(i), i);
             if (!k) return false;
         }
 
