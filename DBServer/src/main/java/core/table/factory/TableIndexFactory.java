@@ -61,12 +61,11 @@ public class TableIndexFactory extends TableComponentFactory<IndexBlock, TableIn
     /**
      * 删除一个索引
      *
-     * @param parser 删除索引SQL解析器
+     * @param indexName 索引名
      * @return 删除索引结果
      */
-    public Result dropIndex(DropIndexParser parser) {
-        String indexName = parser.getIndexName();
-        if (exists(indexName)) return ResultFactory.buildObjectAlreadyExistsResult(indexName);
+    public Result dropIndex(String indexName) {
+        if (!exists(indexName)) return ResultFactory.buildObjectNotExistsResult(indexName);
         IndexBlock block = map.get(indexName);
         map.values().removeIf(indexBlock -> indexBlock.equals(block));
         collection.remove(block);

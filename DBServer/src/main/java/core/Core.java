@@ -2,6 +2,7 @@ package core;
 
 import core.database.DatabaseBlock;
 import core.database.DatabaseFactory;
+import core.table.block.TableBlock;
 import core.table.factory.TableFactory;
 import server.user.UserFactory;
 import util.parser.parsers.*;
@@ -283,6 +284,18 @@ public enum Core {
             DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
             TableFactory factory = databaseBlock.getFactory();
             Result result = factory.getTableIndex(tableName);
+            databaseBlock.release();
+            return result;
+        } catch (Exception e) {
+            return ResultFactory.buildFailResult(e.toString());
+        }
+    }
+
+    public Result dropIndex(DropIndexParser parser, String databaseName) {
+        try {
+            DatabaseBlock databaseBlock = databaseFactory.getDatabase(databaseName);
+            TableFactory factory = databaseBlock.getFactory();
+            Result result = factory.dropIndex(parser);
             databaseBlock.release();
             return result;
         } catch (Exception e) {

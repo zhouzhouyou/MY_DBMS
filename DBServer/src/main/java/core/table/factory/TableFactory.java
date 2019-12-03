@@ -243,4 +243,10 @@ public class TableFactory {
         if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
         return map.get(tableName).getTableIndex();
     }
+
+    public Result dropIndex(DropIndexParser parser) {
+        String tableName = parser.getTableName();
+        if (!exists(tableName)) return ResultFactory.buildObjectNotExistsResult(tableName);
+        return map.get(tableName).dropIndex(parser.getIndexName());
+    }
 }

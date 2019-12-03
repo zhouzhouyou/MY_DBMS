@@ -78,6 +78,7 @@ public class IndexBlock extends Block {
         List<Comparable> comparableList = list.stream().map(object -> (Comparable) object).collect(Collectors.toList());
         //把现有的所有数据插入IxBlock
         boolean result = ixBlock.insert(comparableList);
+        ixBlock.saveInstance();
         if (result) return ResultFactory.buildSuccessResult(null);
         else return ResultFactory.buildFailResult("fail to insert into b+ tree");
     }

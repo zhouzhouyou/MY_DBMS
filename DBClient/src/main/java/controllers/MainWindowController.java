@@ -505,7 +505,7 @@ public class MainWindowController implements Initializable, ControlledStage {
         if (result.isPresent()) {
             indexName = result.get();
         }
-        String sql = String.format("drop index %s on (%s)", indexName, tableName);
+        String sql = String.format("drop index %s on %s", indexName, tableName);
         Result deleteIndex = client.getResult(sql, databaseName);
         if (deleteIndex.code != Result.SUCCESS) {
             showAlert(deleteIndex);

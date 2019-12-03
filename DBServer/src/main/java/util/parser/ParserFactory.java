@@ -24,7 +24,7 @@ public class ParserFactory {
         else if (contains(sql, "(release database)")) return new ReleaseDatabaseParser(sql);
         else if (contains(sql, "(create index|create unique index)(.+?)(on)"))
             return new CreateIndexParser(sql);
-        else if (contains(sql, "(drop index)(.+)(on)([(])(.+?)([)])")) return new DropIndexParser(sql);
+        else if (contains(sql, "(drop index)(.+)(on)")) return new DropIndexParser(sql);
         else if (contains(sql, "(alter table)(.+?)"))
             return new AlterTableParser(sql);
         else if (contains(sql, ("(create user)(.+)"))) return new CreateUserParser(sql);

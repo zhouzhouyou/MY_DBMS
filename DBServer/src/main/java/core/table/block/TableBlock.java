@@ -272,5 +272,9 @@ public class TableBlock extends Block {
         }
         return ResultFactory.buildSuccessResult(lists);
     }
+
+    public Result dropIndex(String indexName) {
+        return getIndexFactory().dropIndex(indexName);
+    }
 }
 
